@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class CoordinatesTest {
+class RangeTest {
 
     @Test
     void 좌상단을_알_수_있다() {
-        var range = new Coordinates(List.of(
+        var range = new Range(List.of(
                 new Coordinate(0, 1),
                 new Coordinate(0, 2),
                 new Coordinate(0, 3),
@@ -28,7 +28,7 @@ class CoordinatesTest {
 
     @Test
     void 우하단을_알_수_있다() {
-        var range = new Coordinates(List.of(
+        var range = new Range(List.of(
                 new Coordinate(0, 1),
                 new Coordinate(0, 2),
                 new Coordinate(0, 3),

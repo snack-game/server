@@ -3,11 +3,11 @@ package com.snackgame.server.applegame.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Coordinates {
+public class Range {
 
     private final List<Coordinate> coordinates;
 
-    public Coordinates(List<Coordinate> coordinates) {
+    public Range(List<Coordinate> coordinates) {
         this.coordinates = new ArrayList<>(coordinates);
     }
 
