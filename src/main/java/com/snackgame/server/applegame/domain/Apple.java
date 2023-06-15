@@ -37,6 +37,10 @@ public class Apple {
         return this.equals(EMPTY);
     }
 
+    public boolean exists() {
+        return !isEmpty();
+    }
+
     public int getNumber() {
         return number;
     }
