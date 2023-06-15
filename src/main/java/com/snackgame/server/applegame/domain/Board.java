@@ -76,7 +76,9 @@ public class Board {
     }
 
     public List<List<Apple>> getApples() {
-        return apples;
+        return apples.stream()
+                .map(ArrayList::new)
+                .collect(Collectors.toList());
     }
 
     @Override
