@@ -4,8 +4,6 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.0'
 }
 
-group = 'com.snackgame'
-version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
