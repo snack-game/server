@@ -3,11 +3,11 @@ package com.snackgame.server.member.business;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.snackgame.server.member.dao.MemberDao;
-import com.snackgame.server.member.business.domain.Guest;
 import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.business.domain.NameRandomizer;
 import com.snackgame.server.member.business.exception.DuplicateNameException;
 import com.snackgame.server.member.business.exception.MemberNotFoundException;
+import com.snackgame.server.member.dao.MemberDao;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberService {
 
     private final MemberDao memberDao;
+    private final NameRandomizer nameRandomizer;
 
     @Transactional
     public Member createWith(String name, String groupName) {
@@ -26,9 +27,11 @@ public class MemberService {
 
     @Transactional
     public Member createGuest() {
-        Member guest = new Guest();
-
-        return memberDao.insert(guest);
+        String name = nameRandomizer.get();
+        while (doesExist(name)) {
+            name = nameRandomizer.get();
+        }
+        return memberDao.insert(new Member(name));
     }
 
     @Transactional
@@ -48,6 +51,10 @@ public class MemberService {
     public Member findBy(Long id) {
         return memberDao.selectBy(id)
                 .orElseThrow(MemberNotFoundException::new);
+    }
+
+    private boolean doesExist(String name) {
+        return memberDao.selectBy(name).isPresent();
     }
 
     private void validateNoDuplicate(String name) {

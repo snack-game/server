@@ -25,18 +25,19 @@ public class Member {
         this.groupName = groupName;
     }
 
-    public void validateNotNull(String property) {
-        if (Objects.isNull(property)) {
-            throw new EmptyNameException();
-        }
-    }
-
     public void changeNameTo(String name) {
+        validateNotNull(name);
         this.name = name;
     }
 
     public void changeGroupNameTo(String group) {
         this.groupName = group;
+    }
+
+    public void validateNotNull(String property) {
+        if (Objects.isNull(property)) {
+            throw new EmptyNameException();
+        }
     }
 
     public Long getId() {

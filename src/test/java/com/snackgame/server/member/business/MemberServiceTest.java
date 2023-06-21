@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.snackgame.server.annotation.ServiceTest;
 import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.business.domain.NameRandomizer;
 import com.snackgame.server.member.business.exception.DuplicateNameException;
 import com.snackgame.server.member.business.exception.MemberNotFoundException;
 import com.snackgame.server.member.dao.MemberDao;
@@ -22,9 +23,9 @@ import com.snackgame.server.member.dao.MemberDao;
 class MemberServiceTest {
 
     @Autowired
-    private MemberService memberService;
-    @Autowired
     private MemberDao memberDao;
+    @Autowired
+    private MemberService memberService;
 
     @Test
     void 이름과_그룹이름으로_사용자를_생성한다() {
@@ -45,6 +46,29 @@ class MemberServiceTest {
 
         assertThat(created.getId()).isNotNull();
         assertThat(created.getName()).startsWith("게스트");
+    }
+
+    @Test
+    void 임시사용자_이름이_중복이면_다시_만든다() {
+        NameRandomizer fakeNameRandomizer = new NameRandomizer() {
+            private boolean first = true;
+
+            @Override
+            public String get() {
+                if (first) {
+                    first = false;
+                    return "게스트#abc";
+                }
+                return "게스트#abcd";
+            }
+        };
+        memberService = new MemberService(memberDao, fakeNameRandomizer);
+        memberService.createWith("게스트#abc", null);
+
+        Member guest = memberService.createGuest();
+
+        var created = memberDao.selectBy(guest.getId()).get();
+        assertThat(created.getName()).isEqualTo("게스트#abcd");
     }
 
     @Test

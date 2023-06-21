@@ -8,19 +8,21 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class GuestTest {
+class NameRandomizerTest {
+
+    private final NameRandomizer nameRandomizer = new AlphabetNameRandomizer();
 
     @Test
     void 이름앞에_접두사가_붙는다() {
-        var guest = new Guest();
+        var name = nameRandomizer.get();
 
-        assertThat(guest.getName()).startsWith("게스트#");
+        assertThat(name).startsWith("게스트#");
     }
 
     @Test
     void 이름의_8자리를_무작위로_생성한다() {
-        var guest = new Guest();
+        var name = nameRandomizer.get();
 
-        assertThat(guest.getName().substring(4)).hasSize(8);
+        assertThat(name.substring(4)).hasSize(8);
     }
 }
