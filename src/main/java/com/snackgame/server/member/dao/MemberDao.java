@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
-import com.snackgame.server.member.domain.Member;
+import com.snackgame.server.member.business.domain.Member;
 
 @Component
 public class MemberDao {

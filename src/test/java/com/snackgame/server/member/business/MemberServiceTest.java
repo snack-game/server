@@ -1,10 +1,9 @@
-package com.snackgame.server.member.application;
+package com.snackgame.server.member.business;
 
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
 import static com.snackgame.server.member.fixture.MemberFixture.똥수;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -12,11 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.snackgame.server.annotation.ServiceTest;
+import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.business.exception.DuplicateNameException;
+import com.snackgame.server.member.business.exception.MemberNotFoundException;
 import com.snackgame.server.member.dao.MemberDao;
-import com.snackgame.server.member.domain.Guest;
-import com.snackgame.server.member.domain.Member;
-import com.snackgame.server.member.exception.DuplicateNameException;
-import com.snackgame.server.member.exception.MemberNotFoundException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)

@@ -5,13 +5,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.snackgame.server.member.application.MemberService;
+import com.snackgame.server.member.business.MemberService;
 import com.snackgame.server.member.controller.auth.JwtTokenProvider;
 import com.snackgame.server.member.controller.dto.GroupRequest;
 import com.snackgame.server.member.controller.dto.MemberRequest;
 import com.snackgame.server.member.controller.dto.NameRequest;
 import com.snackgame.server.member.controller.dto.TokenResponse;
-import com.snackgame.server.member.domain.Member;
+import com.snackgame.server.member.business.domain.Member;
 
 import lombok.RequiredArgsConstructor;
 

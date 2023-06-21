@@ -1,4 +1,4 @@
-package com.snackgame.server.member.exception;
+package com.snackgame.server.member.business.exception;
 
 public class InvalidTokenException extends TokenException {
 

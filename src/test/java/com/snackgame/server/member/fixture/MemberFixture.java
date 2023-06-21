@@ -1,6 +1,6 @@
 package com.snackgame.server.member.fixture;
 
-import com.snackgame.server.member.domain.Member;
+import com.snackgame.server.member.business.domain.Member;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class MemberFixture {

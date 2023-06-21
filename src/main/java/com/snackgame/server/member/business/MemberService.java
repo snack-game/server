@@ -1,13 +1,13 @@
-package com.snackgame.server.member.application;
+package com.snackgame.server.member.business;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.snackgame.server.member.dao.MemberDao;
-import com.snackgame.server.member.domain.Guest;
-import com.snackgame.server.member.domain.Member;
-import com.snackgame.server.member.exception.DuplicateNameException;
-import com.snackgame.server.member.exception.MemberNotFoundException;
+import com.snackgame.server.member.business.domain.Guest;
+import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.business.exception.DuplicateNameException;
+import com.snackgame.server.member.business.exception.MemberNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

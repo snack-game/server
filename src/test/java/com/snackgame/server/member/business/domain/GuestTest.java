@@ -1,4 +1,4 @@
-package com.snackgame.server.member.domain;
+package com.snackgame.server.member.business.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

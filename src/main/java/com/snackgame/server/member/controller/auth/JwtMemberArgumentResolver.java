@@ -8,9 +8,9 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.snackgame.server.member.application.MemberService;
-import com.snackgame.server.member.domain.Member;
-import com.snackgame.server.member.exception.InvalidTokenException;
+import com.snackgame.server.member.business.MemberService;
+import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.business.exception.InvalidTokenException;
 
 import lombok.RequiredArgsConstructor;
 
