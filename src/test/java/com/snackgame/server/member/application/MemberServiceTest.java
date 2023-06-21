@@ -4,18 +4,19 @@ import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
 import static com.snackgame.server.member.fixture.MemberFixture.똥수;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.snackgame.server.annotation.ServiceTest;
 import com.snackgame.server.member.dao.MemberDao;
+import com.snackgame.server.member.domain.Guest;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.exception.DuplicateNameException;
+import com.snackgame.server.member.exception.MemberNotFoundException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -36,6 +37,16 @@ class MemberServiceTest {
                 .usingRecursiveComparison()
                 .ignoringFields("id")
                 .isEqualTo(똥수());
+    }
+
+    @Test
+    void 임시사용자를_생성한다() {
+        Member guest = memberService.createGuest();
+
+        var created = memberDao.selectBy(guest.getId()).get();
+
+        assertThat(created.getId()).isNotNull();
+        assertThat(created.getName()).startsWith("게스트");
     }
 
     @Test
@@ -75,5 +86,24 @@ class MemberServiceTest {
         Member found = memberDao.selectBy(member.getId()).get();
         assertThat(found.getGroupName())
                 .isEqualTo("홍천고");
+    }
+
+    @Test
+    void 사용자를_id로_찾는다() {
+        Member created = memberService.createWith(땡칠().getName(), 땡칠().getGroupName());
+
+        Member found = memberService.findBy(created.getId());
+        assertThat(found)
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(땡칠());
+    }
+
+    @Test
+    void 사용자를_없는_id로_찾으면_예외를_던진다() {
+        memberService.createWith(땡칠().getName(), 땡칠().getGroupName());
+
+        assertThatThrownBy(() -> memberService.findBy(999L))
+                .isInstanceOf(MemberNotFoundException.class);
     }
 }

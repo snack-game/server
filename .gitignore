@@ -36,3 +36,4 @@ out/
 .vscode/
 
 application-datasource.yml
+application-secret.yml
