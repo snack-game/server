@@ -129,4 +129,13 @@ class MemberServiceTest {
         assertThatThrownBy(() -> memberService.findBy(999L))
                 .isInstanceOf(MemberNotFoundException.class);
     }
+
+    @Test
+    void 특정_이름으로_시작하는_사용자_이름들을_찾는다() {
+        var fullName = memberService.createWith("땡칠이").getName();
+        var shortName = memberService.createWith("땡칠").getName();
+
+        assertThat(memberService.findNameStartsWith("땡칠"))
+                .contains(fullName, shortName);
+    }
 }

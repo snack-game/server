@@ -1,6 +1,8 @@
 package com.snackgame.server.member.business;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,6 +71,8 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
+
+
     private boolean doesExist(String name) {
         return memberDao.selectBy(name).isPresent();
     }
@@ -93,5 +97,11 @@ public class MemberService {
                 memberDto.getName(),
                 groupService.findBy(memberDto.getGroupId())
         );
+    }
+
+    public List<String> findNameStartsWith(String prefix) {
+        return memberDao.selectByNameLike(prefix).stream()
+                .map(MemberDto::getName)
+                .collect(Collectors.toList());
     }
 }

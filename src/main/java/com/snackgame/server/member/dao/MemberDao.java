@@ -18,7 +18,7 @@ public class MemberDao {
     private static final RowMapper<MemberDto> MEMBER_DTO_ROW_MAPPER = (rs, rowNum) -> new MemberDto(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getLong("group_id")
+            rs.getObject("group_id", Long.class)
     );
 
     private final JdbcTemplate jdbcTemplate;
@@ -68,6 +68,16 @@ public class MemberDao {
                 member.getName(),
                 member.getGroupId(),
                 member.getId()
+        );
+    }
+
+    public List<MemberDto> selectByNameLike(String name) {
+        String sql = "SELECT * FROM member WHERE name LIKE ?";
+
+        return jdbcTemplate.query(
+                sql,
+                MEMBER_DTO_ROW_MAPPER,
+                name + "%"
         );
     }
 }

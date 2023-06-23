@@ -67,7 +67,17 @@ class MemberDaoTest {
         memberDao.update(MemberDto.of(member));
 
         assertThat(memberDao.selectBy(inserted.getId())).get()
-                .usingRecursiveComparison().ignoringFields("id")
+                .usingRecursiveComparison()
                 .isEqualTo(inserted);
+    }
+
+    @Test
+    void 특정_이름으로_시작하는_사용자들을_찾는다() {
+        MemberDto fullName = memberDao.insert(MemberDto.of(new Member("땡칠이")));
+        MemberDto shortName = memberDao.insert(MemberDto.of(new Member("땡칠")));
+
+        assertThat(memberDao.selectByNameLike("땡칠"))
+                .usingRecursiveFieldByFieldElementComparator()
+                .contains(fullName, shortName);
     }
 }

@@ -29,4 +29,13 @@ public class MemberDto {
         }
         return member.getGroup().getId();
     }
+
+    @Override
+    public String toString() {
+        return "MemberDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", groupId=" + groupId +
+                '}';
+    }
 }
