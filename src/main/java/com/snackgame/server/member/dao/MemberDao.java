@@ -4,15 +4,22 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
-import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.dao.dto.MemberDto;
 
 @Component
 public class MemberDao {
+
+    private static final RowMapper<MemberDto> MEMBER_DTO_ROW_MAPPER = (rs, rowNum) -> new MemberDto(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getLong("group_id")
+    );
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
@@ -24,50 +31,43 @@ public class MemberDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Member insert(Member member) {
+    public MemberDto insert(MemberDto member) {
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(member);
 
-        long id = simpleJdbcInsert.executeAndReturnKey(parameterSource).longValue();
-        return new Member(
-                id,
-                member.getName(),
-                member.getGroupName()
-        );
+        Long id = simpleJdbcInsert.executeAndReturnKey(parameterSource).longValue();
+        return new MemberDto(id, member.getName(), member.getGroupId());
     }
 
-    public Optional<Member> selectBy(Long id) {
+    public Optional<MemberDto> selectBy(Long id) {
         String sql = "SELECT * FROM member WHERE id = ?";
 
-        List<Member> members = jdbcTemplate.query(
+        List<MemberDto> members = jdbcTemplate.query(
                 sql,
-                (rs, rowNum) -> new Member(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("group_name")
-                ),
+                MEMBER_DTO_ROW_MAPPER,
                 id
         );
         return members.stream().findFirst();
     }
 
-    public Optional<Member> selectBy(String name) {
+    public Optional<MemberDto> selectBy(String name) {
         String sql = "SELECT * FROM member WHERE name = ?";
 
-        List<Member> members = jdbcTemplate.query(
+        List<MemberDto> members = jdbcTemplate.query(
                 sql,
-                (rs, rowNum) -> new Member(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("group_name")
-                ),
+                MEMBER_DTO_ROW_MAPPER,
                 name
         );
         return members.stream().findFirst();
     }
 
-    public void update(Member member) {
-        String sql = "UPDATE member SET name = ?, group_name = ? WHERE id = ?";
+    public void update(MemberDto member) {
+        String sql = "UPDATE member SET name = ?, group_id = ? WHERE id = ?";
 
-        jdbcTemplate.update(sql, member.getName(), member.getGroupName(), member.getId());
+        jdbcTemplate.update(
+                sql,
+                member.getName(),
+                member.getGroupId(),
+                member.getId()
+        );
     }
 }

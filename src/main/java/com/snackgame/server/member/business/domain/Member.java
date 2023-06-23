@@ -8,21 +8,21 @@ public class Member {
 
     private final Long id;
     private String name;
-    private String groupName;
+    private Group group;
 
     public Member(String name) {
         this(null, name, null);
     }
 
-    public Member(String name, String groupName) {
-        this(null, name, groupName);
+    public Member(String name, Group group) {
+        this(null, name, group);
     }
 
-    public Member(Long id, String name, String groupName) {
+    public Member(Long id, String name, Group group) {
         validateNotNull(name);
         this.id = id;
         this.name = name;
-        this.groupName = groupName;
+        this.group = group;
     }
 
     public void changeNameTo(String name) {
@@ -30,8 +30,8 @@ public class Member {
         this.name = name;
     }
 
-    public void changeGroupNameTo(String group) {
-        this.groupName = group;
+    public void changeGroupTo(Group group) {
+        this.group = group;
     }
 
     public void validateNotNull(String property) {
@@ -48,7 +48,7 @@ public class Member {
         return name;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public Group getGroup() {
+        return group;
     }
 }

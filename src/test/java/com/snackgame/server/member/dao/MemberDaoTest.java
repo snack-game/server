@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.dao.dto.MemberDto;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -29,44 +30,41 @@ class MemberDaoTest {
 
     @Test
     void 삽입한다() {
-        var member = new Member(똥수().getName(), 똥수().getGroupName());
+        var member = new Member(똥수().getName(), 똥수().getGroup());
 
-        Member inserted = memberDao.insert(member);
+        MemberDto inserted = memberDao.insert(MemberDto.of(member));
 
-        assertThat(inserted.getId()).isNotNull();
+        assertThat(inserted).isNotNull();
     }
 
     @Test
     void id로_조회한다() {
-        var member = new Member(똥수().getName(), 똥수().getGroupName());
-        Member inserted = memberDao.insert(member);
+        var member = new Member(똥수().getName(), 똥수().getGroup());
+        MemberDto inserted = memberDao.insert(MemberDto.of(member));
 
         assertThat(memberDao.selectBy(inserted.getId()))
                 .get()
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(똥수());
+                .isEqualTo(MemberDto.of(똥수()));
     }
 
     @Test
     void 이름으로_조회한다() {
-        var member = new Member(똥수().getName(), 똥수().getGroupName());
-        Member inserted = memberDao.insert(member);
+        var member = new Member(똥수().getName(), 똥수().getGroup());
+        memberDao.insert(MemberDto.of(member));
 
-        assertThat(memberDao.selectBy(inserted.getName()))
-                .get()
-                .usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(똥수());
+        MemberDto found = memberDao.selectBy(member.getName()).get();
+        assertThat(found.getName()).isEqualTo(똥수().getName());
     }
 
     @Test
     void 업데이트한다() {
-        var member = new Member(똥수().getName(), 똥수().getGroupName());
-        Member inserted = memberDao.insert(member);
+        var member = new Member(똥수().getName(), 똥수().getGroup());
+        MemberDto inserted = memberDao.insert(MemberDto.of(member));
 
-        inserted.changeNameTo("똥똥수");
-        memberDao.update(inserted);
+        member.changeNameTo("똥똥수");
+        memberDao.update(MemberDto.of(member));
 
         assertThat(memberDao.selectBy(inserted.getId())).get()
                 .usingRecursiveComparison().ignoringFields("id")

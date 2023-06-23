@@ -16,6 +16,7 @@ import com.snackgame.server.member.business.domain.NameRandomizer;
 import com.snackgame.server.member.business.exception.DuplicateNameException;
 import com.snackgame.server.member.business.exception.MemberNotFoundException;
 import com.snackgame.server.member.dao.MemberDao;
+import com.snackgame.server.member.dao.dto.MemberDto;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -26,16 +27,18 @@ class MemberServiceTest {
     private MemberDao memberDao;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private GroupService groupService;
 
     @Test
     void 이름과_그룹이름으로_사용자를_생성한다() {
-        Member created = memberService.createWith(똥수().getName(), 똥수().getGroupName());
+        Member created = memberService.createWith(똥수().getName(), 똥수().getGroup().getName());
 
         assertThat(memberDao.selectBy(created.getId()))
                 .get()
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(똥수());
+                .isEqualTo(MemberDto.of(똥수()));
     }
 
     @Test
@@ -62,8 +65,8 @@ class MemberServiceTest {
                 return "게스트#abcd";
             }
         };
-        memberService = new MemberService(memberDao, fakeNameRandomizer);
-        memberService.createWith("게스트#abc", null);
+        memberService = new MemberService(memberDao, groupService, fakeNameRandomizer);
+        memberService.createWith("게스트#abc");
 
         Member guest = memberService.createGuest();
 
@@ -73,27 +76,27 @@ class MemberServiceTest {
 
     @Test
     void 중복된_이름으로_생성할_수_없다() {
-        memberService.createWith(똥수().getName(), 똥수().getGroupName());
+        memberService.createWith(똥수().getName());
 
-        assertThatThrownBy(() -> memberService.createWith(똥수().getName(), 똥수().getGroupName()))
+        assertThatThrownBy(() -> memberService.createWith(똥수().getName(), null))
                 .isInstanceOf(DuplicateNameException.class)
                 .hasMessage("이미 존재하는 이름입니다");
     }
 
     @Test
     void 사용자_이름을_수정한다() {
-        Member member = memberService.createWith(똥수().getName(), 똥수().getGroupName());
+        Member member = memberService.createWith(똥수().getName());
         memberService.changeNameOf(member, "똥똥수");
 
-        Member found = memberDao.selectBy(member.getId()).get();
+        MemberDto found = memberDao.selectBy(member.getId()).get();
         assertThat(found.getName())
                 .isEqualTo("똥똥수");
     }
 
     @Test
     void 중복된_이름으로_수정할_수_없다() {
-        memberService.createWith(땡칠().getName(), 땡칠().getGroupName());
-        Member member = memberService.createWith(똥수().getName(), 똥수().getGroupName());
+        memberService.createWith(땡칠().getName());
+        Member member = memberService.createWith(똥수().getName());
 
         assertThatThrownBy(() -> memberService.changeNameOf(member, 땡칠().getName()))
                 .isInstanceOf(DuplicateNameException.class)
@@ -102,28 +105,26 @@ class MemberServiceTest {
 
     @Test
     void 그룹_이름을_수정한다() {
-        Member member = memberService.createWith(똥수().getName(), 똥수().getGroupName());
+        Member member = memberService.createWith(똥수().getName(), 똥수().getGroup().getName());
         memberService.changeGroupNameOf(member, "홍천고");
 
-        Member found = memberDao.selectBy(member.getId()).get();
-        assertThat(found.getGroupName())
+        assertThat(memberService.findBy(member.getId()).getGroup().getName())
                 .isEqualTo("홍천고");
     }
 
     @Test
     void 사용자를_id로_찾는다() {
-        Member created = memberService.createWith(땡칠().getName(), 땡칠().getGroupName());
-
+        Member created = memberService.createWith(땡칠().getName(), 땡칠().getGroup().getName());
         Member found = memberService.findBy(created.getId());
         assertThat(found)
                 .usingRecursiveComparison()
-                .ignoringFields("id")
+                .ignoringFields("id", "group.id")
                 .isEqualTo(땡칠());
     }
 
     @Test
     void 사용자를_없는_id로_찾으면_예외를_던진다() {
-        memberService.createWith(땡칠().getName(), 땡칠().getGroupName());
+        memberService.createWith(땡칠().getName());
 
         assertThatThrownBy(() -> memberService.findBy(999L))
                 .isInstanceOf(MemberNotFoundException.class);

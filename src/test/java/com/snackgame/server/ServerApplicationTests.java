@@ -8,8 +8,8 @@ import org.springframework.test.annotation.DirtiesContext;
 @DirtiesContext
 class ServerApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void contextLoads() {
+    }
 
 }
