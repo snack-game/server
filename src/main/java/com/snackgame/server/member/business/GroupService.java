@@ -30,7 +30,7 @@ public class GroupService {
     }
 
     @Transactional(readOnly = true)
-    public List<String> findNameStartsWith(String prefix) {
+    public List<String> findNamesStartWith(String prefix) {
         return groupDao.selectByNameLike(prefix).stream()
                 .map(Group::getName)
                 .collect(Collectors.toList());

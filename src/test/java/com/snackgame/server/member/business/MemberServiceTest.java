@@ -135,7 +135,7 @@ class MemberServiceTest {
         var fullName = memberService.createWith("땡칠이").getName();
         var shortName = memberService.createWith("땡칠").getName();
 
-        assertThat(memberService.findNameStartsWith("땡칠"))
+        assertThat(memberService.findNamesStartWith("땡칠"))
                 .contains(fullName, shortName);
     }
 }

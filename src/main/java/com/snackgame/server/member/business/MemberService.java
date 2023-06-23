@@ -99,7 +99,7 @@ public class MemberService {
         );
     }
 
-    public List<String> findNameStartsWith(String prefix) {
+    public List<String> findNamesStartWith(String prefix) {
         return memberDao.selectByNameLike(prefix).stream()
                 .map(MemberDto::getName)
                 .collect(Collectors.toList());

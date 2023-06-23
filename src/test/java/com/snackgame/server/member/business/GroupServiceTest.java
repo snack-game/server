@@ -51,7 +51,7 @@ class GroupServiceTest {
         var fullName = groupService.createIfNotExists("숭실대학교").getName();
         var shortName = groupService.createIfNotExists("숭실대").getName();
 
-        assertThat(groupService.findNameStartsWith("숭실대"))
+        assertThat(groupService.findNamesStartWith("숭실대"))
                 .contains(fullName, shortName);
     }
 }
