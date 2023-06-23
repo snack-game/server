@@ -58,4 +58,14 @@ public class GroupDao {
         );
         return groups.stream().findFirst();
     }
+
+    public List<Group> selectByNameLike(String name) {
+        String sql = "SELECT * FROM member_group WHERE name LIKE ?";
+
+        return jdbcTemplate.query(
+                sql,
+                GROUP_ROW_MAPPER,
+                name + "%"
+        );
+    }
 }

@@ -45,4 +45,13 @@ class GroupServiceTest {
                 .usingRecursiveComparison()
                 .isEqualTo(found);
     }
+
+    @Test
+    void 특정_이름으로_시작하는_그룹이름들을_찾는다() {
+        var fullName = groupService.createIfNotExists("숭실대학교").getName();
+        var shortName = groupService.createIfNotExists("숭실대").getName();
+
+        assertThat(groupService.findNameStartsWith("숭실대"))
+                .contains(fullName, shortName);
+    }
 }

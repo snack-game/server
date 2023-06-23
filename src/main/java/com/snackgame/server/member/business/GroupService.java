@@ -1,5 +1,8 @@
 package com.snackgame.server.member.business;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,5 +27,12 @@ public class GroupService {
     public Group findBy(Long id) {
         return groupDao.selectBy(id)
                 .orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> findNameStartsWith(String prefix) {
+        return groupDao.selectByNameLike(prefix).stream()
+                .map(Group::getName)
+                .collect(Collectors.toList());
     }
 }

@@ -60,4 +60,14 @@ class GroupDaoTest {
                 .ignoringFields("id")
                 .isEqualTo(우테코());
     }
+
+    @Test
+    void 특정_이름으로_시작하는_그룹들을_찾는다() {
+        Group fullName = groupDao.insert(new Group("숭실대학교"));
+        Group shortName = groupDao.insert(new Group("숭실대"));
+
+        assertThat(groupDao.selectByNameLike("숭실대"))
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+                .contains(fullName, shortName);
+    }
 }
