@@ -22,20 +22,14 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      #       - name: Set Yaml
-      #         uses: microsoft/variable-substitution@v1
-      #         with:
-      #           files: ./src/main/resources/application.yml, ./src/main/resources/application-oauth.yml, ./src/main/resources/application-datasource.yml, ./src/main/resources/application-settings.yml
-      #         env:
-      #           spring.security.oauth2.client.registration.kakao.client-id: ${{ secrets.KAKAO_CLIENT_ID }}
-      #           spring.security.oauth2.client.registration.kakao.client-secret: ${{ secrets.KAKAO_CLIENT_SECRET }}
-      #           spring.security.oauth2.client.registration.google.clientId: ${{ secrets.GOOGLE_CLIENT_ID }}
-      #           spring.security.oauth2.client.registration.google.clientSecret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-      #           spring.datasource.url: ${{ secrets.DATASOURCE_URL }}
-      #           spring.datasource.username: ${{ secrets.DATASOURCE_USERNAME }}
-      #           spring.datasource.password: ${{ secrets.DATASOURCE_PASSWORD }}
-      #           app.auth.accessTokenSecret: ${{ secrets.ACCESS_TOKEN_SECRET }}
-      #           app.auth.refreshTokenSecret: ${{ secrets.REFRESH_TOKEN_SECRET }}
+      - name: Set Yaml
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ./src/main/resources/application-production.yml
+        env:
+          security.jwt.token.secret: ${{ secrets.JWT_SECRET_KEY }}
+          security.jwt.token.expire-length: ${{ secrets.JWT_EXPIRE_LENGTH }}
+          server.port: ${{ vars.JWT_EXPIRE_LENGTH }}
 
       # Build
       - name: Create Spring Boot jar
