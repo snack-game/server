@@ -11,6 +11,6 @@ fi
 
 echo "\n🐣 SpringBoot 애플리케이션을 실행합니다.\n"
 
-nohup java -jar $APP_PATH/$JAR_NAME -DSpring.profiles.active=production > $APP_PATH/spring.log &
+nohup java -jar -DSpring.profiles.active=production $APP_PATH/$JAR_NAME > $APP_PATH/spring.log &
 
 exit
