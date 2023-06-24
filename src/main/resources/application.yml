@@ -1,3 +1,3 @@
 spring:
-  config:
-    import: application-datasource.yml, application-secret.yml
+  profiles:
+    active: local
