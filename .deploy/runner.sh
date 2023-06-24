@@ -11,6 +11,6 @@ fi
 
 echo "\n🐣 SpringBoot 애플리케이션을 실행합니다.\n"
 
-nohup java -jar $PATH/$JAR_NAME --server.port=8081 > $PATH/spring.log &
+nohup java -jar $PATH/$JAR_NAME -DSpring.profiles.active=production > $PATH/spring.log &
 
 exit
