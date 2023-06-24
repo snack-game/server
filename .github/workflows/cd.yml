@@ -27,9 +27,9 @@ jobs:
         with:
           files: ./src/main/resources/application-production.yml
         env:
-          security.jwt.token.secret: ${{ secrets.JWT_SECRET_KEY }}
+          security.jwt.token.secret-key: ${{ secrets.JWT_SECRET_KEY }}
           security.jwt.token.expire-length: ${{ secrets.JWT_EXPIRE_LENGTH }}
-          server.port: ${{ vars.JWT_EXPIRE_LENGTH }}
+          server.port: ${{ vars.APPLICATION_PORT }}
 
       # Build
       - name: Create Spring Boot jar
