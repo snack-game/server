@@ -1,4 +1,4 @@
-package com.snackgame.server.member.business.exception;
+package com.snackgame.server.auth.exception;
 
 public abstract class TokenException extends RuntimeException {
 

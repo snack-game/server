@@ -8,9 +8,9 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.snackgame.server.member.business.MemberService;
-import com.snackgame.server.member.controller.auth.JwtMemberArgumentResolver;
-import com.snackgame.server.member.controller.auth.BearerAuthorizationExtractor;
-import com.snackgame.server.member.controller.auth.JwtTokenProvider;
+import com.snackgame.server.auth.JwtMemberArgumentResolver;
+import com.snackgame.server.auth.BearerTokenExtractor;
+import com.snackgame.server.auth.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,14 +18,14 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
     private final MemberService memberService;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new JwtMemberArgumentResolver(
-                new BearerAuthorizationExtractor(),
-                jwtTokenProvider,
+                new BearerTokenExtractor(),
+                jwtProvider,
                 memberService
         ));
     }

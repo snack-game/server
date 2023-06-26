@@ -1,8 +1,7 @@
-package com.snackgame.server.member.controller.auth;
-
-import javax.servlet.http.HttpServletRequest;
+package com.snackgame.server.auth;
 
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -10,15 +9,14 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.snackgame.server.member.business.MemberService;
 import com.snackgame.server.member.business.domain.Member;
-import com.snackgame.server.member.business.exception.InvalidTokenException;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final BearerAuthorizationExtractor bearerAuthorizationExtractor;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final BearerTokenExtractor bearerTokenExtractor;
+    private final JwtProvider jwtProvider;
     private final MemberService memberService;
 
     @Override
@@ -29,15 +27,12 @@ public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        HttpServletRequest request = (HttpServletRequest)webRequest;
-        String token = bearerAuthorizationExtractor.extract(request);
+        String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        String token = bearerTokenExtractor.extract(authorization);
+        jwtProvider.validate(token);
 
-        if (jwtTokenProvider.validateToken(token)) {
-            throw new InvalidTokenException();
-        }
-        String payload = jwtTokenProvider.getPayload(token);
-
-        long memberId = Long.parseLong(payload);
+        String subject = jwtProvider.getSubjectFrom(token);
+        long memberId = Long.parseLong(subject);
         return memberService.findBy(memberId);
     }
 }
