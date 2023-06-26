@@ -1,3 +1,10 @@
 spring:
   profiles:
     active: local
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /docs
+  cache:
+    disabled: true
