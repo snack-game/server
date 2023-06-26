@@ -71,8 +71,6 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-
-
     private boolean doesExist(String name) {
         return memberDao.selectBy(name).isPresent();
     }
