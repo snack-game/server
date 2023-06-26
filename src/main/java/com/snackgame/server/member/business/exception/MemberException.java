@@ -1,6 +1,8 @@
 package com.snackgame.server.member.business.exception;
 
-public abstract class MemberException extends RuntimeException {
+import com.snackgame.server.common.exception.BusinessException;
+
+public abstract class MemberException extends BusinessException {
 
     public MemberException(String message) {
         super(message);
