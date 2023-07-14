@@ -1,9 +1,24 @@
 package com.snackgame.server.member.business.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@NoArgsConstructor
+@Entity
+@Table(name = "member_group")
+@ToString
 public class Group {
 
-    private final Long id;
-    private final String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
 
     public Group(String name) {
         this(null, name);
@@ -20,13 +35,5 @@ public class Group {
 
     public String getName() {
         return name;
-    }
-
-    @Override
-    public String toString() {
-        return "Group{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
     }
 }

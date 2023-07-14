@@ -12,11 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.snackgame.server.annotation.ServiceTest;
 import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.business.domain.MemberRepository;
 import com.snackgame.server.member.business.domain.NameRandomizer;
 import com.snackgame.server.member.business.exception.DuplicateNameException;
 import com.snackgame.server.member.business.exception.MemberNotFoundException;
-import com.snackgame.server.member.dao.MemberDao;
-import com.snackgame.server.member.dao.dto.MemberDto;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -24,28 +23,42 @@ import com.snackgame.server.member.dao.dto.MemberDto;
 class MemberServiceTest {
 
     @Autowired
-    private MemberDao memberDao;
-    @Autowired
     private MemberService memberService;
     @Autowired
     private GroupService groupService;
+    @Autowired
+    private MemberRepository memberRepository;
+
+    NameRandomizer fakeNameRandomizer = new NameRandomizer() {
+        private int index = 0;
+        private final String[] names = {
+                "게스트#abc",
+                "게스트#abcd"
+        };
+
+        @Override
+        public String get() {
+            final int index = this.index++ % names.length;
+            return names[index];
+        }
+    };
 
     @Test
     void 이름과_그룹이름으로_사용자를_생성한다() {
         Member created = memberService.createWith(똥수().getName(), 똥수().getGroup().getName());
 
-        assertThat(memberDao.selectBy(created.getId()))
+        assertThat(memberRepository.findById(created.getId()))
                 .get()
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(MemberDto.of(똥수()));
+                .isEqualTo(똥수());
     }
 
     @Test
     void 임시사용자를_생성한다() {
         Member guest = memberService.createGuest();
 
-        var created = memberDao.selectBy(guest.getId()).get();
+        var created = memberRepository.findById(guest.getId()).get();
 
         assertThat(created.getId()).isNotNull();
         assertThat(created.getName()).startsWith("게스트");
@@ -53,24 +66,12 @@ class MemberServiceTest {
 
     @Test
     void 임시사용자_이름이_중복이면_다시_만든다() {
-        NameRandomizer fakeNameRandomizer = new NameRandomizer() {
-            private boolean first = true;
-
-            @Override
-            public String get() {
-                if (first) {
-                    first = false;
-                    return "게스트#abc";
-                }
-                return "게스트#abcd";
-            }
-        };
-        memberService = new MemberService(memberDao, groupService, fakeNameRandomizer);
+        memberService = new MemberService(memberRepository, groupService, fakeNameRandomizer);
         memberService.createWith("게스트#abc");
 
         Member guest = memberService.createGuest();
 
-        var created = memberDao.selectBy(guest.getId()).get();
+        var created = memberRepository.findById(guest.getId()).get();
         assertThat(created.getName()).isEqualTo("게스트#abcd");
     }
 
@@ -88,7 +89,7 @@ class MemberServiceTest {
         Member member = memberService.createWith(똥수().getName());
         memberService.changeNameOf(member, "똥똥수");
 
-        MemberDto found = memberDao.selectBy(member.getId()).get();
+        var found = memberRepository.findById(member.getId()).get();
         assertThat(found.getName())
                 .isEqualTo("똥똥수");
     }
