@@ -44,7 +44,7 @@ class GameRepositoryTest {
 
     @Test
     void 게임판의_사과들은_직렬화되어_저장된다() throws JsonProcessingException {
-        Game game = Game.ofRandomized();
+        Game game = Game.ofRandomized(null);
 
         games.save(game);
 
@@ -76,7 +76,7 @@ class GameRepositoryTest {
 
     @Test
     void 사과를_저장하면_생성시각도_저장된다() {
-        Game game = Game.ofRandomized();
+        Game game = Game.ofRandomized(null);
 
         games.save(game);
 
@@ -85,7 +85,7 @@ class GameRepositoryTest {
 
     @Test
     void 수정시각은_저장기준으로_덮어씌워진다() {
-        Game game = Game.ofRandomized();
+        Game game = Game.ofRandomized(null);
         game.reset();
         LocalDateTime localUpdateDateTime = game.getUpdatedAt();
 

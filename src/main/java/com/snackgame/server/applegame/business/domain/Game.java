@@ -10,9 +10,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import com.snackgame.server.applegame.business.domain.exception.GameSessionExpiredException;
 import com.snackgame.server.common.domain.BaseEntity;
+import com.snackgame.server.member.business.domain.Member;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -28,22 +30,25 @@ public class Game extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne
+    private Member owner;
     @Embedded
     private Board board;
     private int score = 0;
 
-    public Game(Board board) {
-        this(board, now());
+    public Game(Board board, Member owner) {
+        this(board, owner, now());
     }
 
-    public Game(Board board, LocalDateTime createdAt) {
+    public Game(Board board, Member owner, LocalDateTime createdAt) {
         this.board = board;
+        this.owner = owner;
         this.score = 0;
         this.createdAt = createdAt;
     }
 
-    public static Game ofRandomized() {
-        return new Game(Board.ofRandomized(DEFAULT_HEIGHT, DEFAULT_WIDTH));
+    public static Game ofRandomized(Member owner) {
+        return new Game(Board.ofRandomized(DEFAULT_HEIGHT, DEFAULT_WIDTH), owner);
     }
 
     public void reset() {
@@ -56,6 +61,10 @@ public class Game extends BaseEntity {
     public void removeApplesIn(Range range) {
         validateGameSessionAlive();
         score += board.removeApplesIn(range);
+    }
+
+    public boolean isOwner(Member member) {
+        return owner.equals(member);
     }
 
     private void validateGameSessionAlive() {
