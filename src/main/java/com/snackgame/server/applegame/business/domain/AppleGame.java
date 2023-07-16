@@ -57,7 +57,7 @@ public class AppleGame extends BaseEntity {
         validateSessionAlive();
         this.board = Board.ofRandomized(DEFAULT_HEIGHT, DEFAULT_WIDTH);
         this.score = 0;
-        this.updatedAt = now();
+        this.createdAt = now();
     }
 
     public void removeApplesIn(Range range) {

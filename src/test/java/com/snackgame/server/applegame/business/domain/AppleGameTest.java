@@ -2,6 +2,7 @@ package com.snackgame.server.applegame.business.domain;
 
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
 import static com.snackgame.server.member.fixture.MemberFixture.똥수;
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -42,11 +43,13 @@ class AppleGameTest {
         ));
         game.removeApplesIn(range);
         var previousApples = game.getApples();
+        var previousCreatedAt = game.getCreatedAt();
 
         game.reset();
 
         assertThat(game.getApples()).isNotEqualTo(previousApples);
         assertThat(game.getScore()).isZero();
+        assertThat(game.getCreatedAt()).isAfter(previousCreatedAt);
     }
 
     @Test

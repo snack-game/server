@@ -23,13 +23,13 @@ public class AppleGameService {
     private final AppleGameSessionRepository appleGameSessions;
 
     @Transactional
-    public AppleGame createFor(Member member) {
+    public AppleGame startGameOf(Member member) {
         AppleGame game = AppleGame.ofRandomized(member);
         return appleGameSessions.save(game);
     }
 
     @Transactional
-    public void move(Member member, Long sessionId, List<MoveRequest> moves) {
+    public void placeMoves(Member member, Long sessionId, List<MoveRequest> moves) {
         AppleGame game = findBy(sessionId);
         game.validateOwnedBy(member);
         Range range = new Range(toCoordinates(moves));

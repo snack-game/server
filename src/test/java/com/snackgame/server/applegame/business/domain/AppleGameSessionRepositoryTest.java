@@ -85,13 +85,13 @@ class AppleGameSessionRepositoryTest {
     }
 
     @Test
-    void 수정시각은_저장기준으로_덮어씌워진다() {
+    void 생성시각은_리셋시_덮어씌워진다() {
         AppleGame game = AppleGame.ofRandomized(null);
         game.reset();
-        LocalDateTime localUpdateDateTime = game.getUpdatedAt();
+        LocalDateTime localCreatedTime = game.getCreatedAt();
 
         games.save(game);
 
-        assertThat(game.getUpdatedAt()).isAfter(localUpdateDateTime);
+        assertThat(game.getUpdatedAt()).isAfter(localCreatedTime);
     }
 }

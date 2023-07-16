@@ -2,6 +2,7 @@ package com.snackgame.server.applegame.business;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -34,7 +35,7 @@ class AppleGameServiceTest {
     void 게임을_시작한다() {
         Member owner = memberService.createGuest();
 
-        AppleGame game = appleGameService.createFor(owner);
+        AppleGame game = appleGameService.startGameOf(owner);
 
         assertThat(game.getSessionId()).isNotNull();
         assertThat(game.getApples()).hasSize(AppleGame.DEFAULT_HEIGHT);
@@ -53,7 +54,7 @@ class AppleGameServiceTest {
                 new MoveRequest(1, 3)
         );
 
-        appleGameService.move(owner, game.getSessionId(), moves);
+        appleGameService.placeMoves(owner, game.getSessionId(), moves);
 
         AppleGame found = appleGameService.findBy(game.getSessionId());
         assertThat(found.getScore()).isEqualTo(4);
@@ -62,19 +63,21 @@ class AppleGameServiceTest {
     @Test
     void 게임판을_초기화한다() {
         Member owner = memberService.createGuest();
-        AppleGame game = appleGameService.createFor(owner);
+        AppleGame game = appleGameService.startGameOf(owner);
         List<List<Apple>> previousApples = game.getApples();
+        LocalDateTime previousCreatedAt = game.getCreatedAt();
 
         appleGameService.resetBoard(owner, game.getSessionId());
 
         AppleGame found = appleGameService.findBy(game.getSessionId());
         assertThat(found.getApples()).isNotEqualTo(previousApples);
+        assertThat(found.getCreatedAt()).isAfter(previousCreatedAt);
     }
 
     @Test
     void 게임을_끝낸다() {
         Member owner = memberService.createGuest();
-        AppleGame game = appleGameService.createFor(owner);
+        AppleGame game = appleGameService.startGameOf(owner);
 
         appleGameService.endSession(owner, game.getSessionId());
 
