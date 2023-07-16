@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.domain.exception;
+package com.snackgame.server.applegame.business.domain.exception;
 
 public class AppleNotRemovableException extends AppleGameException {
 

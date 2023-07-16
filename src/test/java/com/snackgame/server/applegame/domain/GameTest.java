@@ -10,7 +10,10 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
-import com.snackgame.server.applegame.domain.exception.GameSessionExpiredException;
+import com.snackgame.server.applegame.business.domain.Coordinate;
+import com.snackgame.server.applegame.business.domain.Game;
+import com.snackgame.server.applegame.business.domain.Range;
+import com.snackgame.server.applegame.business.domain.exception.GameSessionExpiredException;
 import com.snackgame.server.applegame.fixture.TestFixture;
 
 @SuppressWarnings("NonAsciiCharacters")

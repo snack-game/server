@@ -1,11 +1,11 @@
-package com.snackgame.server.applegame.domain;
+package com.snackgame.server.applegame.business.domain;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.snackgame.server.applegame.domain.exception.AppleNotRemovableException;
-import com.snackgame.server.applegame.domain.exception.InvalidRangeException;
+import com.snackgame.server.applegame.business.domain.exception.AppleNotRemovableException;
+import com.snackgame.server.applegame.business.domain.exception.InvalidRangeException;
 
 public class Board {
 

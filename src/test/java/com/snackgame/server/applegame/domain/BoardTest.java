@@ -10,8 +10,12 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
-import com.snackgame.server.applegame.domain.exception.AppleNotRemovableException;
-import com.snackgame.server.applegame.domain.exception.InvalidRangeException;
+import com.snackgame.server.applegame.business.domain.Apple;
+import com.snackgame.server.applegame.business.domain.Board;
+import com.snackgame.server.applegame.business.domain.Coordinate;
+import com.snackgame.server.applegame.business.domain.Range;
+import com.snackgame.server.applegame.business.domain.exception.AppleNotRemovableException;
+import com.snackgame.server.applegame.business.domain.exception.InvalidRangeException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)

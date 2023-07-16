@@ -1,11 +1,11 @@
-package com.snackgame.server.applegame.domain;
+package com.snackgame.server.applegame.business.domain;
 
 import static java.time.LocalDateTime.now;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.snackgame.server.applegame.domain.exception.GameSessionExpiredException;
+import com.snackgame.server.applegame.business.domain.exception.GameSessionExpiredException;
 
 public class Game {
 
