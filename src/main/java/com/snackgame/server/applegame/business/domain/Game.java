@@ -23,8 +23,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Game extends BaseEntity {
 
-    private static final int DEFAULT_HEIGHT = 10;
-    private static final int DEFAULT_WIDTH = 18;
+    public static final int DEFAULT_HEIGHT = 10;
+    public static final int DEFAULT_WIDTH = 18;
     private static final int SESSION_SECONDS = 120;
 
     @Id
