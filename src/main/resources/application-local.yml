@@ -8,6 +8,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create
+    defer-datasource-initialization: true
 logging:
   level:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE

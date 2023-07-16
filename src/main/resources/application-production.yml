@@ -1,6 +1,10 @@
 spring:
   datasource:
     url: jdbc:h2:mem:production
+  jpa:
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
 security:
   jwt:
     token:
