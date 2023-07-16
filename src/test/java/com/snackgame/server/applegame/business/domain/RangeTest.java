@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.domain;
+package com.snackgame.server.applegame.business.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,9 +7,6 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-
-import com.snackgame.server.applegame.business.domain.Coordinate;
-import com.snackgame.server.applegame.business.domain.Range;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
