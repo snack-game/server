@@ -5,33 +5,52 @@ import static java.time.LocalDateTime.now;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.snackgame.server.applegame.business.domain.exception.GameSessionExpiredException;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-public class Game {
+import com.snackgame.server.applegame.business.domain.exception.GameSessionExpiredException;
+import com.snackgame.server.common.domain.BaseEntity;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Game extends BaseEntity {
 
     private static final int DEFAULT_HEIGHT = 10;
     private static final int DEFAULT_WIDTH = 18;
     private static final int SESSION_SECONDS = 120;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Embedded
     private Board board;
-    private int score;
-    private LocalDateTime createdAt;
+    private int score = 0;
 
-    public Game() {
-        this(Board.ofRandomized(DEFAULT_HEIGHT, DEFAULT_WIDTH), 0, now());
+    public Game(Board board) {
+        this(board, now());
     }
 
-    public Game(Board board, int score, LocalDateTime createdAt) {
+    public Game(Board board, LocalDateTime createdAt) {
         this.board = board;
-        this.score = score;
+        this.score = 0;
         this.createdAt = createdAt;
+    }
+
+    public static Game ofRandomized() {
+        return new Game(Board.ofRandomized(DEFAULT_HEIGHT, DEFAULT_WIDTH));
     }
 
     public void reset() {
         validateGameSessionAlive();
         this.board = Board.ofRandomized(DEFAULT_HEIGHT, DEFAULT_WIDTH);
         this.score = 0;
-        this.createdAt = now();
+        this.updatedAt = now();
     }
 
     public void removeApplesIn(Range range) {
@@ -45,12 +64,12 @@ public class Game {
         }
     }
 
-    public List<List<Apple>> getApples() {
-        return board.getApples();
+    public Long getId() {
+        return id;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public List<List<Apple>> getApples() {
+        return board.getApples();
     }
 
     public int getScore() {

@@ -19,7 +19,7 @@ class GameTest {
 
     @Test
     void 게임을_10_X_18사이즈의_게임판으로_생성한다() {
-        var game = new Game();
+        var game = Game.ofRandomized();
 
         assertThat(game.getApples()).hasSize(10);
         assertThat(game.getApples()).allSatisfy(
@@ -29,21 +29,25 @@ class GameTest {
 
     @Test
     void 초기화한다() {
-        var game = new Game(TestFixture.TWO_BY_FOUR(), 10, LocalDateTime.now());
+        var game = new Game(TestFixture.TWO_BY_FOUR());
+        var range = new Range(List.of(
+                new Coordinate(0, 1),
+                new Coordinate(0, 3),
+                new Coordinate(1, 1),
+                new Coordinate(1, 3)
+        ));
+        game.removeApplesIn(range);
         var previousApples = game.getApples();
-        var previousCreatedAt = game.getCreatedAt();
-        var previousScore = game.getScore();
 
         game.reset();
 
         assertThat(game.getApples()).isNotEqualTo(previousApples);
-        assertThat(game.getCreatedAt()).isNotEqualTo(previousCreatedAt);
-        assertThat(game.getScore()).isNotEqualTo(previousScore);
+        assertThat(game.getScore()).isZero();
     }
 
     @Test
     void 특정_범위의_사과들을_제거하고_점수를_얻는다() {
-        var game = new Game(TestFixture.TWO_BY_FOUR(), 0, LocalDateTime.now());
+        var game = new Game(TestFixture.TWO_BY_FOUR());
         var range = new Range(List.of(
                 new Coordinate(0, 1),
                 new Coordinate(0, 3),
@@ -58,7 +62,7 @@ class GameTest {
 
     @Test
     void 만든지_120초가_지나면_초기화할_수_없다() {
-        var game = new Game(TestFixture.TWO_BY_FOUR(), 0, LocalDateTime.now().minusSeconds(120));
+        var game = new Game(TestFixture.TWO_BY_FOUR(), LocalDateTime.now().minusSeconds(120));
 
         assertThatThrownBy(() -> game.reset())
                 .isInstanceOf(GameSessionExpiredException.class)
@@ -67,7 +71,7 @@ class GameTest {
 
     @Test
     void 만든지_120초가_지나면_제거할_수_없다() {
-        var game = new Game(TestFixture.TWO_BY_FOUR(), 0, LocalDateTime.now().minusSeconds(120));
+        var game = new Game(TestFixture.TWO_BY_FOUR(), LocalDateTime.now().minusSeconds(120));
         var range = new Range(List.of(
                 new Coordinate(0, 1),
                 new Coordinate(0, 3),

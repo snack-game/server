@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,16 +19,12 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Entity
+@Embeddable
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board {
 
     private static final int REMOVABLE_SUM = 10;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Lob
     @Column(nullable = false)
@@ -93,10 +90,6 @@ public class Board {
     private void removeAppleAt(Coordinate coordinate) {
         List<Apple> row = apples.get(coordinate.getY());
         row.set(coordinate.getX(), Apple.EMPTY);
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public List<List<Apple>> getApples() {
