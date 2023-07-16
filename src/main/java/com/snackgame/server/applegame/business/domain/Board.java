@@ -1,17 +1,30 @@
-package com.snackgame.server.applegame.domain;
+package com.snackgame.server.applegame.business.domain;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.snackgame.server.applegame.domain.exception.AppleNotRemovableException;
-import com.snackgame.server.applegame.domain.exception.InvalidRangeException;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Lob;
 
+import com.snackgame.server.applegame.business.exception.AppleNotRemovableException;
+import com.snackgame.server.applegame.business.exception.InvalidRangeException;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@Embeddable
+@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board {
 
     private static final int REMOVABLE_SUM = 10;
 
-    private final List<List<Apple>> apples;
+    @Lob
+    @Column(nullable = false)
+    private List<List<Apple>> apples;
 
     public Board(List<List<Apple>> apples) {
         this.apples = apples.stream()
@@ -79,12 +92,5 @@ public class Board {
         return apples.stream()
                 .map(ArrayList::new)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public String toString() {
-        return "Board{" +
-                "numbers=" + apples +
-                '}';
     }
 }

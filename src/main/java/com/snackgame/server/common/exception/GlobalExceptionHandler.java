@@ -12,16 +12,18 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.snackgame.server.auth.exception.AuthorizationException;
 import com.snackgame.server.common.exception.dto.ExceptionResponse;
 import com.snackgame.server.member.business.exception.MemberNotFoundException;
 
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @ExceptionHandler({Exception.class, MemberNotFoundException.class})
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionResponse handleUnhandled(Exception exception) {
         logger.error(exception.getMessage(), exception.getCause());
@@ -31,7 +33,7 @@ public class GlobalExceptionHandler {
         return ExceptionResponse.withoutMessage();
     }
 
-    @ExceptionHandler(AuthorizationException.class)
+    @ExceptionHandler({AuthorizationException.class, MemberNotFoundException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ExceptionResponse handleAuthenticationException(AuthorizationException exception) {
         logger.info(exception.getMessage(), exception.getCause());

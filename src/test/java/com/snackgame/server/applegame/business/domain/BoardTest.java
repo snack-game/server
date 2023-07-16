@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.domain;
+package com.snackgame.server.applegame.business.domain;
 
 import static com.snackgame.server.applegame.fixture.TestFixture.TWO_BY_FOUR;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,8 +10,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
-import com.snackgame.server.applegame.domain.exception.AppleNotRemovableException;
-import com.snackgame.server.applegame.domain.exception.InvalidRangeException;
+import com.snackgame.server.applegame.business.exception.AppleNotRemovableException;
+import com.snackgame.server.applegame.business.exception.InvalidRangeException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)

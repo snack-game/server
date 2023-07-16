@@ -1,8 +1,8 @@
-package com.snackgame.server.applegame.domain;
+package com.snackgame.server.applegame.business.domain;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.snackgame.server.applegame.domain.exception.AppleNumberRangeException;
+import com.snackgame.server.applegame.business.exception.AppleNumberRangeException;
 
 public class Apple {
 
