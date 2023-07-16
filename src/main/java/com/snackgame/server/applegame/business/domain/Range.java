@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.domain;
+package com.snackgame.server.applegame.business.domain;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,6 +2,9 @@
 
 > [API 설계](https://jumbled-droplet-70f.notion.site/API-30855489790c45e58d69adc1c7198b43?pvs=4)
 
+> [도메인 분석](https://jumbled-droplet-70f.notion.site/0-f67053aebdee4edaaff1f32471d0d57d?pvs=4)  
+> [사용 시나리오 in Figma](https://www.figma.com/file/ySQE1Qryfd9sc6Qa1z5C4D/Untitled?type=whiteboard&node-id=0%3A1&t=hZN77hF576emTCSQ-1)
+
 - 많은 동시접속자를 소화해야 한다 (1000명 이상, 아직 정확한 바는 없음)
     - 이를 위해 스케일 아웃을 할 가능성이 아주 높다
     - 따라서 서버 간 인증 정보 동기화에 대한 비용을 줄이고자 JWT를 채택한다
@@ -54,9 +57,7 @@
 
 ## 사과 게임
 
-> [도메인 분석](https://jumbled-droplet-70f.notion.site/0-f67053aebdee4edaaff1f32471d0d57d?pvs=4)  
-> [사용 시나리오 in Figma](https://www.figma.com/file/ySQE1Qryfd9sc6Qa1z5C4D/Untitled?type=whiteboard&node-id=0%3A1&t=hZN77hF576emTCSQ-1)
-
+### 도메인 기능
 - 게임
     - 10*18 사이즈의 게임판을 생성한다.
     - 초기화한다
@@ -66,6 +67,7 @@
     - 특정 범위의 사과들을 제거한다
         - 제거 개수만큼 점수를 얻는다
     - 생성된지 120초가 지나면 더 이상 조작할 수 없다.
+    - 게임 주인인지 알 수 있다
 - 게임판
     - 원하는 크기의 게임판을 랜덤 생성한다.
     - 특정 범위의 사과들을 제거한다

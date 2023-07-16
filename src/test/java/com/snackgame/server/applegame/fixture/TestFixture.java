@@ -2,8 +2,8 @@ package com.snackgame.server.applegame.fixture;
 
 import java.util.List;
 
-import com.snackgame.server.applegame.domain.Apple;
-import com.snackgame.server.applegame.domain.Board;
+import com.snackgame.server.applegame.business.domain.Apple;
+import com.snackgame.server.applegame.business.domain.Board;
 
 public class TestFixture {
 
