@@ -44,6 +44,13 @@ public class AppleGameService {
         return game;
     }
 
+    @Transactional
+    public void endSession(Member member, Long sessionId) {
+        AppleGame game = findBy(sessionId);
+        game.validateOwnedBy(member);
+        game.end();
+    }
+
     @Transactional(readOnly = true)
     public AppleGame findBy(Long sessionId) {
         return appleGameSessions.findById(sessionId)

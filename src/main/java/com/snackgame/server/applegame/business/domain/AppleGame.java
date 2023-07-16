@@ -36,6 +36,7 @@ public class AppleGame extends BaseEntity {
     @Embedded
     private Board board;
     private int score = 0;
+    private boolean isEnded = false;
 
     public AppleGame(Board board, Member owner) {
         this(board, owner, now());
@@ -53,14 +54,14 @@ public class AppleGame extends BaseEntity {
     }
 
     public void reset() {
-        validateGameSessionAlive();
+        validateSessionAlive();
         this.board = Board.ofRandomized(DEFAULT_HEIGHT, DEFAULT_WIDTH);
         this.score = 0;
         this.updatedAt = now();
     }
 
     public void removeApplesIn(Range range) {
-        validateGameSessionAlive();
+        validateSessionAlive();
         score += board.removeApplesIn(range);
     }
 
@@ -70,8 +71,17 @@ public class AppleGame extends BaseEntity {
         }
     }
 
-    private void validateGameSessionAlive() {
-        if (now().isAfter(createdAt.plusSeconds(SESSION_SECONDS))) {
+    public void end() {
+        validateSessionAlive();
+        this.isEnded = true;
+    }
+
+    public boolean isDone() {
+        return isEnded || now().isAfter(createdAt.plusSeconds(SESSION_SECONDS));
+    }
+
+    private void validateSessionAlive() {
+        if (this.isDone()) {
             throw new GameSessionExpiredException("게임 세션이 이미 종료되었습니다");
         }
     }

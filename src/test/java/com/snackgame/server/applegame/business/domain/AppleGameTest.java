@@ -96,4 +96,13 @@ class AppleGameTest {
         assertThatThrownBy(() -> game.validateOwnedBy(땡칠()))
                 .isInstanceOf(NotOwnedException.class);
     }
+
+    @Test
+    void 게임을_끝낸다() {
+        var game = AppleGame.ofRandomized(똥수());
+
+        game.end();
+
+        game.isDone();
+    }
 }

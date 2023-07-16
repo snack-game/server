@@ -48,7 +48,7 @@ class AppleGameSessionRepositoryTest {
 
         games.save(game);
 
-        String applesJson = jdbcTemplate.queryForObject("SELECT apples FROM game WHERE id = " + game.getSessionId(),
+        String applesJson = jdbcTemplate.queryForObject("SELECT apples FROM apple_game WHERE session_id = " + game.getSessionId(),
                 String.class);
         String expectedJson = objectMapper.writeValueAsString(game.getApples());
         assertThat(applesJson).isEqualTo(expectedJson);
@@ -65,12 +65,13 @@ class AppleGameSessionRepositoryTest {
 
     private Long insertFixtureGame() {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("game")
-                .usingGeneratedKeyColumns("id");
+                .withTableName("apple_game")
+                .usingGeneratedKeyColumns("session_id");
 
         return jdbcInsert.executeAndReturnKey(Map.of(
                 "score", 0,
-                "apples", "[[{\"number\":4},{\"number\":8}],[{\"number\":3},{\"number\":1}]]"
+                "apples", "[[{\"number\":4},{\"number\":8}],[{\"number\":3},{\"number\":1}]]",
+                "is_ended", false
         )).longValue();
     }
 

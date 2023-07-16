@@ -70,4 +70,15 @@ class AppleGameServiceTest {
         AppleGame found = appleGameService.findBy(game.getSessionId());
         assertThat(found.getApples()).isNotEqualTo(previousApples);
     }
+
+    @Test
+    void 게임을_끝낸다() {
+        Member owner = memberService.createGuest();
+        AppleGame game = appleGameService.createFor(owner);
+
+        appleGameService.endSession(owner, game.getSessionId());
+
+        AppleGame found = appleGameService.findBy(game.getSessionId());
+        assertThat(found.isDone()).isTrue();
+    }
 }
