@@ -1,7 +1,6 @@
 package com.snackgame.server.member.business;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -9,11 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.snackgame.server.member.business.domain.Group;
 import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.business.domain.MemberRepository;
 import com.snackgame.server.member.business.domain.NameRandomizer;
 import com.snackgame.server.member.business.exception.DuplicateNameException;
 import com.snackgame.server.member.business.exception.MemberNotFoundException;
-import com.snackgame.server.member.dao.MemberDao;
-import com.snackgame.server.member.dao.dto.MemberDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberDao memberDao;
+    private final MemberRepository memberRepository;
     private final GroupService groupService;
     private final NameRandomizer nameRandomizer;
 
@@ -66,40 +64,27 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public Member findBy(Long id) {
-        return memberDao.selectBy(id)
-                .map(this::toMember)
+        return memberRepository.findById(id)
                 .orElseThrow(MemberNotFoundException::new);
     }
 
+    public List<String> findNamesStartWith(String prefix) {
+        return memberRepository.findByNameStartingWith(prefix).stream()
+                .map(Member::getName)
+                .collect(Collectors.toList());
+    }
+
     private boolean doesExist(String name) {
-        return memberDao.selectBy(name).isPresent();
+        return memberRepository.findByName(name).isPresent();
     }
 
     private void validateNoDuplicate(String name) {
-        if (memberDao.selectBy(name).isPresent()) {
+        if (memberRepository.findByName(name).isPresent()) {
             throw new DuplicateNameException();
         }
     }
 
     private Member save(Member member) {
-        if (Objects.nonNull(member.getId())) {
-            memberDao.update(MemberDto.of(member));
-            return member;
-        }
-        return toMember(memberDao.insert(MemberDto.of(member)));
-    }
-
-    private Member toMember(MemberDto memberDto) {
-        return new Member(
-                memberDto.getId(),
-                memberDto.getName(),
-                groupService.findBy(memberDto.getGroupId())
-        );
-    }
-
-    public List<String> findNamesStartWith(String prefix) {
-        return memberDao.selectByNameLike(prefix).stream()
-                .map(MemberDto::getName)
-                .collect(Collectors.toList());
+        return memberRepository.save(member);
     }
 }

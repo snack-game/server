@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.snackgame.server.member.business.domain.Group;
-import com.snackgame.server.member.dao.GroupDao;
+import com.snackgame.server.member.business.domain.GroupRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,23 +15,23 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GroupService {
 
-    private final GroupDao groupDao;
+    private final GroupRepository groups;
 
     @Transactional
     public Group createIfNotExists(String name) {
-        return groupDao.selectBy(name)
-                .orElseGet(() -> groupDao.insert(new Group(name)));
+        return groups.findByName(name)
+                .orElseGet(() -> groups.save(new Group(name)));
     }
 
     @Transactional(readOnly = true)
     public Group findBy(Long id) {
-        return groupDao.selectBy(id)
+        return groups.findById(id)
                 .orElse(null);
     }
 
     @Transactional(readOnly = true)
     public List<String> findNamesStartWith(String prefix) {
-        return groupDao.selectByNameLike(prefix).stream()
+        return groups.findByNameStartingWith(prefix).stream()
                 .map(Group::getName)
                 .collect(Collectors.toList());
     }
