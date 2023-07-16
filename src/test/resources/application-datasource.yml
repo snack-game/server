@@ -1,6 +1,9 @@
 spring:
   datasource:
-    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+  h2:
+    console:
+      enabled: true
   sql:
     init:
-      data-locations: 
+      mode: never

@@ -4,14 +4,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+
 import com.snackgame.server.applegame.business.domain.exception.AppleNotRemovableException;
 import com.snackgame.server.applegame.business.domain.exception.InvalidRangeException;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@Entity
+@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board {
 
     private static final int REMOVABLE_SUM = 10;
 
-    private final List<List<Apple>> apples;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Lob
+    @Column(nullable = false)
+    private List<List<Apple>> apples;
 
     public Board(List<List<Apple>> apples) {
         this.apples = apples.stream()
@@ -75,16 +95,13 @@ public class Board {
         row.set(coordinate.getX(), Apple.EMPTY);
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public List<List<Apple>> getApples() {
         return apples.stream()
                 .map(ArrayList::new)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public String toString() {
-        return "Board{" +
-                "numbers=" + apples +
-                '}';
     }
 }
