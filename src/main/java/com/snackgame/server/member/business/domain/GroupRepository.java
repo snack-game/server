@@ -10,5 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface GroupRepository extends JpaRepository<Group, Long> {
 
     Optional<Group> findByName(String name);
+
     List<Group> findByNameStartingWith(String prefix);
 }

@@ -7,10 +7,10 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.snackgame.server.member.business.MemberService;
-import com.snackgame.server.auth.JwtMemberArgumentResolver;
 import com.snackgame.server.auth.BearerTokenExtractor;
+import com.snackgame.server.auth.JwtMemberArgumentResolver;
 import com.snackgame.server.auth.JwtProvider;
+import com.snackgame.server.member.business.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
