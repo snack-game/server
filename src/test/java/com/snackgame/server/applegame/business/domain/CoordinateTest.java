@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
-import com.snackgame.server.applegame.business.domain.exception.NegativeCoordinateException;
+import com.snackgame.server.applegame.business.exception.NegativeCoordinateException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)

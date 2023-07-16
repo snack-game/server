@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.business.domain.exception;
+package com.snackgame.server.applegame.business.exception;
 
 public class AppleNumberRangeException extends AppleGameException {
 

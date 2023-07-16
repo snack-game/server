@@ -26,10 +26,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @DataJpaTest
 @EnableJpaAuditing
-class GameRepositoryTest {
+class AppleGameSessionRepositoryTest {
 
     @Autowired
-    GameRepository games;
+    AppleGameSessionRepository games;
     @Autowired
     JdbcTemplate jdbcTemplate;
     ObjectMapper objectMapper = new ObjectMapper();
@@ -44,11 +44,11 @@ class GameRepositoryTest {
 
     @Test
     void 게임판의_사과들은_직렬화되어_저장된다() throws JsonProcessingException {
-        Game game = Game.ofRandomized(null);
+        AppleGame game = AppleGame.ofRandomized(null);
 
         games.save(game);
 
-        String applesJson = jdbcTemplate.queryForObject("SELECT apples FROM game WHERE id = " + game.getId(),
+        String applesJson = jdbcTemplate.queryForObject("SELECT apples FROM game WHERE id = " + game.getSessionId(),
                 String.class);
         String expectedJson = objectMapper.writeValueAsString(game.getApples());
         assertThat(applesJson).isEqualTo(expectedJson);
@@ -57,7 +57,7 @@ class GameRepositoryTest {
     @Test
     void 직렬화되어_저장된_게임판을_불러온다() {
         Long fixtureGameId = insertFixtureGame();
-        Game game = games.findById(fixtureGameId).get();
+        AppleGame game = games.findById(fixtureGameId).get();
 
         assertThat(game.getApples()).hasSize(2);
         assertThat(game.getApples().get(0)).hasSize(2);
@@ -76,7 +76,7 @@ class GameRepositoryTest {
 
     @Test
     void 사과를_저장하면_생성시각도_저장된다() {
-        Game game = Game.ofRandomized(null);
+        AppleGame game = AppleGame.ofRandomized(null);
 
         games.save(game);
 
@@ -85,7 +85,7 @@ class GameRepositoryTest {
 
     @Test
     void 수정시각은_저장기준으로_덮어씌워진다() {
-        Game game = Game.ofRandomized(null);
+        AppleGame game = AppleGame.ofRandomized(null);
         game.reset();
         LocalDateTime localUpdateDateTime = game.getUpdatedAt();
 

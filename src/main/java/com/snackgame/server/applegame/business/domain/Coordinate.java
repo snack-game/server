@@ -1,6 +1,6 @@
 package com.snackgame.server.applegame.business.domain;
 
-import com.snackgame.server.applegame.business.domain.exception.NegativeCoordinateException;
+import com.snackgame.server.applegame.business.exception.NegativeCoordinateException;
 
 public class Coordinate {
 

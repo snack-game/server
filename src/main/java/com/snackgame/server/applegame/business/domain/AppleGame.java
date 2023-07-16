@@ -12,7 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import com.snackgame.server.applegame.business.domain.exception.GameSessionExpiredException;
+import com.snackgame.server.applegame.business.exception.GameSessionExpiredException;
+import com.snackgame.server.applegame.business.exception.NotOwnedException;
 import com.snackgame.server.common.domain.BaseEntity;
 import com.snackgame.server.member.business.domain.Member;
 
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Game extends BaseEntity {
+public class AppleGame extends BaseEntity {
 
     public static final int DEFAULT_HEIGHT = 10;
     public static final int DEFAULT_WIDTH = 18;
@@ -29,26 +30,26 @@ public class Game extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long sessionId;
     @ManyToOne
     private Member owner;
     @Embedded
     private Board board;
     private int score = 0;
 
-    public Game(Board board, Member owner) {
+    public AppleGame(Board board, Member owner) {
         this(board, owner, now());
     }
 
-    public Game(Board board, Member owner, LocalDateTime createdAt) {
+    public AppleGame(Board board, Member owner, LocalDateTime createdAt) {
         this.board = board;
         this.owner = owner;
         this.score = 0;
         this.createdAt = createdAt;
     }
 
-    public static Game ofRandomized(Member owner) {
-        return new Game(Board.ofRandomized(DEFAULT_HEIGHT, DEFAULT_WIDTH), owner);
+    public static AppleGame ofRandomized(Member owner) {
+        return new AppleGame(Board.ofRandomized(DEFAULT_HEIGHT, DEFAULT_WIDTH), owner);
     }
 
     public void reset() {
@@ -63,8 +64,10 @@ public class Game extends BaseEntity {
         score += board.removeApplesIn(range);
     }
 
-    public boolean isOwner(Member member) {
-        return owner.equals(member);
+    public void validateOwnedBy(Member member) {
+        if (!owner.equals(member)) {
+            throw new NotOwnedException();
+        }
     }
 
     private void validateGameSessionAlive() {
@@ -73,8 +76,8 @@ public class Game extends BaseEntity {
         }
     }
 
-    public Long getId() {
-        return id;
+    public Long getSessionId() {
+        return sessionId;
     }
 
     public List<List<Apple>> getApples() {
