@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.snackgame.server.auth.exception.AuthorizationException;
 import com.snackgame.server.common.exception.dto.ExceptionResponse;
-import com.snackgame.server.member.business.exception.MemberNotFoundException;
+import com.snackgame.server.member.business.exception.MemberIdNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
         return ExceptionResponse.withoutMessage();
     }
 
-    @ExceptionHandler({AuthorizationException.class, MemberNotFoundException.class})
+    @ExceptionHandler({AuthorizationException.class, MemberIdNotFoundException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ExceptionResponse handleAuthenticationException(AuthorizationException exception) {
         logger.info(exception.getMessage(), exception.getCause());

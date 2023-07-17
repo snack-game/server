@@ -41,6 +41,13 @@ public class MemberController {
         return new TokenResponse(accessToken);
     }
 
+    @PostMapping("/members/token")
+    public TokenResponse issueToken(@RequestBody NameRequest nameRequest) {
+        Member found = memberService.findBy(nameRequest.getName());
+        String accessToken = jwtProvider.createTokenWith(found.getId().toString());
+        return new TokenResponse(accessToken);
+    }
+
     @GetMapping("/members/names")
     public List<String> showNamesStartWith(@RequestParam("startWith") String prefix) {
         return memberService.findNamesStartWith(prefix);
