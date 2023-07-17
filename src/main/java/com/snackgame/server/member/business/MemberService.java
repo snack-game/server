@@ -64,6 +64,12 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
+    public Member findBy(String name) {
+        return members.findByName(name)
+                .orElseThrow(MemberNotFoundException::new);
+    }
+
+    @Transactional(readOnly = true)
     public List<String> findNamesStartWith(String prefix) {
         return members.findByNameStartingWith(prefix).stream()
                 .map(Member::getName)
