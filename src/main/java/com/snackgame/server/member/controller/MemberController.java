@@ -13,9 +13,10 @@ import com.snackgame.server.auth.JwtProvider;
 import com.snackgame.server.member.business.MemberService;
 import com.snackgame.server.member.business.domain.Member;
 import com.snackgame.server.member.controller.dto.GroupRequest;
+import com.snackgame.server.member.controller.dto.MemberDetailsResponse;
+import com.snackgame.server.member.controller.dto.MemberDetailsWithTokenResponse;
 import com.snackgame.server.member.controller.dto.MemberRequest;
 import com.snackgame.server.member.controller.dto.NameRequest;
-import com.snackgame.server.member.controller.dto.TokenResponse;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -28,29 +29,35 @@ public class MemberController {
     private final JwtProvider jwtProvider;
 
     @PostMapping("/members")
-    public TokenResponse addMember(@RequestBody MemberRequest memberRequest) {
+    public MemberDetailsWithTokenResponse addMember(@RequestBody MemberRequest memberRequest) {
         Member added = memberService.createWith(memberRequest.getName(), memberRequest.getGroup());
         String accessToken = jwtProvider.createTokenWith(added.getId().toString());
-        return new TokenResponse(accessToken);
+        return MemberDetailsWithTokenResponse.of(added, accessToken);
     }
 
     @PostMapping("/members/guest")
-    public TokenResponse addGuest() {
+    public MemberDetailsWithTokenResponse addGuest() {
         Member guest = memberService.createGuest();
         String accessToken = jwtProvider.createTokenWith(guest.getId().toString());
-        return new TokenResponse(accessToken);
+        return MemberDetailsWithTokenResponse.of(guest, accessToken);
     }
 
     @PostMapping("/members/token")
-    public TokenResponse issueToken(@RequestBody NameRequest nameRequest) {
+    public MemberDetailsWithTokenResponse issueToken(@RequestBody NameRequest nameRequest) {
         Member found = memberService.findBy(nameRequest.getName());
         String accessToken = jwtProvider.createTokenWith(found.getId().toString());
-        return new TokenResponse(accessToken);
+        return MemberDetailsWithTokenResponse.of(found, accessToken);
     }
 
     @GetMapping("/members/names")
     public List<String> showNamesStartWith(@RequestParam("startWith") String prefix) {
         return memberService.findNamesStartWith(prefix);
+    }
+
+    @SecurityRequirement(name = "jwtAuth")
+    @GetMapping("/members/me")
+    public MemberDetailsResponse showDetailsOf(Member member) {
+        return MemberDetailsResponse.of(member);
     }
 
     @SecurityRequirement(name = "jwtAuth")

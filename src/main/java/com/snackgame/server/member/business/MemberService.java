@@ -17,6 +17,7 @@ import com.snackgame.server.member.business.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
 
@@ -57,19 +58,16 @@ public class MemberService {
         member.changeGroupTo(group);
     }
 
-    @Transactional(readOnly = true)
     public Member findBy(Long id) {
         return members.findById(id)
                 .orElseThrow(MemberIdNotFoundException::new);
     }
 
-    @Transactional(readOnly = true)
     public Member findBy(String name) {
         return members.findByName(name)
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-    @Transactional(readOnly = true)
     public List<String> findNamesStartWith(String prefix) {
         return members.findByNameStartingWith(prefix).stream()
                 .map(Member::getName)
