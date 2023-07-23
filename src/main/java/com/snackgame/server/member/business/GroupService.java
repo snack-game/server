@@ -12,6 +12,7 @@ import com.snackgame.server.member.business.domain.GroupRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GroupService {
 
@@ -23,13 +24,11 @@ public class GroupService {
                 .orElseGet(() -> groups.save(new Group(name)));
     }
 
-    @Transactional(readOnly = true)
     public Group findBy(Long id) {
         return groups.findById(id)
                 .orElse(null);
     }
 
-    @Transactional(readOnly = true)
     public List<String> findNamesStartWith(String prefix) {
         return groups.findByNameStartingWith(prefix).stream()
                 .map(Group::getName)
