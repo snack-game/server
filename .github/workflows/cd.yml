@@ -1,70 +1,36 @@
-name: Spring Boot CD
+name: Production CD
 
-# Event Trigger
 on:
+  workflow_dispatch:
   push:
     branches: [ "main" ]
-
+permissions:
+  contents: read
 jobs:
   deploy:
-    # 실행 환경 지정
-    runs-on: ubuntu-latest
-
-    # Task의 sequence를 명시한다.
+    runs-on: production
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'corretto'
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Set Yaml
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: ./src/main/resources/application-production.yml
-        env:
-          security.jwt.token.secret-key: ${{ secrets.JWT_SECRET_KEY }}
-          security.jwt.token.expire-length: ${{ secrets.JWT_EXPIRE_LENGTH }}
-          server.port: ${{ vars.APPLICATION_PORT }}
-
-      # Build
-      - name: Create Spring Boot jar
-        run: ./gradlew bootJar
-
-      - name: Make deploy directory
-        run: mkdir deploy
-
-      - name: Copy Jar
-        run: cp build/libs/*.jar deploy
-
-      - name: Copy appspec.yml and runner.sh
-        run: cp .deploy/* deploy
-
-      - name: Compress deploy directory
-        run: zip -r -qq -j snack-game-build.zip deploy
-
-      - name: Deliver to AWS S3
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: gradle bootjar
         run: |
-          aws s3 cp \
-          --region ap-northeast-2 \
-          --acl private snack-game-build.zip s3://snackgamebucket
-
-      # Deploy
-      - name: Deploy
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          chmod +x ./gradlew
+          ./gradlew bootjar
+      - name: kill previous process
+        shell: bash {0}
         run: |
-          aws deploy create-deployment \
-          --application-name spring-deploy \
-          --deployment-group-name snackgame-deploy \
-          --file-exists-behavior OVERWRITE \
-          --s3-location bucket=snackgamebucket,bundleType=zip,key=snack-game-build.zip \
-          --region ap-northeast-2
+          JAR_NAME="snackgame-server.jar"
+          PROCESS_ID=$(pgrep -f "$JAR_NAME")
+          if [ -n "$PROCESS_ID" ]; then
+            sudo kill -9 $PROCESS_ID
+            echo "구동중인 애플리케이션을 종료했습니다. (pid : $PROCESS_ID)\n"
+          fi
+      - name: deploy
+        env:
+          RUNNER_TRACKING_ID: ""
+        run: |
+          nohup java -jar \
+          -Dspring.profiles.active=production \
+          -DJWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
+          -DJWT_EXPIRE_LENGTH=${{ secrets.JWT_EXPIRE_LENGTH }} \
+          -Dserver.port=${{ vars.APPLICATION_PORT }} \
+          build/libs/snackgame-server.jar > ~/snackgame-server.log &
