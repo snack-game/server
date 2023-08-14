@@ -1,6 +1,9 @@
 package com.snackgame.server.config;
 
+import java.util.Arrays;
+
 import org.springdoc.core.SpringDocUtils;
+import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,11 +12,17 @@ import com.snackgame.server.member.business.domain.Member;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 
 @Configuration
 public class OpenApiConfig {
+
+    private static final String JWT_SECURITY_KEY = "jwtAuth";
+    private static final SecurityRequirement JWT_SECURITY_ITEM = new SecurityRequirement().addList(
+            "jwtAuth"
+    );
 
     static {
         SpringDocUtils.getConfig()
@@ -30,12 +39,26 @@ public class OpenApiConfig {
                                 "[더 자세한 설명](https://jumbled-droplet-70f.notion.site/API-30855489790c45e58d69adc1c7198b43)")
                 )
                 .components(new Components()
-                        .addSecuritySchemes("jwtAuth", new SecurityScheme()
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT"))
+                        .addSecuritySchemes(JWT_SECURITY_KEY, jwtSecurityScheme())
                 )
                 .addServersItem(new Server().url("/"));
     }
 
+    private SecurityScheme jwtSecurityScheme() {
+        return new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT");
+    }
+
+    @Bean
+    public OperationCustomizer authOperationMarker() {
+        return (operation, handlerMethod) -> {
+            Arrays.stream(handlerMethod.getMethodParameters())
+                    .filter(it -> it.getParameterType().isAssignableFrom(Member.class))
+                    .findAny()
+                    .ifPresent(it -> operation.addSecurityItem(JWT_SECURITY_ITEM));
+            return operation;
+        };
+    }
 }
