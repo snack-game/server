@@ -14,6 +14,8 @@ import com.snackgame.server.annotation.ServiceTest;
 import com.snackgame.server.applegame.business.domain.Apple;
 import com.snackgame.server.applegame.business.domain.AppleGame;
 import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
+import com.snackgame.server.applegame.business.domain.Coordinate;
+import com.snackgame.server.applegame.business.domain.Range;
 import com.snackgame.server.applegame.controller.dto.MoveRequest;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.member.business.MemberService;
@@ -45,8 +47,7 @@ class AppleGameServiceTest {
     @Test
     void 게임을_조작한다() {
         Member owner = memberService.createGuest();
-        AppleGame game = new AppleGame(TestFixture.TWO_BY_FOUR(), owner);
-        appleGameSessions.save(game);
+        AppleGame game = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
         List<MoveRequest> moves = List.of(
                 new MoveRequest(0, 1),
                 new MoveRequest(0, 3),
@@ -69,9 +70,8 @@ class AppleGameServiceTest {
 
         appleGameService.resetBoard(owner, game.getSessionId());
 
-        AppleGame found = appleGameService.findBy(game.getSessionId());
-        assertThat(found.getApples()).isNotEqualTo(previousApples);
-        assertThat(found.getCreatedAt()).isAfter(previousCreatedAt);
+        assertThat(game.getApples()).isNotEqualTo(previousApples);
+        assertThat(game.getCreatedAt()).isAfter(previousCreatedAt);
     }
 
     @Test
@@ -81,7 +81,63 @@ class AppleGameServiceTest {
 
         appleGameService.endSession(owner, game.getSessionId());
 
-        AppleGame found = appleGameService.findBy(game.getSessionId());
-        assertThat(found.isDone()).isTrue();
+        assertThat(game.isDone()).isTrue();
+    }
+
+    @Test
+    void 특정_페이지의_끝난_게임들을_가져온다() {
+        Member owner = memberService.createGuest();
+        AppleGame firstGame = appleGameService.startGameOf(owner);
+        AppleGame secondGame = appleGameService.startGameOf(owner);
+        AppleGame runningGame = appleGameService.startGameOf(owner);
+
+        firstGame.end();
+        secondGame.end();
+
+        assertThat(appleGameService.getEndedGamesAt(0, 10))
+                .containsExactly(firstGame, secondGame)
+                .doesNotContain(runningGame);
+    }
+
+    @Test
+    void 특정_페이지의_끝난_게임들을_페이지_크기에_맞춰_가져온다() {
+        Member owner = memberService.createGuest();
+        AppleGame firstGame = appleGameService.startGameOf(owner);
+        AppleGame secondGame = appleGameService.startGameOf(owner);
+        AppleGame thirdGame = appleGameService.startGameOf(owner);
+        AppleGame fourthGame = appleGameService.startGameOf(owner);
+
+        firstGame.end();
+        secondGame.end();
+        thirdGame.end();
+        fourthGame.end();
+
+        assertThat(appleGameService.getEndedGamesAt(0, 3))
+                .hasSize(3);
+    }
+
+    @Test
+    void 특정_페이지의_끝난_게임들을_높은_점수부터_가져온다() {
+        Member owner = memberService.createGuest();
+        AppleGame firstGame = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
+        firstGame.removeApplesIn(new Range(List.of(
+                new Coordinate(0, 1),
+                new Coordinate(0, 3),
+                new Coordinate(1, 1),
+                new Coordinate(1, 3)
+        )));
+        AppleGame secondGame = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
+        secondGame.removeApplesIn(new Range(List.of(
+                new Coordinate(0, 0),
+                new Coordinate(1, 0)
+        )));
+        AppleGame thirdGame = appleGameService.startGameOf(owner);
+
+        firstGame.end();
+        secondGame.end();
+        thirdGame.end();
+
+        assertThat(appleGameService.getEndedGamesAt(0, 10))
+                .containsExactly(firstGame, secondGame, thirdGame);
     }
 }

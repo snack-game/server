@@ -3,6 +3,8 @@ package com.snackgame.server.applegame.business;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,19 +18,18 @@ import com.snackgame.server.member.business.domain.Member;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
 @RequiredArgsConstructor
+@Transactional
+@Service
 public class AppleGameService {
 
     private final AppleGameSessionRepository appleGameSessions;
 
-    @Transactional
     public AppleGame startGameOf(Member member) {
         AppleGame game = AppleGame.ofRandomized(member);
         return appleGameSessions.save(game);
     }
 
-    @Transactional
     public void placeMoves(Member member, Long sessionId, List<MoveRequest> moves) {
         AppleGame game = findBy(sessionId);
         game.validateOwnedBy(member);
@@ -36,7 +37,6 @@ public class AppleGameService {
         game.removeApplesIn(range);
     }
 
-    @Transactional
     public AppleGame resetBoard(Member member, Long sessionId) {
         AppleGame game = findBy(sessionId);
         game.validateOwnedBy(member);
@@ -44,7 +44,6 @@ public class AppleGameService {
         return game;
     }
 
-    @Transactional
     public void endSession(Member member, Long sessionId) {
         AppleGame game = findBy(sessionId);
         game.validateOwnedBy(member);
@@ -55,6 +54,13 @@ public class AppleGameService {
     public AppleGame findBy(Long sessionId) {
         return appleGameSessions.findById(sessionId)
                 .orElseThrow(NoSuchSessionException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AppleGame> getEndedGamesAt(int page, int size) {
+        return appleGameSessions.findAllByIsEndedIsTrue(
+                PageRequest.of(page, size, Sort.Direction.DESC, "score")
+        );
     }
 
     private List<Coordinate> toCoordinates(List<MoveRequest> moveRequests) {
