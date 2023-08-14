@@ -15,6 +15,7 @@ import com.snackgame.server.member.business.domain.Member;
 import com.snackgame.server.member.business.domain.MemberRepository;
 import com.snackgame.server.member.business.domain.NameRandomizer;
 import com.snackgame.server.member.business.exception.DuplicateNameException;
+import com.snackgame.server.member.business.exception.MemberIdNotFoundException;
 import com.snackgame.server.member.business.exception.MemberNotFoundException;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -50,7 +51,7 @@ class MemberServiceTest {
         assertThat(memberRepository.findById(created.getId()))
                 .get()
                 .usingRecursiveComparison()
-                .ignoringFields("id")
+                .ignoringFields("id", "createdAt", "updatedAt")
                 .isEqualTo(똥수());
     }
 
@@ -119,7 +120,7 @@ class MemberServiceTest {
         Member found = memberService.findBy(created.getId());
         assertThat(found)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "group.id")
+                .ignoringFields("id", "createdAt", "updatedAt", "group.id")
                 .isEqualTo(땡칠());
     }
 
@@ -128,6 +129,14 @@ class MemberServiceTest {
         memberService.createWith(땡칠().getName());
 
         assertThatThrownBy(() -> memberService.findBy(999L))
+                .isInstanceOf(MemberIdNotFoundException.class);
+    }
+
+    @Test
+    void 사용자를_없는_이름으로_찾으면_예외를_던진다() {
+        memberService.createWith(땡칠().getName());
+
+        assertThatThrownBy(() -> memberService.findBy(똥수().getName()))
                 .isInstanceOf(MemberNotFoundException.class);
     }
 

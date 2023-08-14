@@ -8,13 +8,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.snackgame.server.common.domain.BaseEntity;
 import com.snackgame.server.member.business.exception.EmptyNameException;
 
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
