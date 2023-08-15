@@ -90,6 +90,10 @@ public class AppleGame extends BaseEntity {
         return sessionId;
     }
 
+    public Member getOwner() {
+        return owner;
+    }
+
     public List<List<Apple>> getApples() {
         return board.getApples();
     }
