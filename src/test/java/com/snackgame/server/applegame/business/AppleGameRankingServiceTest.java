@@ -53,6 +53,7 @@ class AppleGameRankingServiceTest {
         firstGame.end();
         secondGame.end();
         thirdGame.end();
+        appleGameSessions.flush();
 
         assertThat(appleGameRankingService.getEntireRankings())
                 .extracting("ranking", "score")
@@ -61,5 +62,32 @@ class AppleGameRankingServiceTest {
                         tuple(2, 2),
                         tuple(3, 0)
                 );
+    }
+
+    @Test
+    void 자신의_최대_랭킹을_가져온다() {
+        Member otherMember = memberService.createGuest();
+        AppleGame firstGame = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), otherMember));
+        firstGame.removeApplesIn(new Range(List.of(
+                new Coordinate(0, 1),
+                new Coordinate(0, 3),
+                new Coordinate(1, 1),
+                new Coordinate(1, 3)
+        )));
+        Member member = memberService.createGuest();
+        AppleGame secondGame = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), member));
+        secondGame.removeApplesIn(new Range(List.of(
+                new Coordinate(0, 0),
+                new Coordinate(1, 0)
+        )));
+        AppleGame thirdGame = appleGameService.startGameOf(member);
+        firstGame.end();
+        secondGame.end();
+        thirdGame.end();
+        appleGameSessions.flush();
+
+        assertThat(appleGameRankingService.getBestRankingOf(member.getId()))
+                .extracting("score")
+                .isEqualTo(2);
     }
 }

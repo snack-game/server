@@ -3,8 +3,6 @@ package com.snackgame.server.applegame.business;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,13 +52,6 @@ public class AppleGameService {
     public AppleGame findBy(Long sessionId) {
         return appleGameSessions.findById(sessionId)
                 .orElseThrow(NoSuchSessionException::new);
-    }
-
-    @Transactional(readOnly = true)
-    public List<AppleGame> getEndedGamesAt(int page, int size) {
-        return appleGameSessions.findAllByIsEndedIsTrue(
-                PageRequest.of(page, size, Sort.Direction.DESC, "score")
-        );
     }
 
     private List<Coordinate> toCoordinates(List<MoveRequest> moveRequests) {
