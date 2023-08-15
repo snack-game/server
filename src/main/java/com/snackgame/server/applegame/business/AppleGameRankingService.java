@@ -27,14 +27,14 @@ public class AppleGameRankingService {
         List<RankingResponse> rankingResponses = new ArrayList<>();
         for (int index = 0; index < endedGames.size(); index++) {
             rankingResponses.add(RankingResponse.of(
-                    calculateTotalIndexWith(FIRST_PAGE, index),
+                    rankBy(FIRST_PAGE, index),
                     endedGames.get(index)
             ));
         }
         return rankingResponses;
     }
 
-    private int calculateTotalIndexWith(int page, int indexInPage) {
+    private int rankBy(int page, int indexInPage) {
         return (1 + page) * (1 + indexInPage);
     }
 }
