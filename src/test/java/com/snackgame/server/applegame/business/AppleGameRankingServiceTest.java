@@ -15,7 +15,6 @@ import com.snackgame.server.applegame.business.domain.AppleGame;
 import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
 import com.snackgame.server.applegame.business.domain.Coordinate;
 import com.snackgame.server.applegame.business.domain.Range;
-import com.snackgame.server.applegame.controller.dto.RankingResponse;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.member.business.MemberService;
 import com.snackgame.server.member.business.domain.Member;
@@ -54,6 +53,7 @@ class AppleGameRankingServiceTest {
         firstGame.end();
         secondGame.end();
         thirdGame.end();
+        appleGameSessions.flush();
 
         assertThat(appleGameRankingService.getEntireRankings())
                 .extracting("ranking", "score")
@@ -84,6 +84,7 @@ class AppleGameRankingServiceTest {
         firstGame.end();
         secondGame.end();
         thirdGame.end();
+        appleGameSessions.flush();
 
         assertThat(appleGameRankingService.getBestRankingOf(member.getId()))
                 .extracting("score")
