@@ -1,6 +1,7 @@
 package com.snackgame.server.member.business;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -28,16 +29,16 @@ public class MemberService {
     @Transactional
     public Member createWith(String name, String groupName) {
         validateNoDuplicate(name);
-        Group group = groupService.createIfNotExists(groupName);
-        Member newMember = new Member(name, group);
+        Member newMember = new Member(name);
+        if (Objects.nonNull(groupName)) {
+            newMember.changeGroupTo(groupService.createIfNotExists(groupName));
+        }
         return members.save(newMember);
     }
 
     @Transactional
     public Member createWith(String name) {
-        validateNoDuplicate(name);
-        Member newMember = new Member(name);
-        return members.save(newMember);
+        return createWith(name, null);
     }
 
     @Transactional
