@@ -2,6 +2,8 @@ package com.snackgame.server.member.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,7 +32,7 @@ public class MemberController {
 
     @Operation(summary = "일반 사용자 생성", description = "이름, 그룹으로 사용자를 생성한다")
     @PostMapping("/members")
-    public MemberDetailsWithTokenResponse addMember(@RequestBody MemberRequest memberRequest) {
+    public MemberDetailsWithTokenResponse addMember(@Valid @RequestBody MemberRequest memberRequest) {
         Member added = memberService.createWith(memberRequest.getName(), memberRequest.getGroup());
         String accessToken = jwtProvider.createTokenWith(added.getId().toString());
         return MemberDetailsWithTokenResponse.of(added, accessToken);

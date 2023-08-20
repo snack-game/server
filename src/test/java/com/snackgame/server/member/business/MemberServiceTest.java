@@ -56,6 +56,19 @@ class MemberServiceTest {
     }
 
     @Test
+    void 그룹은_null로_하고_이름만으로_사용자를_생성한다() {
+        Member expected = 똥수();
+        expected.changeGroupTo(null);
+        Member created = memberService.createWith(expected.getName(), null);
+
+        assertThat(memberRepository.findById(created.getId()))
+                .get()
+                .usingRecursiveComparison()
+                .ignoringFields("id", "createdAt", "updatedAt")
+                .isEqualTo(expected);
+    }
+
+    @Test
     void 임시사용자를_생성한다() {
         Member guest = memberService.createGuest();
 

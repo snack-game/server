@@ -1,5 +1,7 @@
 package com.snackgame.server.member.controller.dto;
 
+import javax.validation.constraints.NotBlank;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class MemberRequest {
 
+    @NotBlank(message = "이름은 공백일 수 없습니다")
     private String name;
     private String group;
 }

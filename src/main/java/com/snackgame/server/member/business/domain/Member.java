@@ -24,10 +24,6 @@ public class Member extends BaseEntity {
     @ManyToOne
     private Group group;
 
-    public void setGroup(Group group) {
-        this.group = group;
-    }
-
     public Member(String name) {
         this(null, name, null);
     }
