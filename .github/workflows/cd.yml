@@ -6,6 +6,11 @@ on:
     branches: [ "main" ]
 permissions:
   contents: read
+
+env:
+  JAR_NAME: snackgame-server.jar
+  JAR_DIRECTORY: /home/ubuntu/services/snackgame
+
 jobs:
   deploy:
     runs-on: production
@@ -15,10 +20,16 @@ jobs:
         run: |
           chmod +x ./gradlew
           ./gradlew bootjar
+
+      - name: copy jar
+        shell: bash {0}
+        run: |
+          mkdir $JAR_DIRECTORY
+          cp ./$JAR_NAME $JAR_DIRECTORY/$JAR_NAME
+
       - name: kill previous process
         shell: bash {0}
         run: |
-          JAR_NAME="snackgame-server.jar"
           PROCESS_ID=$(pgrep -f "$JAR_NAME")
           if [ -n "$PROCESS_ID" ]; then
             sudo kill -9 $PROCESS_ID
@@ -27,6 +38,7 @@ jobs:
       - name: deploy
         env:
           RUNNER_TRACKING_ID: ""
+        working-directory: $JAR_DIRECTORY
         run: |
           nohup java -jar \
           -Dspring.profiles.active=production \
@@ -36,4 +48,4 @@ jobs:
           -DPRODCUTION_DB_URL=${{ secrets.PRODCUTION_DB_URL }} \
           -DPRODUCTION_DB_USERNAME=${{ secrets.PRODUCTION_DB_USERNAME }} \
           -DPRODUCTION_DB_PASSWORD=${{ secrets.PRODUCTION_DB_PASSWORD }} \
-          build/libs/snackgame-server.jar > ~/snackgame-server.log &
+          $JAR_NAME > ~/snackgame-server.log &
