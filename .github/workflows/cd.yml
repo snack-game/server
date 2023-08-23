@@ -33,4 +33,7 @@ jobs:
           -DJWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
           -DJWT_EXPIRE_LENGTH=${{ secrets.JWT_EXPIRE_LENGTH }} \
           -Dserver.port=${{ vars.APPLICATION_PORT }} \
+          -DPRODCUTION_DB_URL=${{ secrets.PRODCUTION_DB_URL }} \
+          -DPRODUCTION_DB_USERNAME=${{ secrets.PRODUCTION_DB_USERNAME }} \
+          -DPRODUCTION_DB_PASSWORD=${{ secrets.PRODUCTION_DB_PASSWORD }} \
           build/libs/snackgame-server.jar > ~/snackgame-server.log &
