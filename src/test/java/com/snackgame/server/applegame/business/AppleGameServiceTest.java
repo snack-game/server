@@ -14,8 +14,7 @@ import com.snackgame.server.annotation.ServiceTest;
 import com.snackgame.server.applegame.business.domain.Apple;
 import com.snackgame.server.applegame.business.domain.AppleGame;
 import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
-import com.snackgame.server.applegame.business.domain.Coordinate;
-import com.snackgame.server.applegame.business.domain.Range;
+import com.snackgame.server.applegame.controller.dto.CoordinateRequest;
 import com.snackgame.server.applegame.controller.dto.MoveRequest;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.member.business.MemberService;
@@ -48,17 +47,22 @@ class AppleGameServiceTest {
     void 게임을_조작한다() {
         Member owner = memberService.createGuest();
         AppleGame game = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
-        List<MoveRequest> moves = List.of(
-                new MoveRequest(0, 1),
-                new MoveRequest(0, 3),
-                new MoveRequest(1, 1),
-                new MoveRequest(1, 3)
+        List<CoordinateRequest> coordinates = List.of(
+                new CoordinateRequest(0, 1),
+                new CoordinateRequest(0, 3),
+                new CoordinateRequest(1, 1),
+                new CoordinateRequest(1, 3)
         );
+        List<CoordinateRequest> otherCoorindates = List.of(
+                new CoordinateRequest(0, 0),
+                new CoordinateRequest(1, 0)
+        );
+        List<MoveRequest> moveRequests = List.of(new MoveRequest(coordinates), new MoveRequest(otherCoorindates));
 
-        appleGameService.placeMoves(owner, game.getSessionId(), moves);
+        appleGameService.placeMoves(owner, game.getSessionId(), moveRequests);
 
         AppleGame found = appleGameService.findBy(game.getSessionId());
-        assertThat(found.getScore()).isEqualTo(4);
+        assertThat(found.getScore()).isEqualTo(6);
     }
 
     @Test
