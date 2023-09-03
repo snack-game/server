@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.snackgame.server.applegame.business.domain.AppleGame;
 import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
-import com.snackgame.server.applegame.business.domain.Coordinate;
 import com.snackgame.server.applegame.business.domain.Range;
 import com.snackgame.server.applegame.business.exception.NoSuchSessionException;
 import com.snackgame.server.applegame.controller.dto.MoveRequest;
@@ -31,8 +30,9 @@ public class AppleGameService {
     public void placeMoves(Member member, Long sessionId, List<MoveRequest> moves) {
         AppleGame game = findBy(sessionId);
         game.validateOwnedBy(member);
-        Range range = new Range(toCoordinates(moves));
-        game.removeApplesIn(range);
+        for (Range range : toRanges(moves)) {
+            game.removeApplesIn(range);
+        }
     }
 
     public AppleGame resetBoard(Member member, Long sessionId) {
@@ -54,9 +54,10 @@ public class AppleGameService {
                 .orElseThrow(NoSuchSessionException::new);
     }
 
-    private List<Coordinate> toCoordinates(List<MoveRequest> moveRequests) {
+    private List<Range> toRanges(List<MoveRequest> moveRequests) {
         return moveRequests.stream()
-                .map(moveRequest -> new Coordinate(moveRequest.getY(), moveRequest.getX()))
+                .map(MoveRequest::toCoordinates)
+                .map(Range::new)
                 .collect(Collectors.toList());
     }
 }

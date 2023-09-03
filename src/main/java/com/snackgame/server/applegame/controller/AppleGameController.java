@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.snackgame.server.applegame.business.AppleGameService;
 import com.snackgame.server.applegame.business.domain.AppleGame;
 import com.snackgame.server.applegame.controller.dto.AppleGameResponse;
+import com.snackgame.server.applegame.controller.dto.CoordinateRequest;
 import com.snackgame.server.applegame.controller.dto.MoveRequest;
 import com.snackgame.server.member.business.domain.Member;
 
