@@ -40,6 +40,7 @@ class SessionRankingDaoTest {
     private AppleGame second;
     private AppleGame third;
     private AppleGame fourth;
+    private AppleGame fifth;
 
     @BeforeEach
     void setUp(
@@ -67,12 +68,18 @@ class SessionRankingDaoTest {
                 new Coordinate(1, 0)
         )));
         this.third = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
+        third.removeApplesIn(new Range(List.of(
+                new Coordinate(0, 0),
+                new Coordinate(1, 0)
+        )));
         this.fourth = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
+        this.fifth = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
 
         first.end();
         second.end();
         third.end();
         fourth.end();
+        fifth.end();
 
         appleGameSessions.flush();
     }
@@ -85,7 +92,8 @@ class SessionRankingDaoTest {
                         first.getSessionId(),
                         second.getSessionId(),
                         third.getSessionId(),
-                        fourth.getSessionId()
+                        fourth.getSessionId(),
+                        fifth.getSessionId()
                 );
     }
 
@@ -94,8 +102,19 @@ class SessionRankingDaoTest {
         assertThat(sessionRankingDao.selectTopsByScoreIn(50))
                 .extracting("ranking", "sessionId")
                 .contains(
-                        tuple(3, third.getSessionId()),
-                        tuple(3, fourth.getSessionId())
+                        tuple(4, fourth.getSessionId()),
+                        tuple(4, fifth.getSessionId())
+                );
+    }
+
+    @Test
+    void 공동2등_2명_다음은_4등이다() {
+        assertThat(sessionRankingDao.selectTopsByScoreIn(50))
+                .extracting("ranking", "sessionId")
+                .contains(
+                        tuple(2, second.getSessionId()),
+                        tuple(2, third.getSessionId()),
+                        tuple(4, fourth.getSessionId())
                 );
     }
 
