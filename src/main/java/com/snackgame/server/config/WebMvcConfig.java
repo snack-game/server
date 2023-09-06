@@ -34,7 +34,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .exposedHeaders("Location")
-                .allowedOrigins("*")
+                .allowedOriginPatterns(
+                        "https://snackga.me",
+                        "https://*snack-game.vercel.app",
+                        "http://localhost:[*]"
+                )
                 .allowedMethods("GET", "POST", "DELETE", "PUT", "PATCH");
     }
 }
