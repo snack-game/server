@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({AuthorizationException.class, MemberIdNotFoundException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ExceptionResponse handleAuthenticationException(AuthorizationException exception) {
+    public ExceptionResponse handleAuthenticationException(Exception exception) {
         logger.info(exception.getMessage(), exception.getCause());
         return ExceptionResponse.withMessageOf(exception);
     }
