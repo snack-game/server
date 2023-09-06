@@ -27,6 +27,7 @@ public class AppleGame extends BaseEntity {
     public static final int DEFAULT_HEIGHT = 10;
     public static final int DEFAULT_WIDTH = 18;
     private static final int SESSION_SECONDS = 120;
+    private static final int SPARE_SECONDS = 5;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -77,7 +78,7 @@ public class AppleGame extends BaseEntity {
     }
 
     public boolean isDone() {
-        return isEnded || now().isAfter(createdAt.plusSeconds(SESSION_SECONDS));
+        return isEnded || now().isAfter(createdAt.plusSeconds(SESSION_SECONDS).plusSeconds(SPARE_SECONDS));
     }
 
     private void validateSessionAlive() {
