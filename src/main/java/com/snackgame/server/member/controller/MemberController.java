@@ -2,10 +2,10 @@ package com.snackgame.server.member.controller;
 
 import java.util.List;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -89,8 +89,11 @@ public class MemberController {
     }
 
     private void setCookieTo(HttpServletResponse response, String accessToken) {
-        Cookie cookie = new Cookie("token", accessToken);
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from("accessToken", accessToken)
+                .sameSite("None")
+                .secure(true)
+                .path("/")
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 }

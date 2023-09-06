@@ -22,7 +22,7 @@ public class BearerTokenExtractor {
     public String extract(Cookie[] cookies) {
         requireNonNull(cookies);
         return Arrays.stream(cookies)
-                .filter(cookie -> cookie.getName().equals("token"))
+                .filter(cookie -> cookie.getName().equals("accessToken"))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElseThrow(TokenUnresolvableException::new);
