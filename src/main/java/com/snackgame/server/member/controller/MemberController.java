@@ -2,10 +2,8 @@ package com.snackgame.server.member.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +16,7 @@ import com.snackgame.server.member.business.MemberService;
 import com.snackgame.server.member.business.domain.Member;
 import com.snackgame.server.member.controller.dto.GroupRequest;
 import com.snackgame.server.member.controller.dto.MemberDetailsResponse;
+import com.snackgame.server.member.controller.dto.MemberDetailsWithTokenResponse;
 import com.snackgame.server.member.controller.dto.MemberRequest;
 import com.snackgame.server.member.controller.dto.NameRequest;
 
@@ -33,35 +32,26 @@ public class MemberController {
 
     @Operation(summary = "일반 사용자 생성", description = "이름, 그룹으로 사용자를 생성한다")
     @PostMapping("/members")
-    public MemberDetailsResponse addMember(
-            @Valid @RequestBody MemberRequest memberRequest,
-            final HttpServletResponse response
-    ) {
+    public MemberDetailsWithTokenResponse addMember(@Valid @RequestBody MemberRequest memberRequest) {
         Member added = memberService.createWith(memberRequest.getName(), memberRequest.getGroup());
         String accessToken = jwtProvider.createTokenWith(added.getId().toString());
-        setCookieTo(response, accessToken);
-        return MemberDetailsResponse.of(added);
+        return MemberDetailsWithTokenResponse.of(added, accessToken);
     }
 
     @Operation(summary = "게스트로 사용자 생성", description = "추가정보 없이 임시 사용자를 생성한다")
     @PostMapping("/members/guest")
-    public MemberDetailsResponse addGuest(final HttpServletResponse response) {
+    public MemberDetailsWithTokenResponse addGuest() {
         Member guest = memberService.createGuest();
         String accessToken = jwtProvider.createTokenWith(guest.getId().toString());
-        setCookieTo(response, accessToken);
-        return MemberDetailsResponse.of(guest);
+        return MemberDetailsWithTokenResponse.of(guest, accessToken);
     }
 
     @Operation(summary = "사용자의 토큰 발급", description = "어떤 이름을 가진 사용자의 토큰을 발급한다")
     @PostMapping("/members/token")
-    public MemberDetailsResponse issueToken(
-            @RequestBody NameRequest nameRequest,
-            final HttpServletResponse response
-    ) {
+    public MemberDetailsWithTokenResponse issueToken(@RequestBody NameRequest nameRequest) {
         Member found = memberService.findBy(nameRequest.getName());
         String accessToken = jwtProvider.createTokenWith(found.getId().toString());
-        setCookieTo(response, accessToken);
-        return MemberDetailsResponse.of(found);
+        return MemberDetailsWithTokenResponse.of(found, accessToken);
     }
 
     @Operation(summary = "모든 이름 검색", description = "인자로 시작하는 모든 사용자 이름을 가져온다")
@@ -86,14 +76,5 @@ public class MemberController {
     @PutMapping("/members/me/name")
     public void changeName(Member member, @RequestBody NameRequest nameRequest) {
         memberService.changeNameOf(member, nameRequest.getName());
-    }
-
-    private void setCookieTo(HttpServletResponse response, String accessToken) {
-        ResponseCookie cookie = ResponseCookie.from("accessToken", accessToken)
-                .sameSite("None")
-                .secure(true)
-                .path("/")
-                .build();
-        response.addHeader("Set-Cookie", cookie.toString());
     }
 }

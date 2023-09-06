@@ -1,9 +1,6 @@
 package com.snackgame.server.auth;
 
-import java.util.Arrays;
 import java.util.Objects;
-
-import javax.servlet.http.Cookie;
 
 import com.snackgame.server.auth.exception.TokenUnresolvableException;
 
@@ -19,17 +16,8 @@ public class BearerTokenExtractor {
         throw new TokenUnresolvableException();
     }
 
-    public String extract(Cookie[] cookies) {
-        requireNonNull(cookies);
-        return Arrays.stream(cookies)
-                .filter(cookie -> cookie.getName().equals("accessToken"))
-                .map(Cookie::getValue)
-                .findFirst()
-                .orElseThrow(TokenUnresolvableException::new);
-    }
-
-    private void requireNonNull(Object object) {
-        if (Objects.isNull(object)) {
+    private void requireNonNull(String authorization) {
+        if (Objects.isNull(authorization)) {
             throw new TokenUnresolvableException();
         }
     }
