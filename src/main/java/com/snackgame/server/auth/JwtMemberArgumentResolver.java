@@ -1,7 +1,8 @@
 package com.snackgame.server.auth;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -27,8 +28,8 @@ public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
-        String token = bearerTokenExtractor.extract(authorization);
+        HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
+        String token = bearerTokenExtractor.extract(request.getCookies());
         jwtProvider.validate(token);
 
         String subject = jwtProvider.getSubjectFrom(token);
