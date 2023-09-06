@@ -26,6 +26,7 @@ public class SessionRankingDao {
     public List<RankingDto> selectTopsByScoreIn(int size) {
         String sql = "SELECT dense_rank() over (ORDER BY score DESC) as ranking, session_id "
                 + "FROM apple_game "
+                + "WHERE is_ended = true "
                 + "ORDER BY score DESC "
                 + "limit ?";
 
@@ -39,7 +40,7 @@ public class SessionRankingDao {
     public Optional<RankingDto> selectBestByScoreOf(Long memberId) {
         String sql = "SELECT dense_rank() over (ORDER BY score DESC) as ranking, session_id "
                 + "FROM apple_game "
-                + "WHERE owner_id = ?"
+                + "WHERE owner_id = ? and is_ended = true "
                 + "ORDER BY score DESC "
                 + "limit 1";
 
