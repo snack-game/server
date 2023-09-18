@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.snackgame.server.auth.BearerTokenExtractor;
@@ -17,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+    
+    private static final String HOST_NAME = "snackga.me";
 
     private final JwtProvider jwtProvider;
     private final MemberService memberService;
@@ -31,11 +34,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addRedirectViewController("/", "https://" + HOST_NAME);
+    }
+
+    @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .exposedHeaders("Location")
                 .allowedOriginPatterns(
-                        "https://*snackga.me",
+                        "https://" + HOST_NAME,
+                        "https://api." + HOST_NAME,
                         "https://*snack-game.vercel.app",
                         "http://localhost:[*]"
                 )
