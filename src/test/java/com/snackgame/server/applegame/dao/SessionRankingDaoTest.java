@@ -23,7 +23,6 @@ import com.snackgame.server.member.business.GroupService;
 import com.snackgame.server.member.business.MemberService;
 import com.snackgame.server.member.business.domain.AlphabetNameRandomizer;
 import com.snackgame.server.member.business.domain.GroupRepository;
-import com.snackgame.server.member.business.domain.Member;
 import com.snackgame.server.member.business.domain.MemberRepository;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -35,7 +34,6 @@ class SessionRankingDaoTest {
     private JdbcTemplate jdbcTemplate;
     private SessionRankingDao sessionRankingDao;
 
-    private Member owner;
     private AppleGame first;
     private AppleGame second;
     private AppleGame third;
@@ -50,30 +48,30 @@ class SessionRankingDaoTest {
     ) {
         this.sessionRankingDao = new SessionRankingDao(jdbcTemplate);
 
-        this.owner = new MemberService(
+        MemberService memberService = new MemberService(
                 members,
                 new GroupService(groups),
                 new AlphabetNameRandomizer()
-        ).createGuest();
-        this.first = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
+        );
+        this.first = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
         first.removeApplesIn(new Range(List.of(
                 new Coordinate(0, 1),
                 new Coordinate(0, 3),
                 new Coordinate(1, 1),
                 new Coordinate(1, 3)
         )));
-        this.second = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
+        this.second = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
         second.removeApplesIn(new Range(List.of(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         )));
-        this.third = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
+        this.third = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
         third.removeApplesIn(new Range(List.of(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         )));
-        this.fourth = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
-        this.fifth = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
+        this.fourth = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
+        this.fifth = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
 
         first.end();
         second.end();
@@ -120,8 +118,8 @@ class SessionRankingDaoTest {
 
     @Test
     void 사용자의_최고점수_랭킹을_가져온다() {
-        assertThat(sessionRankingDao.selectBestByScoreOf(owner.getId()))
+        assertThat(sessionRankingDao.selectBestByScoreOf(third.getOwner().getId()))
                 .get().usingRecursiveComparison()
-                .isEqualTo(new RankingDto(1, first.getSessionId()));
+                .isEqualTo(new RankingDto(2, third.getSessionId()));
     }
 }

@@ -16,6 +16,10 @@ public class SessionRankingDao {
             rs.getInt("ranking"),
             rs.getLong("session_id")
     );
+    private static final String RANKING_VIEW = "SELECT rank() over (ORDER BY score DESC) as ranking, session_id " +
+                                               "FROM apple_game " +
+                                               "WHERE is_ended = true " +
+                                               "ORDER BY score DESC ";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -24,11 +28,8 @@ public class SessionRankingDao {
     }
 
     public List<RankingDto> selectTopsByScoreIn(int size) {
-        String sql = "SELECT rank() over (ORDER BY score DESC) as ranking, session_id "
-                + "FROM apple_game "
-                + "WHERE is_ended = true "
-                + "ORDER BY score DESC "
-                + "limit ?";
+        String sql = RANKING_VIEW
+                     + "limit ?";
 
         return jdbcTemplate.query(
                 sql,
@@ -38,11 +39,12 @@ public class SessionRankingDao {
     }
 
     public Optional<RankingDto> selectBestByScoreOf(Long memberId) {
-        String sql = "SELECT rank() over (ORDER BY score DESC) as ranking, session_id "
-                + "FROM apple_game "
-                + "WHERE owner_id = ? and is_ended = true "
-                + "ORDER BY score DESC "
-                + "limit 1";
+        String sql = "SELECT ranking, a.session_id "
+                     + "FROM apple_game a "
+                     + "LEFT JOIN (" + RANKING_VIEW + ") whole_ranks ON a.session_id = whole_ranks.session_id "
+                     + "WHERE owner_id = ? and is_ended = true "
+                     + "ORDER BY score DESC "
+                     + "limit 1";
 
         return jdbcTemplate.query(
                 sql,
