@@ -52,6 +52,33 @@ class BoardTest {
     }
 
     @Test
+    void 게임판을_초기화해도_같은_크기를_가진다() {
+        int height = 4;
+        int width = 8;
+        var board = new Board(height, width);
+
+        var reset = board.reset();
+
+        assertThat(reset.getApples()).hasSize(height);
+        assertThat(reset.getApples()).allSatisfy(
+                row -> assertThat(row).hasSize(width)
+        );
+    }
+
+    @Test
+    void 게임판을_초기화하면_사과들이_바뀐다() {
+        int height = 4;
+        int width = 8;
+        var board = new Board(height, width);
+
+        var reset = board.reset();
+
+        assertThat(board)
+                .usingRecursiveComparison()
+                .isNotEqualTo(reset);
+    }
+
+    @Test
     void 특정_범위의_사과들을_제거한다() {
         var board = TWO_BY_FOUR();
         var coordinates = List.of(

@@ -45,6 +45,10 @@ public class Board {
         }
     }
 
+    public Board reset() {
+        return new Board(this.getHeight(), this.getWidth());
+    }
+
     public boolean hasGoldenAppleIn(List<Coordinate> coordinates) {
         return getApplesIn(coordinates).stream()
                 .anyMatch(Apple::isGolden);
@@ -95,5 +99,13 @@ public class Board {
         return apples.stream()
                 .map(ArrayList::new)
                 .collect(Collectors.toList());
+    }
+
+    public int getHeight() {
+        return apples.size();
+    }
+
+    public int getWidth() {
+        return apples.get(0).size();
     }
 }
