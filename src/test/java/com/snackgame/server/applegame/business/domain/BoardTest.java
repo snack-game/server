@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import com.snackgame.server.applegame.business.exception.AppleNotRemovableException;
 import com.snackgame.server.applegame.business.exception.InvalidRangeException;
+import com.snackgame.server.applegame.fixture.TestFixture;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -34,16 +35,16 @@ class BoardTest {
     @Test
     void 특정_범위의_사과들을_제거한다() {
         var board = TWO_BY_FOUR();
-        var range = new Range(List.of(
+        var coordinates = List.of(
                 new Coordinate(0, 1),
                 new Coordinate(0, 3),
                 new Coordinate(1, 1),
                 new Coordinate(1, 3)
-        ));
+        );
 
-        board.removeApplesIn(range);
+        board.removeApplesIn(coordinates);
 
-        assertThat(range.getAppleCoordinates()).allSatisfy(coordinate ->
+        assertThat(coordinates).allSatisfy(coordinate ->
                 assertThat(board.getApples().get(coordinate.getY()).get(coordinate.getX()))
                         .isEqualTo(Apple.EMPTY)
         );
@@ -52,40 +53,27 @@ class BoardTest {
     @Test
     void 사과_좌표들에_사과가_없으면_예외를_던진다() {
         var board = TWO_BY_FOUR();
-        var range = new Range(List.of(
+        var coordinates = List.of(
                 new Coordinate(0, 1),
                 new Coordinate(0, 2),
                 new Coordinate(0, 3),
                 new Coordinate(1, 1),
                 new Coordinate(1, 3)
-        ));
+        );
 
-        assertThatThrownBy(() -> board.removeApplesIn(range))
-                .isInstanceOf(InvalidRangeException.class);
-    }
-
-    @Test
-    void 사과_좌표들_외에_사과가_있으면_예외를_던진다() {
-        var board = TWO_BY_FOUR();
-        var range = new Range(List.of(
-                new Coordinate(0, 1),
-                new Coordinate(0, 3),
-                new Coordinate(1, 3)
-        ));
-
-        assertThatThrownBy(() -> board.removeApplesIn(range))
+        assertThatThrownBy(() -> board.removeApplesIn(coordinates))
                 .isInstanceOf(InvalidRangeException.class);
     }
 
     @Test
     void 사과들의_합이_10이어야_제거할_수_있다() {
         var board = TWO_BY_FOUR();
-        var range = new Range(List.of(
+        var coordinates = List.of(
                 new Coordinate(0, 0),
-                new Coordinate(0, 1))
+                new Coordinate(0, 1)
         );
 
-        assertThatThrownBy(() -> board.removeApplesIn(range))
+        assertThatThrownBy(() -> board.removeApplesIn(coordinates))
                 .isInstanceOf(AppleNotRemovableException.class)
                 .hasMessage("사과들의 합이 10이 아닙니다");
     }
@@ -93,14 +81,14 @@ class BoardTest {
     @Test
     void 제거된_사과들의_개수를_반환한다() {
         var board = TWO_BY_FOUR();
-        var range = new Range(List.of(
+        var coordinates = List.of(
                 new Coordinate(0, 1),
                 new Coordinate(0, 3),
                 new Coordinate(1, 1),
                 new Coordinate(1, 3)
-        ));
+        );
 
-        assertThat(board.removeApplesIn(range)).isEqualTo(4);
+        assertThat(board.removeApplesIn(coordinates)).isEqualTo(4);
     }
 
     @Test

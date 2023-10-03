@@ -67,35 +67,24 @@ public class Board {
         apples.set(apples.indexOf(apple), apple.golden());
     }
 
-    public int removeApplesIn(Range range) {
-        validateContains(range);
-        validateSumOf(range);
+    public int removeApplesIn(List<Coordinate> coordinates) {
+        validateSumOf(coordinates);
         int removed = 0;
-        for (Coordinate coordinate : range.getAppleCoordinates()) {
+        for (Coordinate coordinate : coordinates) {
             removeAppleAt(coordinate);
             ++removed;
         }
         return removed;
     }
 
-    private void validateContains(Range range) {
-        boolean appleDoesNotExist = getApplesIn(range.getAppleCoordinates()).stream()
-                .anyMatch(Apple::isEmpty);
-        boolean unexpectedAppleExists = getApplesIn(range.getEmptyCoordinates()).stream()
-                .anyMatch(Apple::exists);
-        if (appleDoesNotExist || unexpectedAppleExists) {
-            throw new InvalidRangeException();
-        }
-    }
-
-    private void validateSumOf(Range range) {
-        if (sumApplesIn(range) != REMOVABLE_SUM) {
+    private void validateSumOf(List<Coordinate> coordinates) {
+        if (sumApplesIn(coordinates) != REMOVABLE_SUM) {
             throw new AppleNotRemovableException("사과들의 합이 " + REMOVABLE_SUM + "이 아닙니다");
         }
     }
 
-    private int sumApplesIn(Range range) {
-        return getApplesIn(range.getAppleCoordinates()).stream()
+    private int sumApplesIn(List<Coordinate> coordinates) {
+        return getApplesIn(coordinates).stream()
                 .map(Apple::getNumber)
                 .reduce(0, Integer::sum);
     }
@@ -107,8 +96,16 @@ public class Board {
     }
 
     private void removeAppleAt(Coordinate coordinate) {
+        validateAppleIsAt(coordinate);
         List<Apple> row = apples.get(coordinate.getY());
         row.set(coordinate.getX(), Apple.EMPTY);
+    }
+
+    private void validateAppleIsAt(Coordinate coordinate) {
+        Apple apple = apples.get(coordinate.getY()).get(coordinate.getX());
+        if (apple.isEmpty()) {
+            throw new InvalidRangeException();
+        }
     }
 
     public List<List<Apple>> getApples() {

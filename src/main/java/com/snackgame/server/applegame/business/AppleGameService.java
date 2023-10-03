@@ -1,14 +1,12 @@
 package com.snackgame.server.applegame.business;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.snackgame.server.applegame.business.domain.AppleGame;
 import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
-import com.snackgame.server.applegame.business.domain.Range;
 import com.snackgame.server.applegame.business.exception.NoSuchSessionException;
 import com.snackgame.server.applegame.controller.dto.MoveRequest;
 import com.snackgame.server.member.business.domain.Member;
@@ -30,8 +28,8 @@ public class AppleGameService {
     public void placeMoves(Member member, Long sessionId, List<MoveRequest> moves) {
         AppleGame game = findBy(sessionId);
         game.validateOwnedBy(member);
-        for (Range range : toRanges(moves)) {
-            game.removeApplesIn(range);
+        for (MoveRequest move : moves) {
+            game.removeApplesIn(move.toCoordinates());
         }
     }
 
@@ -52,12 +50,5 @@ public class AppleGameService {
     public AppleGame findBy(Long sessionId) {
         return appleGameSessions.findById(sessionId)
                 .orElseThrow(NoSuchSessionException::new);
-    }
-
-    private List<Range> toRanges(List<MoveRequest> moveRequests) {
-        return moveRequests.stream()
-                .map(MoveRequest::toCoordinates)
-                .map(Range::new)
-                .collect(Collectors.toList());
     }
 }

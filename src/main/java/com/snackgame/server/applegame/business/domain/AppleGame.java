@@ -61,9 +61,9 @@ public class AppleGame extends BaseEntity {
         this.createdAt = now();
     }
 
-    public void removeApplesIn(Range range) {
+    public void removeApplesIn(List<Coordinate> coordinates) {
         validateSessionAlive();
-        score += board.removeApplesIn(range);
+        score += board.removeApplesIn(coordinates);
     }
 
     public void validateOwnedBy(Member member) {

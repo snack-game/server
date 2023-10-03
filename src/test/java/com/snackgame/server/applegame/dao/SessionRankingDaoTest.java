@@ -16,7 +16,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import com.snackgame.server.applegame.business.domain.AppleGame;
 import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
 import com.snackgame.server.applegame.business.domain.Coordinate;
-import com.snackgame.server.applegame.business.domain.Range;
 import com.snackgame.server.applegame.dao.dto.RankingDto;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.member.business.GroupService;
@@ -54,22 +53,22 @@ class SessionRankingDaoTest {
                 new AlphabetNameRandomizer()
         );
         this.first = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
-        first.removeApplesIn(new Range(List.of(
+        first.removeApplesIn(List.of(
                 new Coordinate(0, 1),
                 new Coordinate(0, 3),
                 new Coordinate(1, 1),
                 new Coordinate(1, 3)
-        )));
+        ));
         this.second = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
-        second.removeApplesIn(new Range(List.of(
+        second.removeApplesIn(List.of(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
-        )));
+        ));
         this.third = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
-        third.removeApplesIn(new Range(List.of(
+        third.removeApplesIn(List.of(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
-        )));
+        ));
         this.fourth = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
         this.fifth = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
 
