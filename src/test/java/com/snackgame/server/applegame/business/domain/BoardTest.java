@@ -102,4 +102,32 @@ class BoardTest {
 
         assertThat(goldenAppleCount).isOne();
     }
+
+    @Test
+    void 범위안에_황금사과가_있는지_알_수_있다() {
+        Board boardWithGoldenApple = Board.ofRandomized(2, 2);
+
+        assertThat(boardWithGoldenApple.hasGoldenAppleIn(List.of(
+                new Coordinate(0, 0),
+                new Coordinate(0, 1),
+                new Coordinate(1, 0),
+                new Coordinate(1, 1)
+        ))).isTrue();
+    }
+
+    @Test
+    void 범위안에_황금사과가_없는지_알_수_있다() {
+        Board boardWithoutGoldenApple = TWO_BY_FOUR();
+
+        assertThat(boardWithoutGoldenApple.hasGoldenAppleIn(List.of(
+                new Coordinate(0, 0),
+                new Coordinate(0, 1),
+                new Coordinate(0, 2),
+                new Coordinate(0, 3),
+                new Coordinate(1, 0),
+                new Coordinate(1, 1),
+                new Coordinate(1, 2),
+                new Coordinate(1, 3)
+        ))).isFalse();
+    }
 }

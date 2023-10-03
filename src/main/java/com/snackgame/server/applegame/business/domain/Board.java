@@ -67,6 +67,11 @@ public class Board {
         apples.set(apples.indexOf(apple), apple.golden());
     }
 
+    public boolean hasGoldenAppleIn(List<Coordinate> coordinates) {
+        return getApplesIn(coordinates).stream()
+                .anyMatch(Apple::isGolden);
+    }
+
     public int removeApplesIn(List<Coordinate> coordinates) {
         validateSumOf(coordinates);
         int removed = 0;
