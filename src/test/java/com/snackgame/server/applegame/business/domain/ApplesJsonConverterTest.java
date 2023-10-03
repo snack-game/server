@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.snackgame.server.applegame.fixture.TestFixture;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -28,7 +29,7 @@ class ApplesJsonConverterTest {
 
     @Test
     void 사과들을_JSON으로_변환한다() throws JsonProcessingException {
-        Board board = Board.ofRandomized(2, 2);
+        Board board = TestFixture.TWO_BY_FOUR();
         String expectedJson = objectMapper.writeValueAsString(board.getApples());
 
         String json = converter.convertToDatabaseColumn(board.getApples());
@@ -37,10 +38,12 @@ class ApplesJsonConverterTest {
 
     @Test
     void JSON으로_표현된_사과들을_사과객체들로_변환한다() throws JsonProcessingException {
-        Board board = Board.ofRandomized(2, 2);
+        Board board = TestFixture.TWO_BY_FOUR();
         String json = objectMapper.writeValueAsString(board.getApples());
 
         List<List<Apple>> apples = converter.convertToEntityAttribute(json);
-        assertThat(apples).isEqualTo(board.getApples());
+        assertThat(apples)
+                .usingRecursiveComparison()
+                .isEqualTo(board.getApples());
     }
 }

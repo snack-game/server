@@ -4,6 +4,7 @@ import static com.snackgame.server.applegame.fixture.TestFixture.TWO_BY_FOUR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -100,5 +101,17 @@ class BoardTest {
         ));
 
         assertThat(board.removeApplesIn(range)).isEqualTo(4);
+    }
+
+    @Test
+    void 하나를_황금사과로_만든다() {
+        var board = Board.ofRandomized(10, 8);
+
+        long goldenAppleCount = board.getApples().stream()
+                .flatMap(Collection::stream)
+                .filter(Apple::isGolden)
+                .count();
+
+        assertThat(goldenAppleCount).isOne();
     }
 }
