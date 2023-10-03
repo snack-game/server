@@ -67,6 +67,48 @@ class AppleGameTest {
     }
 
     @Test
+    void 황금사과를_제거하면_판이_초기화된다() {
+        var game = new AppleGame(TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(), 땡칠());
+        var coordinates = List.of(
+                new Coordinate(0, 0),
+                new Coordinate(1, 0)
+        );
+        var appleAtRightBottom = game.getApples().get(1).get(1);
+
+        game.removeApplesIn(coordinates);
+
+        assertThat(game.getApples().get(1).get(1)).isNotEqualTo(appleAtRightBottom);
+    }
+
+    @Test
+    void 황금사과를_제거해도_시작_시간은_변하지_않는다() {
+        var game = new AppleGame(TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(), 땡칠());
+        var coordinates = List.of(
+                new Coordinate(0, 0),
+                new Coordinate(1, 0)
+        );
+        var previousCreatedAt = game.getCreatedAt();
+
+        game.removeApplesIn(coordinates);
+
+        assertThat(game.getCreatedAt()).isEqualTo(previousCreatedAt);
+    }
+
+    @Test
+    void 황금사과를_제거해도_점수는_초기화되지_않는다() {
+        var game = new AppleGame(TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(), 땡칠());
+        var coordinates = List.of(
+                new Coordinate(0, 0),
+                new Coordinate(1, 0)
+        );
+        var expectedScore = game.getScore() + 2;
+
+        game.removeApplesIn(coordinates);
+
+        assertThat(game.getScore()).isEqualTo(expectedScore);
+    }
+
+    @Test
     void 만든지_2분_그리고_여유시간이_지나면_초기화할_수_없다() {
         var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠(), LocalDateTime.now().minusSeconds(125));
 

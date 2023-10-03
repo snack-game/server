@@ -56,14 +56,19 @@ public class AppleGame extends BaseEntity {
 
     public void reset() {
         validateSessionAlive();
-        this.board = Board.ofRandomized(DEFAULT_HEIGHT, DEFAULT_WIDTH);
+        this.board = board.reset();
         this.score = 0;
         this.createdAt = now();
     }
 
     public void removeApplesIn(List<Coordinate> coordinates) {
         validateSessionAlive();
+        boolean hadGoldenApple = board.hasGoldenAppleIn(coordinates);
         score += board.removeApplesIn(coordinates);
+
+        if (hadGoldenApple) {
+            board = board.reset();
+        }
     }
 
     public void validateOwnedBy(Member member) {
