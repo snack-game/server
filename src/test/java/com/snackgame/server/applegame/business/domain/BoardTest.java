@@ -12,19 +12,38 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
 import com.snackgame.server.applegame.business.exception.AppleNotRemovableException;
-import com.snackgame.server.applegame.business.exception.InvalidRangeException;
-import com.snackgame.server.applegame.fixture.TestFixture;
+import com.snackgame.server.applegame.business.exception.InvalidBoardSizeException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class BoardTest {
 
     @Test
+    void 게임판_높이는_1이상이어야_한다() {
+        int height = 0;
+        int width = 8;
+
+        assertThatThrownBy(() -> new Board(height, width))
+                .isInstanceOf(InvalidBoardSizeException.class)
+                .hasMessage("잘못된 크기의 게임판입니다");
+    }
+
+    @Test
+    void 게임판_너비는_1이상이어야_한다() {
+        int height = 1;
+        int width = 0;
+
+        assertThatThrownBy(() -> new Board(height, width))
+                .isInstanceOf(InvalidBoardSizeException.class)
+                .hasMessage("잘못된 크기의 게임판입니다");
+    }
+
+    @Test
     void 원하는_크기의_게임판을_랜덤_생성한다() {
         int height = 4;
         int width = 8;
 
-        var board = Board.ofRandomized(height, width);
+        var board = new Board(height, width);
 
         assertThat(board.getApples()).hasSize(height);
         assertThat(board.getApples()).allSatisfy(
@@ -62,7 +81,8 @@ class BoardTest {
         );
 
         assertThatThrownBy(() -> board.removeApplesIn(coordinates))
-                .isInstanceOf(InvalidRangeException.class);
+                .isInstanceOf(AppleNotRemovableException.class)
+                .hasMessage("없는 사과를 제거하려고 했습니다");
     }
 
     @Test
@@ -93,7 +113,7 @@ class BoardTest {
 
     @Test
     void 하나를_황금사과로_만든다() {
-        var board = Board.ofRandomized(10, 8);
+        var board = new Board(10, 8);
 
         long goldenAppleCount = board.getApples().stream()
                 .flatMap(Collection::stream)
@@ -105,7 +125,7 @@ class BoardTest {
 
     @Test
     void 범위안에_황금사과가_있는지_알_수_있다() {
-        Board boardWithGoldenApple = Board.ofRandomized(2, 2);
+        Board boardWithGoldenApple = new Board(2, 2);
 
         assertThat(boardWithGoldenApple.hasGoldenAppleIn(List.of(
                 new Coordinate(0, 0),

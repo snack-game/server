@@ -2,7 +2,6 @@ package com.snackgame.server.applegame.business.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
@@ -10,7 +9,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 
 import com.snackgame.server.applegame.business.exception.AppleNotRemovableException;
-import com.snackgame.server.applegame.business.exception.InvalidRangeException;
+import com.snackgame.server.applegame.business.exception.InvalidBoardSizeException;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -21,6 +20,8 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board {
 
+    private static final int MIN_HEIGHT = 1;
+    private static final int MIN_WIDTH = 1;
     private static final int REMOVABLE_SUM = 10;
 
     @Lob
@@ -28,43 +29,20 @@ public class Board {
     private List<List<Apple>> apples;
 
     public Board(List<List<Apple>> apples) {
+        validateSizeOf(apples);
         this.apples = apples.stream()
                 .map(ArrayList::new)
                 .collect(Collectors.toList());
     }
 
-    public static Board ofRandomized(int height, int width) {
-        List<List<Apple>> apples = new ArrayList<>();
-        for (int i = 0; i < height; i++) {
-            apples.add(createRowOf(width));
+    public Board(int height, int width) {
+        this(ApplesFactory.createRandomized(height, width));
+    }
+
+    private void validateSizeOf(List<List<Apple>> apples) {
+        if (apples.size() < MIN_HEIGHT || apples.get(0).size() < MIN_WIDTH) {
+            throw new InvalidBoardSizeException();
         }
-        Apple picked = pickOneIn(apples);
-        apples.stream()
-                .filter(row -> row.contains(picked))
-                .findFirst()
-                .ifPresent(row -> golden(row, picked));
-        return new Board(apples);
-    }
-
-    private static List<Apple> createRowOf(int width) {
-        List<Apple> row = new ArrayList<>();
-        for (int j = 0; j < width; j++) {
-            row.add(Apple.ofRandomizedNumber());
-        }
-        return row;
-    }
-
-    private static Apple pickOneIn(List<List<Apple>> apples) {
-        List<Apple> targetRow = apples.get(pickIndexIn(apples.size()));
-        return targetRow.get(pickIndexIn(targetRow.size()));
-    }
-
-    private static int pickIndexIn(int size) {
-        return ThreadLocalRandom.current().nextInt(size);
-    }
-
-    private static void golden(List<Apple> apples, Apple apple) {
-        apples.set(apples.indexOf(apple), apple.golden());
     }
 
     public boolean hasGoldenAppleIn(List<Coordinate> coordinates) {
@@ -109,7 +87,7 @@ public class Board {
     private void validateAppleIsAt(Coordinate coordinate) {
         Apple apple = apples.get(coordinate.getY()).get(coordinate.getX());
         if (apple.isEmpty()) {
-            throw new InvalidRangeException();
+            throw new AppleNotRemovableException("없는 사과를 제거하려고 했습니다");
         }
     }
 

@@ -51,7 +51,7 @@ public class AppleGame extends BaseEntity {
     }
 
     public static AppleGame ofRandomized(Member owner) {
-        return new AppleGame(Board.ofRandomized(DEFAULT_HEIGHT, DEFAULT_WIDTH), owner);
+        return new AppleGame(new Board(DEFAULT_HEIGHT, DEFAULT_WIDTH), owner);
     }
 
     public void reset() {

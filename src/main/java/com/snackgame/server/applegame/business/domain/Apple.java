@@ -52,10 +52,6 @@ public class Apple {
         return this.equals(EMPTY);
     }
 
-    public boolean exists() {
-        return !this.equals(EMPTY);
-    }
-
     public int getNumber() {
         return number;
     }
