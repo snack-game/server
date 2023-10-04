@@ -61,9 +61,9 @@ public class AppleGame extends BaseEntity {
         this.createdAt = now();
     }
 
-    public void removeApplesIn(List<Coordinate> coordinates) {
+    public void removeApplesIn(Range range) {
         validateSessionAlive();
-        List<Apple> removed = board.removeApplesIn(coordinates);
+        List<Apple> removed = board.removeApplesIn(range);
         if (removed.stream().anyMatch(Apple::isGolden)) {
             board = board.reset();
         }
@@ -73,7 +73,7 @@ public class AppleGame extends BaseEntity {
     @Deprecated(forRemoval = true)
     public void removeApplesInV1(List<Coordinate> coordinates) {
         validateSessionAlive();
-        List<Apple> removed = board.removeApplesIn(coordinates);
+        List<Apple> removed = board.removeApplesInV1(coordinates);
         score += removed.size();
     }
 

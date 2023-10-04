@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -81,46 +80,28 @@ class BoardTest {
     @Test
     void 특정_범위의_사과들을_제거한다() {
         var board = TWO_BY_FOUR();
-        var coordinates = List.of(
+        var range = new Range(
                 new Coordinate(0, 1),
-                new Coordinate(0, 3),
-                new Coordinate(1, 1),
                 new Coordinate(1, 3)
         );
 
-        board.removeApplesIn(coordinates);
+        board.removeApplesIn(range);
 
-        assertThat(coordinates).allSatisfy(coordinate ->
+        assertThat(range.getCompleteCoordinates()).allSatisfy(coordinate ->
                 assertThat(board.getApples().get(coordinate.getY()).get(coordinate.getX()))
                         .isEqualTo(Apple.EMPTY)
         );
     }
 
     @Test
-    void 사과_좌표들에_사과가_없으면_예외를_던진다() {
-        var board = TWO_BY_FOUR();
-        var coordinates = List.of(
-                new Coordinate(0, 1),
-                new Coordinate(0, 2),
-                new Coordinate(0, 3),
-                new Coordinate(1, 1),
-                new Coordinate(1, 3)
-        );
-
-        assertThatThrownBy(() -> board.removeApplesIn(coordinates))
-                .isInstanceOf(AppleNotRemovableException.class)
-                .hasMessage("없는 사과를 제거하려고 했습니다");
-    }
-
-    @Test
     void 사과들의_합이_10이어야_제거할_수_있다() {
         var board = TWO_BY_FOUR();
-        var coordinates = List.of(
+        var range = new Range(
                 new Coordinate(0, 0),
                 new Coordinate(0, 1)
         );
 
-        assertThatThrownBy(() -> board.removeApplesIn(coordinates))
+        assertThatThrownBy(() -> board.removeApplesIn(range))
                 .isInstanceOf(AppleNotRemovableException.class)
                 .hasMessage("사과들의 합이 10이 아닙니다");
     }
@@ -128,12 +109,12 @@ class BoardTest {
     @Test
     void 제거된_사과들을_반환한다() {
         var board = TWO_BY_FOUR();
-        var coordinates = List.of(
+        var range = new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         );
 
-        var removed = board.removeApplesIn(coordinates);
+        var removed = board.removeApplesIn(range);
 
         assertThat(removed).hasSize(2);
         assertThat(removed)

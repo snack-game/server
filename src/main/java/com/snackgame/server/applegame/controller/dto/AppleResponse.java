@@ -1,6 +1,7 @@
 package com.snackgame.server.applegame.controller.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.snackgame.server.applegame.business.domain.Apple;
 
@@ -17,6 +18,6 @@ public class AppleResponse {
     public static List<AppleResponse> of(List<Apple> apples) {
         return apples.stream()
                 .map(it -> new AppleResponse(it.getNumber(), it.isGolden()))
-                .toList();
+                .collect(Collectors.toList());
     }
 }

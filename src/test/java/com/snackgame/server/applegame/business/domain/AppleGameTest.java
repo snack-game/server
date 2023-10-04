@@ -34,19 +34,17 @@ class AppleGameTest {
     @Test
     void 초기화한다() {
         var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠());
-        var coordinates = List.of(
+        var range = new Range(
                 new Coordinate(0, 1),
-                new Coordinate(0, 3),
-                new Coordinate(1, 1),
                 new Coordinate(1, 3)
         );
-        game.removeApplesIn(coordinates);
-        var previousApples = game.getApples();
+        game.removeApplesIn(range);
+        var previousBoard = game.getBoard();
         var previousCreatedAt = game.getCreatedAt();
 
         game.reset();
 
-        assertThat(game.getApples()).isNotEqualTo(previousApples);
+        assertThat(game.getBoard()).isNotEqualTo(previousBoard);
         assertThat(game.getScore()).isZero();
         assertThat(game.getCreatedAt()).isAfter(previousCreatedAt);
     }
@@ -54,14 +52,12 @@ class AppleGameTest {
     @Test
     void 특정_범위의_사과들을_제거하고_점수를_얻는다() {
         var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠());
-        var coordinates = List.of(
+        var range = new Range(
                 new Coordinate(0, 1),
-                new Coordinate(0, 3),
-                new Coordinate(1, 1),
                 new Coordinate(1, 3)
         );
 
-        game.removeApplesIn(coordinates);
+        game.removeApplesIn(range);
 
         assertThat(game.getScore()).isEqualTo(4);
     }
@@ -69,13 +65,13 @@ class AppleGameTest {
     @Test
     void 황금사과를_제거하면_판이_초기화된다() {
         var game = new AppleGame(TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(), 땡칠());
-        var coordinates = List.of(
+        var range = new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         );
         var appleAtRightBottom = game.getApples().get(1).get(1);
 
-        game.removeApplesIn(coordinates);
+        game.removeApplesIn(range);
 
         assertThat(game.getApples().get(1).get(1)).isNotEqualTo(appleAtRightBottom);
     }
@@ -83,13 +79,13 @@ class AppleGameTest {
     @Test
     void 황금사과를_제거해도_시작_시간은_변하지_않는다() {
         var game = new AppleGame(TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(), 땡칠());
-        var coordinates = List.of(
+        var range = new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         );
         var previousCreatedAt = game.getCreatedAt();
 
-        game.removeApplesIn(coordinates);
+        game.removeApplesIn(range);
 
         assertThat(game.getCreatedAt()).isEqualTo(previousCreatedAt);
     }
@@ -97,13 +93,13 @@ class AppleGameTest {
     @Test
     void 황금사과를_제거해도_점수는_초기화되지_않는다() {
         var game = new AppleGame(TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(), 땡칠());
-        var coordinates = List.of(
+        var range = new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         );
         var expectedScore = game.getScore() + 2;
 
-        game.removeApplesIn(coordinates);
+        game.removeApplesIn(range);
 
         assertThat(game.getScore()).isEqualTo(expectedScore);
     }
@@ -120,14 +116,12 @@ class AppleGameTest {
     @Test
     void 만든지_2분_그리고_여유시간이_지나면_사과를_제거할_수_없다() {
         var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠(), LocalDateTime.now().minusSeconds(125));
-        var coordinates = List.of(
+        var range = new Range(
                 new Coordinate(0, 1),
-                new Coordinate(0, 3),
-                new Coordinate(1, 1),
                 new Coordinate(1, 3)
         );
 
-        assertThatThrownBy(() -> game.removeApplesIn(coordinates))
+        assertThatThrownBy(() -> game.removeApplesIn(range))
                 .isInstanceOf(GameSessionExpiredException.class)
                 .hasMessage("게임 세션이 이미 종료되었습니다");
     }

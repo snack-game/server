@@ -11,6 +11,7 @@ import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository
 import com.snackgame.server.applegame.business.domain.Board;
 import com.snackgame.server.applegame.business.exception.NoSuchSessionException;
 import com.snackgame.server.applegame.controller.dto.MoveRequest;
+import com.snackgame.server.applegame.controller.dto.RangeRequest;
 import com.snackgame.server.member.business.domain.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -35,12 +36,12 @@ public class AppleGameService {
         moves.forEach(move -> game.removeApplesInV1(move.toCoordinates()));
     }
 
-    public Optional<AppleGame> placeMoves(Member member, Long sessionId, List<MoveRequest> moves) {
+    public Optional<AppleGame> placeMoves(Member member, Long sessionId, List<RangeRequest> rangeRequests) {
         AppleGame game = findBy(sessionId);
         game.validateOwnedBy(member);
 
         Board previous = game.getBoard();
-        moves.forEach(move -> game.removeApplesIn(move.toCoordinates()));
+        rangeRequests.forEach(request -> game.removeApplesIn(request.toRange()));
 
         if (!game.getBoard().equals(previous)) {
             return Optional.of(game);

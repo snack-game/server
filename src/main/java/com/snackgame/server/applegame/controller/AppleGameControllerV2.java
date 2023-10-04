@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.snackgame.server.applegame.business.AppleGameService;
 import com.snackgame.server.applegame.business.domain.AppleGame;
 import com.snackgame.server.applegame.controller.dto.AppleGameResponseV2;
-import com.snackgame.server.applegame.controller.dto.MoveRequest;
+import com.snackgame.server.applegame.controller.dto.RangeRequest;
 import com.snackgame.server.member.business.domain.Member;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,9 +45,9 @@ public class AppleGameControllerV2 {
     public ResponseEntity<AppleGameResponseV2> placeMoves(
             Member member,
             @PathVariable Long sessionId,
-            @RequestBody List<MoveRequest> moves
+            @RequestBody List<RangeRequest> ranges
     ) {
-        return appleGameService.placeMoves(member, sessionId, moves)
+        return appleGameService.placeMoves(member, sessionId, ranges)
                 .map(game -> ResponseEntity
                         .status(HttpStatus.RESET_CONTENT)
                         .body(AppleGameResponseV2.of(game))

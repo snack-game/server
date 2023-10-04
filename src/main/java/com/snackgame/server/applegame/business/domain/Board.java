@@ -43,13 +43,21 @@ public class Board {
         return new Board(this.getHeight(), this.getWidth());
     }
 
-    protected List<Apple> removeApplesIn(List<Coordinate> coordinates) {
-        List<Apple> removed = new ArrayList<>();
+    protected List<Apple> removeApplesIn(Range range) {
+        validateSumOf(range.getCompleteCoordinates());
+        return range.getCompleteCoordinates().stream()
+                .map(this::removeAppleAt)
+                .filter(Apple::exists)
+                .collect(Collectors.toList());
+    }
+
+    @Deprecated(forRemoval = true)
+    protected List<Apple> removeApplesInV1(List<Coordinate> coordinates) {
         validateSumOf(coordinates);
-        for (Coordinate coordinate : coordinates) {
-            removed.add(removeAppleAt(coordinate));
-        }
-        return removed;
+        return coordinates.stream()
+                .map(this::removeAppleAt)
+                .filter(Apple::exists)
+                .collect(Collectors.toList());
     }
 
     private void validateSumOf(List<Coordinate> coordinates) {
@@ -71,16 +79,8 @@ public class Board {
     }
 
     private Apple removeAppleAt(Coordinate coordinate) {
-        validateAppleIsAt(coordinate);
         List<Apple> row = apples.get(coordinate.getY());
         return row.set(coordinate.getX(), Apple.EMPTY);
-    }
-
-    private void validateAppleIsAt(Coordinate coordinate) {
-        Apple apple = apples.get(coordinate.getY()).get(coordinate.getX());
-        if (apple.isEmpty()) {
-            throw new AppleNotRemovableException("없는 사과를 제거하려고 했습니다");
-        }
     }
 
     public List<List<Apple>> getApples() {
