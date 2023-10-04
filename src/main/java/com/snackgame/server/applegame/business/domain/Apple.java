@@ -11,14 +11,21 @@ public class Apple {
     private static final int EMPTY_NUMBER = 0;
 
     private final int number;
+    private final boolean isGolden;
 
     private Apple() {
         this.number = EMPTY_NUMBER;
+        this.isGolden = false;
     }
 
     public Apple(int number) {
+        this(number, false);
+    }
+
+    private Apple(int number, boolean isGolden) {
         validateRangeOf(number);
         this.number = number;
+        this.isGolden = isGolden;
     }
 
     public static Apple ofRandomizedNumber() {
@@ -33,12 +40,20 @@ public class Apple {
         }
     }
 
+    public Apple golden() {
+        return new Apple(number, true);
+    }
+
+    public boolean isGolden() {
+        return isGolden;
+    }
+
     public boolean isEmpty() {
         return this.equals(EMPTY);
     }
 
     public boolean exists() {
-        return !isEmpty();
+        return !this.equals(EMPTY);
     }
 
     public int getNumber() {
@@ -46,24 +61,7 @@ public class Apple {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-
-        Apple that = (Apple)o;
-
-        return number == that.number;
-    }
-
-    @Override
-    public int hashCode() {
-        return number;
-    }
-
-    @Override
     public String toString() {
-        return "(" + number + ")";
+        return "(" + number + ", " + isGolden + ")";
     }
 }

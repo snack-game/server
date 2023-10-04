@@ -4,75 +4,70 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Lob;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.snackgame.server.applegame.business.exception.AppleNotRemovableException;
-import com.snackgame.server.applegame.business.exception.InvalidRangeException;
+import com.snackgame.server.applegame.business.exception.InvalidBoardSizeException;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Embeddable
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board {
 
+    private static final int MIN_HEIGHT = 1;
+    private static final int MIN_WIDTH = 1;
     private static final int REMOVABLE_SUM = 10;
 
-    @Lob
-    @Column(nullable = false)
     private List<List<Apple>> apples;
 
     public Board(List<List<Apple>> apples) {
+        validateSizeOf(apples);
         this.apples = apples.stream()
                 .map(ArrayList::new)
                 .collect(Collectors.toList());
     }
 
-    public static Board ofRandomized(int height, int width) {
-        List<List<Apple>> apples = new ArrayList<>();
-        for (int i = 0; i < height; i++) {
-            List<Apple> row = new ArrayList<>();
-            for (int j = 0; j < width; j++) {
-                row.add(Apple.ofRandomizedNumber());
-            }
-            apples.add(row);
-        }
-        return new Board(apples);
+    public Board(int height, int width) {
+        this(ApplesFactory.createRandomized(height, width));
     }
 
-    public int removeApplesIn(Range range) {
-        validateContains(range);
-        validateSumOf(range);
-        int removed = 0;
-        for (Coordinate coordinate : range.getAppleCoordinates()) {
-            removeAppleAt(coordinate);
-            ++removed;
-        }
-        return removed;
-    }
-
-    private void validateContains(Range range) {
-        boolean appleDoesNotExist = getApplesIn(range.getAppleCoordinates()).stream()
-                .anyMatch(Apple::isEmpty);
-        boolean unexpectedAppleExists = getApplesIn(range.getEmptyCoordinates()).stream()
-                .anyMatch(Apple::exists);
-        if (appleDoesNotExist || unexpectedAppleExists) {
-            throw new InvalidRangeException();
+    private void validateSizeOf(List<List<Apple>> apples) {
+        if (apples.size() < MIN_HEIGHT || apples.get(0).size() < MIN_WIDTH) {
+            throw new InvalidBoardSizeException();
         }
     }
 
-    private void validateSumOf(Range range) {
-        if (sumApplesIn(range) != REMOVABLE_SUM) {
+    public Board reset() {
+        return new Board(this.getHeight(), this.getWidth());
+    }
+
+    protected List<Apple> removeApplesIn(Range range) {
+        validateSumOf(range.getCompleteCoordinates());
+        return range.getCompleteCoordinates().stream()
+                .map(this::removeAppleAt)
+                .filter(Apple::exists)
+                .collect(Collectors.toList());
+    }
+
+    @Deprecated(forRemoval = true)
+    protected List<Apple> removeApplesInV1(List<Coordinate> coordinates) {
+        validateSumOf(coordinates);
+        return coordinates.stream()
+                .map(this::removeAppleAt)
+                .filter(Apple::exists)
+                .collect(Collectors.toList());
+    }
+
+    private void validateSumOf(List<Coordinate> coordinates) {
+        if (sumApplesIn(coordinates) != REMOVABLE_SUM) {
             throw new AppleNotRemovableException("사과들의 합이 " + REMOVABLE_SUM + "이 아닙니다");
         }
     }
 
-    private int sumApplesIn(Range range) {
-        return getApplesIn(range.getAppleCoordinates()).stream()
+    private int sumApplesIn(List<Coordinate> coordinates) {
+        return getApplesIn(coordinates).stream()
                 .map(Apple::getNumber)
                 .reduce(0, Integer::sum);
     }
@@ -83,14 +78,24 @@ public class Board {
                 .collect(Collectors.toList());
     }
 
-    private void removeAppleAt(Coordinate coordinate) {
+    private Apple removeAppleAt(Coordinate coordinate) {
         List<Apple> row = apples.get(coordinate.getY());
-        row.set(coordinate.getX(), Apple.EMPTY);
+        return row.set(coordinate.getX(), Apple.EMPTY);
     }
 
     public List<List<Apple>> getApples() {
         return apples.stream()
                 .map(ArrayList::new)
                 .collect(Collectors.toList());
+    }
+
+    @JsonIgnore
+    public int getHeight() {
+        return apples.size();
+    }
+
+    @JsonIgnore
+    public int getWidth() {
+        return apples.get(0).size();
     }
 }

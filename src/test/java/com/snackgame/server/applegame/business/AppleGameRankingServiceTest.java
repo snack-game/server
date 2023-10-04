@@ -38,17 +38,15 @@ class AppleGameRankingServiceTest {
     void 전체_랭킹을_가져온다() {
         Member owner = memberService.createGuest();
         AppleGame firstGame = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
-        firstGame.removeApplesIn(new Range(List.of(
+        firstGame.removeApplesIn(new Range(
                 new Coordinate(0, 1),
-                new Coordinate(0, 3),
-                new Coordinate(1, 1),
                 new Coordinate(1, 3)
-        )));
+        ));
         AppleGame secondGame = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
-        secondGame.removeApplesIn(new Range(List.of(
+        secondGame.removeApplesIn(new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
-        )));
+        ));
         AppleGame thirdGame = appleGameService.startGameOf(owner);
         firstGame.end();
         secondGame.end();
@@ -68,18 +66,16 @@ class AppleGameRankingServiceTest {
     void 자신의_최대_랭킹을_가져온다() {
         Member otherMember = memberService.createGuest();
         AppleGame firstGame = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), otherMember));
-        firstGame.removeApplesIn(new Range(List.of(
+        firstGame.removeApplesIn(new Range(
                 new Coordinate(0, 1),
-                new Coordinate(0, 3),
-                new Coordinate(1, 1),
                 new Coordinate(1, 3)
-        )));
+        ));
         Member member = memberService.createGuest();
         AppleGame secondGame = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), member));
-        secondGame.removeApplesIn(new Range(List.of(
+        secondGame.removeApplesIn(new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
-        )));
+        ));
         AppleGame thirdGame = appleGameService.startGameOf(member);
         firstGame.end();
         secondGame.end();

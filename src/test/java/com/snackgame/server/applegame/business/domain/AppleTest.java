@@ -32,4 +32,11 @@ class AppleTest {
     void 빈_사과인지_알_수_있다() {
         assertThat(Apple.EMPTY.isEmpty()).isTrue();
     }
+
+    @Test
+    void 황금사과로_바꾼다() {
+        Apple apple = new Apple(1).golden();
+
+        assertThat(apple.isGolden()).isTrue();
+    }
 }

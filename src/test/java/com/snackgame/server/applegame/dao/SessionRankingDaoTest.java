@@ -54,22 +54,20 @@ class SessionRankingDaoTest {
                 new AlphabetNameRandomizer()
         );
         this.first = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
-        first.removeApplesIn(new Range(List.of(
+        first.removeApplesIn(new Range(
                 new Coordinate(0, 1),
-                new Coordinate(0, 3),
-                new Coordinate(1, 1),
                 new Coordinate(1, 3)
-        )));
+        ));
         this.second = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
-        second.removeApplesIn(new Range(List.of(
+        second.removeApplesIn(new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
-        )));
+        ));
         this.third = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
-        third.removeApplesIn(new Range(List.of(
+        third.removeApplesIn(new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
-        )));
+        ));
         this.fourth = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
         this.fifth = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
 
