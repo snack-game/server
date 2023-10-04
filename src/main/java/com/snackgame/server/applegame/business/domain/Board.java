@@ -49,17 +49,11 @@ public class Board {
         return new Board(this.getHeight(), this.getWidth());
     }
 
-    public boolean hasGoldenAppleIn(List<Coordinate> coordinates) {
-        return getApplesIn(coordinates).stream()
-                .anyMatch(Apple::isGolden);
-    }
-
-    public int removeApplesIn(List<Coordinate> coordinates) {
+    protected List<Apple> removeApplesIn(List<Coordinate> coordinates) {
+        List<Apple> removed = new ArrayList<>();
         validateSumOf(coordinates);
-        int removed = 0;
         for (Coordinate coordinate : coordinates) {
-            removeAppleAt(coordinate);
-            ++removed;
+            removed.add(removeAppleAt(coordinate));
         }
         return removed;
     }
@@ -82,10 +76,10 @@ public class Board {
                 .collect(Collectors.toList());
     }
 
-    private void removeAppleAt(Coordinate coordinate) {
+    private Apple removeAppleAt(Coordinate coordinate) {
         validateAppleIsAt(coordinate);
         List<Apple> row = apples.get(coordinate.getY());
-        row.set(coordinate.getX(), Apple.EMPTY);
+        return row.set(coordinate.getX(), Apple.EMPTY);
     }
 
     private void validateAppleIsAt(Coordinate coordinate) {

@@ -2,6 +2,8 @@ package com.snackgame.server.applegame.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,11 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.snackgame.server.applegame.business.AppleGameService;
 import com.snackgame.server.applegame.business.domain.AppleGame;
 import com.snackgame.server.applegame.controller.dto.AppleGameResponse;
-import com.snackgame.server.applegame.controller.dto.CoordinateRequest;
+import com.snackgame.server.applegame.controller.dto.AppleGameResponseV2;
 import com.snackgame.server.applegame.controller.dto.MoveRequest;
 import com.snackgame.server.member.business.domain.Member;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -32,10 +36,29 @@ public class AppleGameController {
         return AppleGameResponse.of(game);
     }
 
+    @Deprecated(forRemoval = true)
     @Operation(summary = "세션에 수 삽입", description = "지정한 세션에 수들을 삽입한다")
     @PutMapping("/sessions/{sessionId}/moves")
-    public void placeMoves(Member member, @PathVariable Long sessionId, @RequestBody List<MoveRequest> moves) {
-        appleGameService.placeMoves(member, sessionId, moves);
+    public void placeMovesV1(Member member, @PathVariable Long sessionId, @RequestBody List<MoveRequest> moves) {
+        appleGameService.placeMovesV1(member, sessionId, moves);
+    }
+
+    @Operation(summary = "세션에 수 삽입", description = "지정한 세션에 수들을 삽입한다", responses = {
+            @ApiResponse(responseCode = "200", description = "판이 초기화되지 않은 경우", content = @Content()),
+            @ApiResponse(responseCode = "205", description = "황금사과로 판이 초기화된 경우")
+    })
+    @PutMapping("/v2/sessions/{sessionId}/moves")
+    public ResponseEntity<AppleGameResponseV2> placeMoves(
+            Member member,
+            @PathVariable Long sessionId,
+            @RequestBody List<MoveRequest> moves
+    ) {
+        return appleGameService.placeMoves(member, sessionId, moves)
+                .map(game -> ResponseEntity
+                        .status(HttpStatus.RESET_CONTENT)
+                        .body(AppleGameResponseV2.of(game))
+                )
+                .orElseGet(() -> ResponseEntity.ok().build());
     }
 
     @Operation(summary = "게임판 초기화", description = "지정한 세션의 게임판을 초기화한다. 황금사과와는 별도의 기능이다.")

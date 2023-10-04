@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -63,6 +64,36 @@ class AppleGameServiceTest {
 
         AppleGame found = appleGameService.findBy(game.getSessionId());
         assertThat(found.getScore()).isEqualTo(6);
+    }
+
+    @Test
+    void 황금사과를_제거하면_초기화된_판을_반환한다() {
+        Member owner = memberService.createGuest();
+        AppleGame game = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(), owner));
+        List<CoordinateRequest> coordinates = List.of(
+                new CoordinateRequest(0, 0),
+                new CoordinateRequest(1, 0)
+        );
+        List<MoveRequest> moveRequests = List.of(new MoveRequest(coordinates));
+
+        Optional<AppleGame> appleGame = appleGameService.placeMoves(owner, game.getSessionId(), moveRequests);
+
+        assertThat(appleGame).isPresent();
+    }
+
+    @Test
+    void 황금사과를_제거하지_않으면_아무_판도_반환하지_않는다() {
+        Member owner = memberService.createGuest();
+        AppleGame game = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
+        List<CoordinateRequest> coordinates = List.of(
+                new CoordinateRequest(0, 0),
+                new CoordinateRequest(1, 0)
+        );
+        List<MoveRequest> moveRequests = List.of(new MoveRequest(coordinates));
+
+        Optional<AppleGame> appleGame = appleGameService.placeMoves(owner, game.getSessionId(), moveRequests);
+
+        assertThat(appleGame).isEmpty();
     }
 
     @Test

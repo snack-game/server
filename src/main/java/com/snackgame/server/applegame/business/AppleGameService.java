@@ -1,12 +1,14 @@
 package com.snackgame.server.applegame.business;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.snackgame.server.applegame.business.domain.AppleGame;
 import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
+import com.snackgame.server.applegame.business.domain.Board;
 import com.snackgame.server.applegame.business.exception.NoSuchSessionException;
 import com.snackgame.server.applegame.controller.dto.MoveRequest;
 import com.snackgame.server.member.business.domain.Member;
@@ -25,12 +27,25 @@ public class AppleGameService {
         return appleGameSessions.save(game);
     }
 
-    public void placeMoves(Member member, Long sessionId, List<MoveRequest> moves) {
+    @Deprecated(forRemoval = true)
+    public void placeMovesV1(Member member, Long sessionId, List<MoveRequest> moves) {
         AppleGame game = findBy(sessionId);
         game.validateOwnedBy(member);
-        for (MoveRequest move : moves) {
-            game.removeApplesIn(move.toCoordinates());
+
+        moves.forEach(move -> game.removeApplesInV1(move.toCoordinates()));
+    }
+
+    public Optional<AppleGame> placeMoves(Member member, Long sessionId, List<MoveRequest> moves) {
+        AppleGame game = findBy(sessionId);
+        game.validateOwnedBy(member);
+
+        Board previous = game.getBoard();
+        moves.forEach(move -> game.removeApplesIn(move.toCoordinates()));
+
+        if (!game.getBoard().equals(previous)) {
+            return Optional.of(game);
         }
+        return Optional.empty();
     }
 
     public AppleGame resetBoard(Member member, Long sessionId) {
