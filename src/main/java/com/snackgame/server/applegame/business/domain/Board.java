@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Lob;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.snackgame.server.applegame.business.exception.AppleNotRemovableException;
 import com.snackgame.server.applegame.business.exception.InvalidBoardSizeException;
 
@@ -15,7 +12,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Embeddable
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board {
@@ -24,8 +20,6 @@ public class Board {
     private static final int MIN_WIDTH = 1;
     private static final int REMOVABLE_SUM = 10;
 
-    @Lob
-    @Column(nullable = false)
     private List<List<Apple>> apples;
 
     public Board(List<List<Apple>> apples) {
@@ -95,10 +89,12 @@ public class Board {
                 .collect(Collectors.toList());
     }
 
+    @JsonIgnore
     public int getHeight() {
         return apples.size();
     }
 
+    @JsonIgnore
     public int getWidth() {
         return apples.get(0).size();
     }

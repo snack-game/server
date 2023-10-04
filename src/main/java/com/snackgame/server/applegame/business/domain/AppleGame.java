@@ -5,11 +5,11 @@ import static java.time.LocalDateTime.now;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
 import com.snackgame.server.applegame.business.exception.GameSessionExpiredException;
@@ -34,7 +34,7 @@ public class AppleGame extends BaseEntity {
     private Long sessionId;
     @ManyToOne
     private Member owner;
-    @Embedded
+    @Lob
     private Board board;
     private int score = 0;
     private boolean isEnded = false;
