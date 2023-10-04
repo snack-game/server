@@ -1,9 +1,10 @@
 package com.snackgame.server.applegame.business.domain;
 
+import static com.snackgame.server.applegame.fixture.TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE;
+import static com.snackgame.server.applegame.fixture.TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE_AS_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 
@@ -15,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.test.context.transaction.TestTransaction;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -44,35 +45,27 @@ class AppleGameSessionRepositoryTest {
 
     @Test
     void 게임판의_사과들은_직렬화되어_저장된다() throws JsonProcessingException {
-        AppleGame game = AppleGame.ofRandomized(null);
-
+        AppleGame game = new AppleGame(TWO_BY_TWO_WITH_GOLDEN_APPLE(), null);
         games.save(game);
 
-        String applesJson = jdbcTemplate.queryForObject("SELECT apples FROM apple_game WHERE session_id = " + game.getSessionId(),
+        String applesJson = jdbcTemplate.queryForObject(
+                "SELECT board FROM apple_game WHERE session_id = " + game.getSessionId(),
                 String.class);
-        String expectedJson = objectMapper.writeValueAsString(game.getApples());
-        assertThat(applesJson).isEqualTo(expectedJson);
+        assertThat(applesJson).isEqualTo(TWO_BY_TWO_WITH_GOLDEN_APPLE_AS_JSON);
     }
 
     @Test
     void 직렬화되어_저장된_게임판을_불러온다() {
-        Long fixtureGameId = insertFixtureGame();
-        AppleGame game = games.findById(fixtureGameId).get();
+        var saved = games.save(new AppleGame(TWO_BY_TWO_WITH_GOLDEN_APPLE(), null));
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+
+        TestTransaction.start();
+        var game = games.findById(saved.getSessionId()).get();
 
         assertThat(game.getApples()).hasSize(2);
         assertThat(game.getApples().get(0)).hasSize(2);
-    }
-
-    private Long insertFixtureGame() {
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("apple_game")
-                .usingGeneratedKeyColumns("session_id");
-
-        return jdbcInsert.executeAndReturnKey(Map.of(
-                "score", 0,
-                "apples", "[[{\"number\":4},{\"number\":8}],[{\"number\":3},{\"number\":1}]]",
-                "is_ended", false
-        )).longValue();
+        TestTransaction.end();
     }
 
     @Test
