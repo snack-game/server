@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 public class AppleGame extends BaseEntity {
 
     public static final int DEFAULT_HEIGHT = 10;
-    public static final int DEFAULT_WIDTH = 18;
+    public static final int DEFAULT_WIDTH = 12;
     private static final int SESSION_SECONDS = 120;
     private static final int SPARE_SECONDS = 5;
 
