@@ -22,12 +22,12 @@ import com.snackgame.server.member.business.domain.Member;
 class AppleGameTest {
 
     @Test
-    void 게임을_10_X_18사이즈의_게임판으로_생성한다() {
+    void 게임을_10_X_12사이즈의_게임판으로_생성한다() {
         var game = AppleGame.ofRandomized(땡칠());
 
         assertThat(game.getApples()).hasSize(10);
         assertThat(game.getApples()).allSatisfy(
-                row -> assertThat(row).hasSize(18)
+                row -> assertThat(row).hasSize(12)
         );
     }
 
