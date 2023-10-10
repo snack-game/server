@@ -1,5 +1,10 @@
 package com.snackgame.server.member.fixture;
 
+import static com.snackgame.server.member.fixture.FixtureUtil.idIgnored;
+import static com.snackgame.server.member.fixture.FixtureUtil.pushing;
+
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+
 import com.snackgame.server.member.business.domain.Group;
 import com.snackgame.server.member.business.domain.Member;
 
