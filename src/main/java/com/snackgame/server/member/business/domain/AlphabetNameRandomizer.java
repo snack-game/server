@@ -13,8 +13,8 @@ public class AlphabetNameRandomizer implements NameRandomizer {
     private static final Random RANDOM = new Random();
 
     @Override
-    public String get() {
-        return NAME_PREFIX + getRandomizedAlphabets(RANDOMIZED_LENGTH);
+    public Name get() {
+        return new Name(NAME_PREFIX + getRandomizedAlphabets(RANDOMIZED_LENGTH));
     }
 
     private static String getRandomizedAlphabets(int length) {

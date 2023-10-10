@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.snackgame.server.auth.JwtProvider;
+import com.snackgame.server.auth.jwt.JwtProvider;
 import com.snackgame.server.member.business.MemberService;
 import com.snackgame.server.member.business.domain.Member;
 import com.snackgame.server.member.controller.dto.GroupRequest;
@@ -49,7 +49,7 @@ public class MemberController {
     @Operation(summary = "사용자의 토큰 발급", description = "어떤 이름을 가진 사용자의 토큰을 발급한다")
     @PostMapping("/members/token")
     public MemberDetailsWithTokenResponse issueToken(@RequestBody NameRequest nameRequest) {
-        Member found = memberService.findBy(nameRequest.getName());
+        Member found = memberService.getBy(nameRequest.getName());
         String accessToken = jwtProvider.createTokenWith(found.getId().toString());
         return MemberDetailsWithTokenResponse.of(found, accessToken);
     }

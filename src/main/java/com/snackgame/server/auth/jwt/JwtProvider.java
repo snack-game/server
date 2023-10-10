@@ -1,4 +1,4 @@
-package com.snackgame.server.auth;
+package com.snackgame.server.auth.jwt;
 
 import java.util.Date;
 import java.util.Objects;

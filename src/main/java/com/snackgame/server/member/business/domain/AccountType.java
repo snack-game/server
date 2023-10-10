@@ -1,5 +1,6 @@
 package com.snackgame.server.member.business.domain;
 
-public interface NameRandomizer {
-    Name get();
+public enum AccountType {
+
+    GUEST, SELF, SOCIAL;
 }
