@@ -7,11 +7,16 @@ import javax.persistence.Id;
 
 public abstract class FixtureUtil {
 
+    // 2단계 이상 상속된 필드들은 지원하지 않는다.
     public static <T> T idIgnored(T object) {
         try {
             Field id = Arrays.stream(object.getClass().getDeclaredFields())
                     .filter(it -> it.isAnnotationPresent(Id.class))
                     .findFirst()
+                    .or(() -> Arrays.stream(object.getClass().getSuperclass().getDeclaredFields())
+                            .filter(it -> it.isAnnotationPresent(Id.class))
+                            .findFirst()
+                    )
                     .get();
             id.setAccessible(true);
             id.set(object, null);

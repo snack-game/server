@@ -1,9 +1,12 @@
 package com.snackgame.server.applegame.dao;
 
+import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
+import static com.snackgame.server.member.fixture.MemberFixture.땡칠2;
+import static com.snackgame.server.member.fixture.MemberFixture.똥수;
+import static com.snackgame.server.member.fixture.MemberFixture.시연;
+import static com.snackgame.server.member.fixture.MemberFixture.주호;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -11,7 +14,9 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 
 import com.snackgame.server.applegame.business.domain.AppleGame;
 import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
@@ -19,19 +24,14 @@ import com.snackgame.server.applegame.business.domain.Coordinate;
 import com.snackgame.server.applegame.business.domain.Range;
 import com.snackgame.server.applegame.dao.dto.RankingDto;
 import com.snackgame.server.applegame.fixture.TestFixture;
-import com.snackgame.server.member.business.GroupService;
-import com.snackgame.server.member.business.MemberService;
-import com.snackgame.server.member.business.domain.AlphabetNameRandomizer;
-import com.snackgame.server.member.business.domain.GroupRepository;
-import com.snackgame.server.member.business.domain.MemberRepository;
+import com.snackgame.server.member.fixture.MemberFixture;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @DataJpaTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class SessionRankingDaoTest {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
     private SessionRankingDao sessionRankingDao;
 
     private AppleGame first;
@@ -42,34 +42,31 @@ class SessionRankingDaoTest {
 
     @BeforeEach
     void setUp(
-            @Autowired MemberRepository members,
-            @Autowired GroupRepository groups,
-            @Autowired AppleGameSessionRepository appleGameSessions
+            @Autowired AppleGameSessionRepository appleGameSessions,
+            @Autowired TestEntityManager entityManager,
+            @Autowired JdbcTemplate jdbcTemplate
     ) {
+        MemberFixture.persistAllWith(entityManager);
+
         this.sessionRankingDao = new SessionRankingDao(jdbcTemplate);
 
-        MemberService memberService = new MemberService(
-                members,
-                new GroupService(groups),
-                new AlphabetNameRandomizer()
-        );
-        this.first = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
+        this.first = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 똥수()));
         first.removeApplesIn(new Range(
                 new Coordinate(0, 1),
                 new Coordinate(1, 3)
         ));
-        this.second = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
+        this.second = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠()));
         second.removeApplesIn(new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         ));
-        this.third = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
+        this.third = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠2()));
         third.removeApplesIn(new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         ));
-        this.fourth = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
-        this.fifth = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), memberService.createGuest()));
+        this.fourth = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 시연()));
+        this.fifth = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 주호()));
 
         first.end();
         second.end();

@@ -78,7 +78,7 @@ class MemberServiceTest {
 
     @Test
     void 임시사용자_이름이_중복이면_다시_만든다() {
-        memberService = new MemberService(memberRepository, groupService, fakeNameRandomizer);
+        memberService = new MemberService(memberRepository, groupService, fakeNameRandomizer, null);
         memberService.createWith("게스트#abc");
 
         Member guest = memberService.createGuest();
