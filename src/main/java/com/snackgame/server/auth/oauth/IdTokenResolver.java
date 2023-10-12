@@ -18,7 +18,7 @@ import com.snackgame.server.auth.oauth.payload.IdTokenPayload;
 @Component
 public class IdTokenResolver {
 
-    private void verify(final String rawIdToken) {
+    public void verify(final String rawIdToken) {
         try {
             DecodedJWT decoded = JWT.decode(rawIdToken);
             Provider provider = Provider.thatMatches(decoded.getIssuer());
@@ -40,7 +40,6 @@ public class IdTokenResolver {
     }
 
     public IdTokenPayload resolve(final String rawIdToken) {
-        verify(rawIdToken);
         DecodedJWT decoded = JWT.decode(rawIdToken);
         Provider provider = Provider.thatMatches(decoded.getIssuer());
 
