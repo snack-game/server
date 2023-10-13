@@ -16,18 +16,24 @@ jobs:
     runs-on: production
     steps:
       - uses: actions/checkout@v3
-      - name: gradle bootjar
+
+      - name: Create bootjar
         run: |
           chmod +x ./gradlew
           ./gradlew bootjar
 
-      - name: copy jar
+      - name: Copy jar
         shell: bash {0}
         run: |
           mkdir $JAR_DIRECTORY
           cp ./build/libs/$JAR_NAME $JAR_DIRECTORY/$JAR_NAME
 
-      - name: kill previous process
+      - name: Download Datadog Java Agent
+        working-directory: ${{ env.JAR_DIRECTORY }}
+        run: |
+          wget -O dd-java-agent.jar 'https://dtdg.co/latest-java-tracer'
+
+      - name: Kill previous process
         shell: bash {0}
         run: |
           PROCESS_ID=$(pgrep -f "$JAR_NAME")
@@ -35,13 +41,14 @@ jobs:
             sudo kill -9 $PROCESS_ID
             echo "구동중인 애플리케이션을 종료했습니다. (pid : $PROCESS_ID)\n"
           fi
-      - name: deploy
+
+      - name: Run Jar
         env:
           RUNNER_TRACKING_ID: ""
         shell: bash
+        working-directory: ${{ env.JAR_DIRECTORY }}
         run: |
-          cd $JAR_DIRECTORY;
-          nohup java -jar \
+          nohup java -javaagent:dd-java-agent.jar \
           -Dspring.profiles.active=production \
           -DJWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
           -DJWT_EXPIRE_LENGTH=${{ secrets.JWT_EXPIRE_LENGTH }} \
@@ -49,4 +56,11 @@ jobs:
           -DPRODUCTION_DB_URL=${{ secrets.PRODUCTION_DB_URL }} \
           -DPRODUCTION_DB_USERNAME=${{ secrets.PRODUCTION_DB_USERNAME }} \
           -DPRODUCTION_DB_PASSWORD=${{ secrets.PRODUCTION_DB_PASSWORD }} \
-          $JAR_NAME > ~/snackgame-server.log &
+          -Ddd.profiling.enabled=true \
+          -XX:FlightRecorderOptions=stackdepth=256 \
+          -Ddd.logs.injection=true \
+          -Ddd.appsec.enabled=true \
+          -Ddd.iast.enabled=true \
+          -Ddd.service=snackgame \
+          -Ddd.env=production \
+          -jar $JAR_NAME > ~/snackgame-server.log &
