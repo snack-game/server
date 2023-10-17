@@ -25,6 +25,7 @@ dependencies {
 	implementation 'com.auth0:java-jwt:3.19.0'
 	implementation 'com.auth0:jwks-rsa:0.21.1'
 	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.15'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'

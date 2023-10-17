@@ -11,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.snackgame.server.auth.jwt.BearerTokenExtractor;
 import com.snackgame.server.auth.jwt.JwtMemberArgumentResolver;
 import com.snackgame.server.auth.jwt.JwtProvider;
+import com.snackgame.server.auth.oauth.support.SocialMemberSavingArgumentResolver;
 import com.snackgame.server.member.business.domain.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 jwtProvider,
                 memberRepository
         ));
+        resolvers.add(new SocialMemberSavingArgumentResolver(memberRepository));
     }
 
     @Override

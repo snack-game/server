@@ -55,7 +55,8 @@ public class OpenApiConfig {
     public OperationCustomizer authOperationMarker() {
         return (operation, handlerMethod) -> {
             Arrays.stream(handlerMethod.getMethodParameters())
-                    .filter(it -> it.getParameterType().isAssignableFrom(Member.class))
+                    .filter(it -> Member.class.isAssignableFrom(it.getParameterType())
+                                  && !it.hasParameterAnnotations())
                     .findAny()
                     .ifPresent(it -> operation.addSecurityItem(JWT_SECURITY_ITEM));
             return operation;

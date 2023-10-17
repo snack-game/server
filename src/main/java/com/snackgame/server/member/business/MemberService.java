@@ -7,12 +7,14 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
 import com.snackgame.server.member.business.domain.Group;
 import com.snackgame.server.member.business.domain.Guest;
 import com.snackgame.server.member.business.domain.Member;
 import com.snackgame.server.member.business.domain.MemberRepository;
 import com.snackgame.server.member.business.domain.Name;
 import com.snackgame.server.member.business.domain.NameRandomizer;
+import com.snackgame.server.member.business.domain.SocialMember;
 import com.snackgame.server.member.business.exception.DuplicateNameException;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class MemberService {
     private final MemberRepository members;
     private final GroupService groupService;
     private final NameRandomizer nameRandomizer;
+    private final AppleGameSessionRepository gameSessions;
 
     @Transactional
     public Member createWith(String name) {
@@ -47,6 +50,13 @@ public class MemberService {
     public Member createGuest() {
         Guest guest = new Guest(generateDistinctName());
         return members.save(guest);
+    }
+
+    @Transactional
+    public Member integrate(Member victim, SocialMember socialMember) {
+        gameSessions.transferAll(victim, socialMember);
+        victim.invalidate();
+        return socialMember;
     }
 
     @Transactional

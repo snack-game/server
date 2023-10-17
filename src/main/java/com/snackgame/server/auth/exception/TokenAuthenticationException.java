@@ -1,8 +1,8 @@
 package com.snackgame.server.auth.exception;
 
-public class AuthenticationException extends AuthException {
+public class TokenAuthenticationException extends AuthException {
 
-    public AuthenticationException() {
+    public TokenAuthenticationException() {
         super("사용자 인증에 실패했습니다");
     }
 }

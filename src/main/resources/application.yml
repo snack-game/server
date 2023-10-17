@@ -6,6 +6,13 @@ spring:
   web:
     resources:
       add-mappings: false
+  security:
+    oauth2.client:
+      registration:
+        google:
+          scope:
+            - email
+            - profile
 springdoc:
   api-docs:
     path: /docs

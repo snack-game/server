@@ -4,16 +4,22 @@ import javax.persistence.Entity;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class SocialMember extends Member {
+
+    private String email;
+    private String nickname;
+    private String picture;
 
     private String provider;
     private String providedId;
 
-    public SocialMember(Name name, String provider, String providedId) {
-        super(name);
+    public SocialMember(String name, String provider, String providedId) {
+        super(new Name(name));
         this.provider = provider;
         this.providedId = providedId;
     }
@@ -38,5 +44,11 @@ public class SocialMember extends Member {
 
     public String getProvidedId() {
         return providedId;
+    }
+
+    public void setAdditional(String email, String nickname, String picture) {
+        this.email = email;
+        this.nickname = nickname;
+        this.picture = picture;
     }
 }

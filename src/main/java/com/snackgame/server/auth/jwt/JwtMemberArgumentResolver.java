@@ -7,8 +7,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.snackgame.server.auth.exception.AuthenticationException;
-import com.snackgame.server.member.business.MemberService;
+import com.snackgame.server.auth.exception.TokenAuthenticationException;
 import com.snackgame.server.member.business.domain.Member;
 import com.snackgame.server.member.business.domain.MemberRepository;
 
@@ -23,7 +22,8 @@ public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver 
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return Member.class.isAssignableFrom(parameter.getParameterType());
+        return Member.class.isAssignableFrom(parameter.getParameterType())
+               && !parameter.hasParameterAnnotations();
     }
 
     @Override
@@ -37,9 +37,8 @@ public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver 
         String token = bearerTokenExtractor.extract(authorization);
         jwtProvider.validate(token);
 
-        String subject = jwtProvider.getSubjectFrom(token);
-        long memberId = Long.parseLong(subject);
+        Long memberId = Long.parseLong(jwtProvider.getSubjectFrom(token));
         return memberRepository.findById(memberId)
-                .orElseThrow(AuthenticationException::new);
+                .orElseThrow(TokenAuthenticationException::new);
     }
 }

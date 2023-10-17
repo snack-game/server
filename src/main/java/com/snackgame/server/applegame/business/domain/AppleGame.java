@@ -117,4 +117,8 @@ public class AppleGame extends BaseEntity {
     public Board getBoard() {
         return board;
     }
+
+    public void changeOwnerTo(Member newOwner) {
+        this.owner = newOwner;
+    }
 }

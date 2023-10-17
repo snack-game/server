@@ -12,12 +12,14 @@ import javax.persistence.ManyToOne;
 import com.snackgame.server.common.domain.BaseEntity;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Inheritance
 @DiscriminatorColumn(name = "type")
+@Getter
 public class Member extends BaseEntity {
 
     @Id
@@ -27,6 +29,7 @@ public class Member extends BaseEntity {
     private Name name;
     @ManyToOne
     private Group group;
+    private boolean isValid;
 
     public Member(Name name) {
         this.name = name;
@@ -46,12 +49,8 @@ public class Member extends BaseEntity {
         this.group = group;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Name getName() {
-        return name;
+    public void invalidate() {
+        this.isValid = false;
     }
 
     public String getNameAsString() {
@@ -60,9 +59,5 @@ public class Member extends BaseEntity {
 
     public AccountType getAccountType() {
         return AccountType.SELF;
-    }
-
-    public Group getGroup() {
-        return group;
     }
 }
