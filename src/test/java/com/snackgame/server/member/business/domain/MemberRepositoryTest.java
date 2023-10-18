@@ -20,8 +20,8 @@ import com.snackgame.server.member.fixture.MemberFixture;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@DataJpaTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DataJpaTest
 class MemberRepositoryTest {
 
     @Autowired
@@ -50,7 +50,7 @@ class MemberRepositoryTest {
 
         assertThat(found).get()
                 .usingRecursiveComparison()
-                .ignoringFields("createdAt")
+                .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(땡칠2());
     }
 
