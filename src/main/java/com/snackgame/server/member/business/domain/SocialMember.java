@@ -4,11 +4,9 @@ import javax.persistence.Entity;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
 public class SocialMember extends Member {
 
     private String email;
