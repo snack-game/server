@@ -1,4 +1,4 @@
-package com.snackgame.server.member.controller;
+package com.snackgame.server.auth.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +21,14 @@ public class AuthController {
     private final MemberService memberService;
     private final JwtProvider jwtProvider;
 
+    @Operation(summary = "게스트 토큰 발급", description = "임시 사용자를 생성하고, 토큰을 발급한다")
+    @PostMapping("/tokens/guest")
+    public MemberDetailsWithTokenResponse issueToken() {
+        Member guest = memberService.createGuest();
+        String accessToken = jwtProvider.createTokenWith(guest.getId().toString());
+        return MemberDetailsWithTokenResponse.of(guest, accessToken);
+    }
+
     @Operation(summary = "일반 사용자 토큰 발급", description = "사용자의 이름으로 토큰을 발급한다")
     @PostMapping("/tokens")
     public MemberDetailsWithTokenResponse issueToken(@RequestBody NameRequest nameRequest) {
@@ -35,9 +43,7 @@ public class AuthController {
                           + "로그인 시 사용했던 <b>SESSION ID를 포함</b>해야 한다."
     )
     @PostMapping("/tokens/social")
-    public MemberDetailsWithTokenResponse issueToken(
-            @JustAuthenticated Member socialMember
-    ) {
+    public MemberDetailsWithTokenResponse issueToken(@JustAuthenticated Member socialMember) {
         String token = jwtProvider.createTokenWith(socialMember.getId().toString());
         return MemberDetailsWithTokenResponse.of(socialMember, token);
     }
