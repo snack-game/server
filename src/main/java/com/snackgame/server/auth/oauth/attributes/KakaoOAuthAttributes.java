@@ -1,6 +1,9 @@
 package com.snackgame.server.auth.oauth.attributes;
 
 import java.util.Map;
+import java.util.Objects;
+
+import com.snackgame.server.auth.exception.OAuthAuthenticationException;
 
 public class KakaoOAuthAttributes implements OAuthAttributes {
 
@@ -24,26 +27,40 @@ public class KakaoOAuthAttributes implements OAuthAttributes {
 
     @Override
     public String getId() {
-        return attributes.get("id").toString();
+        return toStringRequired(attributes.get("id"));
     }
 
     @Override
     public String getEmail() {
-        return kakaoAccount.get("email").toString();
+        return toStringOptional(kakaoAccount.get("email"));
     }
 
     @Override
     public String getName() {
-        return kakaoAccount.get("name").toString();
+        return toStringRequired(kakaoAccount.getOrDefault("name", getNickname()));
     }
 
     @Override
     public String getNickname() {
-        return profile.get("nickname").toString();
+        return toStringOptional(profile.get("nickname"));
     }
 
     @Override
     public String getPictureUrl() {
-        return profile.get("profile_image_url").toString();
+        return toStringOptional(profile.get("profile_image_url"));
+    }
+
+    private String toStringOptional(Object object) {
+        if (Objects.isNull(object)) {
+            return null;
+        }
+        return object.toString();
+    }
+
+    private String toStringRequired(Object object) {
+        if (Objects.isNull(object)) {
+            throw new OAuthAuthenticationException("사용자가 제공하지 않은 항목이 있습니다");
+        }
+        return object.toString();
     }
 }
