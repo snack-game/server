@@ -1,18 +1,14 @@
 spring:
   profiles:
     active: local
+  config:
+    import:
+      - classpath:secrets/oauth-secrets.yml
   mvc:
     throw-exception-if-no-handler-found: true
   web:
     resources:
       add-mappings: false
-  security:
-    oauth2.client:
-      registration:
-        google:
-          scope:
-            - email
-            - profile
 springdoc:
   api-docs:
     path: /docs
