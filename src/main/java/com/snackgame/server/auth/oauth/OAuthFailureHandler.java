@@ -25,7 +25,7 @@ public class OAuthFailureHandler implements AuthenticationFailureHandler {
     }
 
     private String getRedirectUrlFrom(HttpSession session) {
-        return getRefererFrom(session) + "oauth/failure";
+        return getRefererFrom(session) + "/oauth/failure";
     }
 
     private String getRefererFrom(HttpSession session) {
