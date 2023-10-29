@@ -29,7 +29,7 @@ public class Member extends BaseEntity {
     private Name name;
     @ManyToOne
     private Group group;
-    private boolean isValid;
+    private boolean isValid = true;
 
     public Member(Name name) {
         this.name = name;
