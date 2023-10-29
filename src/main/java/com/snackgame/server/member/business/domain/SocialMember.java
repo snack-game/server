@@ -16,8 +16,8 @@ public class SocialMember extends Member {
     private String provider;
     private String providedId;
 
-    public SocialMember(String name, String provider, String providedId) {
-        super(new Name(name));
+    public SocialMember(Name name, String provider, String providedId) {
+        super(name);
         this.provider = provider;
         this.providedId = providedId;
     }

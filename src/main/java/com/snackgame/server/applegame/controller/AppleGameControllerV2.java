@@ -16,6 +16,7 @@ import com.snackgame.server.applegame.business.AppleGameService;
 import com.snackgame.server.applegame.business.domain.AppleGame;
 import com.snackgame.server.applegame.controller.dto.AppleGameResponseV2;
 import com.snackgame.server.applegame.controller.dto.RangeRequest;
+import com.snackgame.server.auth.jwt.FromToken;
 import com.snackgame.server.member.business.domain.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class AppleGameControllerV2 implements AppleGameControllerV2Docs {
 
     @Override
     @PostMapping("/games/1")
-    public AppleGameResponseV2 startGameFor(Member member) {
+    public AppleGameResponseV2 startGameFor(@FromToken Member member) {
         AppleGame game = appleGameService.startGameOf(member);
         return AppleGameResponseV2.of(game);
     }
@@ -37,7 +38,7 @@ public class AppleGameControllerV2 implements AppleGameControllerV2Docs {
     @Override
     @PutMapping("/sessions/{sessionId}/moves")
     public ResponseEntity<AppleGameResponseV2> placeMoves(
-            Member member,
+            @FromToken Member member,
             @PathVariable Long sessionId,
             @RequestBody List<RangeRequest> ranges
     ) {
@@ -51,14 +52,14 @@ public class AppleGameControllerV2 implements AppleGameControllerV2Docs {
 
     @Override
     @DeleteMapping("/sessions/{sessionId}/board")
-    public AppleGameResponseV2 resetBoard(Member member, @PathVariable Long sessionId) {
+    public AppleGameResponseV2 resetBoard(@FromToken Member member, @PathVariable Long sessionId) {
         AppleGame game = appleGameService.resetBoard(member, sessionId);
         return AppleGameResponseV2.of(game);
     }
 
     @Override
     @PutMapping("/sessions/{sessionId}/end")
-    public void endSession(Member member, @PathVariable Long sessionId) {
+    public void endSession(@FromToken Member member, @PathVariable Long sessionId) {
         appleGameService.endSession(member, sessionId);
     }
 }

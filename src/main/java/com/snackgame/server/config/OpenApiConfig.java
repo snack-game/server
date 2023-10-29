@@ -7,6 +7,7 @@ import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.snackgame.server.auth.jwt.FromToken;
 import com.snackgame.server.member.business.domain.Member;
 
 import io.swagger.v3.oas.models.Components;
@@ -55,8 +56,7 @@ public class OpenApiConfig {
     public OperationCustomizer authOperationMarker() {
         return (operation, handlerMethod) -> {
             Arrays.stream(handlerMethod.getMethodParameters())
-                    .filter(it -> Member.class.isAssignableFrom(it.getParameterType())
-                                  && !it.hasParameterAnnotations())
+                    .filter(it -> it.hasParameterAnnotation(FromToken.class))
                     .findAny()
                     .ifPresent(it -> operation.addSecurityItem(JWT_SECURITY_ITEM));
             return operation;

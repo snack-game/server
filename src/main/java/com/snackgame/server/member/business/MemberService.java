@@ -4,18 +4,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
+import com.snackgame.server.member.business.domain.DistinctNaming;
 import com.snackgame.server.member.business.domain.Group;
 import com.snackgame.server.member.business.domain.Guest;
 import com.snackgame.server.member.business.domain.Member;
 import com.snackgame.server.member.business.domain.MemberRepository;
 import com.snackgame.server.member.business.domain.Name;
-import com.snackgame.server.member.business.domain.NameRandomizer;
 import com.snackgame.server.member.business.domain.SocialMember;
-import com.snackgame.server.member.business.exception.DuplicateNameException;
+import com.snackgame.server.member.business.event.GameSessionTransferEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,8 +26,8 @@ public class MemberService {
 
     private final MemberRepository members;
     private final GroupService groupService;
-    private final NameRandomizer nameRandomizer;
-    private final AppleGameSessionRepository gameSessions;
+    private final DistinctNaming distinctNaming;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public Member createWith(String name) {
@@ -37,7 +37,7 @@ public class MemberService {
     @Transactional
     public Member createWith(String name, String groupName) {
         Name newName = new Name(name);
-        validateDuplicationOf(newName);
+        distinctNaming.validate(newName);
 
         Member newMember = new Member(newName);
         if (Objects.nonNull(groupName)) {
@@ -48,21 +48,20 @@ public class MemberService {
 
     @Transactional
     public Member createGuest() {
-        Guest guest = new Guest(generateDistinctName());
+        Guest guest = new Guest(distinctNaming.ofGuest());
         return members.save(guest);
     }
 
     @Transactional
     public Member integrate(Member victim, SocialMember socialMember) {
-        gameSessions.transferAll(victim, socialMember);
-        victim.invalidate();
+        eventPublisher.publishEvent(new GameSessionTransferEvent(victim, socialMember));
         return socialMember;
     }
 
     @Transactional
     public void changeNameOf(Member member, String name) {
         Name otherName = new Name(name);
-        validateDuplicationOf(otherName);
+        distinctNaming.validate(otherName);
         member.changeNameTo(otherName);
     }
 
@@ -84,19 +83,5 @@ public class MemberService {
         return members.findByNameStringStartingWith(prefix).stream()
                 .map(Member::getNameAsString)
                 .collect(Collectors.toList());
-    }
-
-    private Name generateDistinctName() {
-        Name name = nameRandomizer.get();
-        while (members.existsByName(name)) {
-            name = nameRandomizer.get();
-        }
-        return name;
-    }
-
-    private void validateDuplicationOf(Name name) {
-        if (members.existsByName(name)) {
-            throw new DuplicateNameException();
-        }
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -15,16 +16,14 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import com.snackgame.server.auth.exception.OAuthAuthenticationException;
 import com.snackgame.server.auth.oauth.attributes.OAuthAttributes;
 import com.snackgame.server.auth.oauth.attributes.OAuthAttributesResolver;
-import com.snackgame.server.member.business.domain.MemberRepository;
-import com.snackgame.server.member.business.domain.SocialMember;
 
+import lombok.RequiredArgsConstructor;
+
+@Component
+@RequiredArgsConstructor
 public class SocialMemberSavingArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final MemberRepository members;
-
-    public SocialMemberSavingArgumentResolver(MemberRepository members) {
-        this.members = members;
-    }
+    private final SocialMemberSaver<?> socialMemberSaver;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -41,18 +40,7 @@ public class SocialMemberSavingArgumentResolver implements HandlerMethodArgument
         OAuthAttributes attributes = OAuthAttributesResolver.valueOf(registrationId.toUpperCase())
                 .resolve(authentication.getPrincipal().getAttributes());
 
-        return saveMemberFrom(attributes);
-    }
-
-    private SocialMember saveMemberFrom(OAuthAttributes attributes) {
-        SocialMember member = members.findByProviderAndProvidedId(attributes.getProvider(), attributes.getId())
-                .orElseGet(() -> new SocialMember(
-                        attributes.getName(),
-                        attributes.getProvider(),
-                        attributes.getId()
-                ));
-        member.setAdditional(attributes.getEmail(), attributes.getNickname(), attributes.getPictureUrl());
-        return members.save(member);
+        return socialMemberSaver.saveMemberFrom(attributes);
     }
 
     private OAuth2AuthenticationToken getLastOAuthAuthentication() {
