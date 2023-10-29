@@ -1,4 +1,4 @@
-package com.snackgame.server.auth.controller;
+package com.snackgame.server.member.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,6 +8,7 @@ import com.snackgame.server.auth.jwt.JwtProvider;
 import com.snackgame.server.auth.oauth.support.JustAuthenticated;
 import com.snackgame.server.member.business.MemberService;
 import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.business.domain.SocialMember;
 import com.snackgame.server.member.controller.dto.MemberDetailsWithTokenResponse;
 import com.snackgame.server.member.controller.dto.NameRequest;
 
@@ -43,7 +44,7 @@ public class AuthController {
                           + "로그인 시 사용했던 <b>SESSION ID를 포함</b>해야 한다."
     )
     @PostMapping("/tokens/social")
-    public MemberDetailsWithTokenResponse issueToken(@JustAuthenticated Member socialMember) {
+    public MemberDetailsWithTokenResponse issueToken(@JustAuthenticated SocialMember socialMember) {
         String token = jwtProvider.createTokenWith(socialMember.getId().toString());
         return MemberDetailsWithTokenResponse.of(socialMember, token);
     }

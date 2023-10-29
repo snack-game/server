@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class NameRandomizerTest {
+class GuestNameRandomizerTest {
 
-    private final NameRandomizer nameRandomizer = new AlphabetNameRandomizer();
+    private final GuestNameRandomizer nameRandomizer = new GuestNameRandomizer();
 
     @Test
     void 이름앞에_접두사가_붙는다() {
