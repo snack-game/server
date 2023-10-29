@@ -16,7 +16,12 @@ jobs:
     runs-on: production
     steps:
       - uses: actions/checkout@v3
-
+      - name: checkout secrets
+        uses: actions/checkout@v3
+        with:
+          repository: snack-game/secrets
+          ssh-key: ${{ secrets.SECRETS_REPO_PRIVATE_KEY }}
+          path: src/main/resources/secrets
       - name: Create bootjar
         run: |
           chmod +x ./gradlew
