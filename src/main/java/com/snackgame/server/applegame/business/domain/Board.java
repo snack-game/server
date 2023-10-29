@@ -10,9 +10,7 @@ import com.snackgame.server.applegame.business.exception.InvalidBoardSizeExcepti
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board {
 
