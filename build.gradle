@@ -23,6 +23,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.15'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'

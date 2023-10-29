@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.snackgame.server.auth.JwtProvider;
+import com.snackgame.server.auth.jwt.JwtProvider;
+import com.snackgame.server.auth.oauth.support.JustAuthenticated;
 import com.snackgame.server.member.business.MemberService;
 import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.business.domain.SocialMember;
 import com.snackgame.server.member.controller.dto.GroupRequest;
 import com.snackgame.server.member.controller.dto.MemberDetailsResponse;
 import com.snackgame.server.member.controller.dto.MemberDetailsWithTokenResponse;
@@ -38,22 +40,6 @@ public class MemberController {
         return MemberDetailsWithTokenResponse.of(added, accessToken);
     }
 
-    @Operation(summary = "게스트로 사용자 생성", description = "추가정보 없이 임시 사용자를 생성한다")
-    @PostMapping("/members/guest")
-    public MemberDetailsWithTokenResponse addGuest() {
-        Member guest = memberService.createGuest();
-        String accessToken = jwtProvider.createTokenWith(guest.getId().toString());
-        return MemberDetailsWithTokenResponse.of(guest, accessToken);
-    }
-
-    @Operation(summary = "사용자의 토큰 발급", description = "어떤 이름을 가진 사용자의 토큰을 발급한다")
-    @PostMapping("/members/token")
-    public MemberDetailsWithTokenResponse issueToken(@RequestBody NameRequest nameRequest) {
-        Member found = memberService.findBy(nameRequest.getName());
-        String accessToken = jwtProvider.createTokenWith(found.getId().toString());
-        return MemberDetailsWithTokenResponse.of(found, accessToken);
-    }
-
     @Operation(summary = "모든 이름 검색", description = "인자로 시작하는 모든 사용자 이름을 가져온다")
     @GetMapping("/members/names")
     public List<String> showNamesStartWith(@RequestParam("startWith") String prefix) {
@@ -76,5 +62,35 @@ public class MemberController {
     @PutMapping("/members/me/name")
     public void changeName(Member member, @RequestBody NameRequest nameRequest) {
         memberService.changeNameOf(member, nameRequest.getName());
+    }
+
+    @Operation(
+            summary = "현재 계정을 소셜 계정에 통합",
+            description = "현재 사용자를 소셜 계정으로 통합하고, 토큰을 발급한다.<br>"
+                          + "<b>직전에 소셜 로그인을 수행</b>해야 하고, 이 때 사용했던 <b>SESSION ID를 포함</b>해야 한다."
+    )
+    @PostMapping("/members/me/integrate")
+    public MemberDetailsWithTokenResponse integrate(Member victim, @JustAuthenticated SocialMember socialMember) {
+        Member integrated = memberService.integrate(victim, socialMember);
+        String token = jwtProvider.createTokenWith(integrated.getId().toString());
+        return MemberDetailsWithTokenResponse.of(integrated, token);
+    }
+
+    @Deprecated
+    @Operation(summary = "게스트 토큰 발급", description = "추가정보 없이 임시 사용자 토큰을 발급한다")
+    @PostMapping("/members/guest")
+    public MemberDetailsWithTokenResponse addGuest() {
+        Member guest = memberService.createGuest();
+        String accessToken = jwtProvider.createTokenWith(guest.getId().toString());
+        return MemberDetailsWithTokenResponse.of(guest, accessToken);
+    }
+
+    @Deprecated
+    @Operation(summary = "사용자의 토큰 발급", description = "어떤 이름을 가진 사용자의 토큰을 발급한다")
+    @PostMapping("/members/token")
+    public MemberDetailsWithTokenResponse issueToken(@RequestBody NameRequest nameRequest) {
+        Member found = memberService.getBy(nameRequest.getName());
+        String accessToken = jwtProvider.createTokenWith(found.getId().toString());
+        return MemberDetailsWithTokenResponse.of(found, accessToken);
     }
 }

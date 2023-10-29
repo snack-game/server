@@ -7,13 +7,15 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
 import com.snackgame.server.member.business.domain.Group;
+import com.snackgame.server.member.business.domain.Guest;
 import com.snackgame.server.member.business.domain.Member;
 import com.snackgame.server.member.business.domain.MemberRepository;
+import com.snackgame.server.member.business.domain.Name;
 import com.snackgame.server.member.business.domain.NameRandomizer;
+import com.snackgame.server.member.business.domain.SocialMember;
 import com.snackgame.server.member.business.exception.DuplicateNameException;
-import com.snackgame.server.member.business.exception.MemberIdNotFoundException;
-import com.snackgame.server.member.business.exception.MemberNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,16 +27,7 @@ public class MemberService {
     private final MemberRepository members;
     private final GroupService groupService;
     private final NameRandomizer nameRandomizer;
-
-    @Transactional
-    public Member createWith(String name, String groupName) {
-        validateNoDuplicate(name);
-        Member newMember = new Member(name);
-        if (Objects.nonNull(groupName)) {
-            newMember.changeGroupTo(groupService.createIfNotExists(groupName));
-        }
-        return members.save(newMember);
-    }
+    private final AppleGameSessionRepository gameSessions;
 
     @Transactional
     public Member createWith(String name) {
@@ -42,15 +35,35 @@ public class MemberService {
     }
 
     @Transactional
+    public Member createWith(String name, String groupName) {
+        Name newName = new Name(name);
+        validateDuplicationOf(newName);
+
+        Member newMember = new Member(newName);
+        if (Objects.nonNull(groupName)) {
+            newMember.changeGroupTo(groupService.createIfNotExists(groupName));
+        }
+        return members.save(newMember);
+    }
+
+    @Transactional
     public Member createGuest() {
-        Member guest = new Member(generateDistinctName());
+        Guest guest = new Guest(generateDistinctName());
         return members.save(guest);
     }
 
     @Transactional
+    public Member integrate(Member victim, SocialMember socialMember) {
+        gameSessions.transferAll(victim, socialMember);
+        victim.invalidate();
+        return socialMember;
+    }
+
+    @Transactional
     public void changeNameOf(Member member, String name) {
-        validateNoDuplicate(name);
-        member.changeNameTo(name);
+        Name otherName = new Name(name);
+        validateDuplicationOf(otherName);
+        member.changeNameTo(otherName);
     }
 
     @Transactional
@@ -59,36 +72,30 @@ public class MemberService {
         member.changeGroupTo(group);
     }
 
-    public Member findBy(Long id) {
-        return members.findById(id)
-                .orElseThrow(MemberIdNotFoundException::new);
+    public Member getBy(Long id) {
+        return members.getById(id);
     }
 
-    public Member findBy(String name) {
-        return members.findByName(name)
-                .orElseThrow(MemberNotFoundException::new);
+    public Member getBy(String name) {
+        return members.getByName(new Name(name));
     }
 
     public List<String> findNamesStartWith(String prefix) {
-        return members.findByNameStartingWith(prefix).stream()
-                .map(Member::getName)
+        return members.findByNameStringStartingWith(prefix).stream()
+                .map(Member::getNameAsString)
                 .collect(Collectors.toList());
     }
 
-    private String generateDistinctName() {
-        String name = nameRandomizer.get();
-        while (doesExist(name)) {
+    private Name generateDistinctName() {
+        Name name = nameRandomizer.get();
+        while (members.existsByName(name)) {
             name = nameRandomizer.get();
         }
         return name;
     }
 
-    private boolean doesExist(String name) {
-        return members.findByName(name).isPresent();
-    }
-
-    private void validateNoDuplicate(String name) {
-        if (members.findByName(name).isPresent()) {
+    private void validateDuplicationOf(Name name) {
+        if (members.existsByName(name)) {
             throw new DuplicateNameException();
         }
     }

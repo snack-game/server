@@ -1,4 +1,4 @@
-package com.snackgame.server.auth;
+package com.snackgame.server.auth.jwt;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -7,8 +7,9 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.snackgame.server.member.business.MemberService;
+import com.snackgame.server.auth.exception.TokenAuthenticationException;
 import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.business.domain.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,22 +18,27 @@ public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver 
 
     private final BearerTokenExtractor bearerTokenExtractor;
     private final JwtProvider jwtProvider;
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType().equals(Member.class);
+        return Member.class.isAssignableFrom(parameter.getParameterType())
+               && !parameter.hasParameterAnnotations();
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-            NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public Object resolveArgument(
+            MethodParameter parameter,
+            ModelAndViewContainer mavContainer,
+            NativeWebRequest webRequest,
+            WebDataBinderFactory binderFactory
+    ) {
         String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
         String token = bearerTokenExtractor.extract(authorization);
         jwtProvider.validate(token);
 
-        String subject = jwtProvider.getSubjectFrom(token);
-        long memberId = Long.parseLong(subject);
-        return memberService.findBy(memberId);
+        Long memberId = Long.parseLong(jwtProvider.getSubjectFrom(token));
+        return memberRepository.findById(memberId)
+                .orElseThrow(TokenAuthenticationException::new);
     }
 }

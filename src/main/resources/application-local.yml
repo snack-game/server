@@ -12,7 +12,6 @@ spring:
 
     hibernate:
       ddl-auto: create
-    defer-datasource-initialization: true
 
 logging:
   level:

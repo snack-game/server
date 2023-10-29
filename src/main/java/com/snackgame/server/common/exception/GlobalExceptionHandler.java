@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import com.snackgame.server.auth.exception.AuthorizationException;
+import com.snackgame.server.auth.exception.AuthException;
 import com.snackgame.server.common.exception.dto.ExceptionResponse;
-import com.snackgame.server.member.business.exception.MemberIdNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -31,14 +30,14 @@ public class GlobalExceptionHandler {
         return ExceptionResponse.withoutMessage();
     }
 
-    @ExceptionHandler({AuthorizationException.class, MemberIdNotFoundException.class})
+    @ExceptionHandler(AuthException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ExceptionResponse handleAuthenticationException(Exception exception) {
         logWarn(exception);
         return ExceptionResponse.withMessageOf(exception);
     }
 
-    @ExceptionHandler({NoHandlerFoundException.class})
+    @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ExceptionResponse handleNoHandlerFound(Exception exception) {
         logDebug(exception);

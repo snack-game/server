@@ -16,7 +16,7 @@ public class MemberDetailsResponse {
     public static MemberDetailsResponse of(Member member) {
         return new MemberDetailsResponse(
                 member.getId(),
-                member.getName(),
+                member.getNameAsString(),
                 GroupResponse.of(member.getGroup())
         );
     }
