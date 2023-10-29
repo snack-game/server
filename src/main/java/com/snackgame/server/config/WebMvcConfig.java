@@ -8,11 +8,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.snackgame.server.auth.jwt.BearerTokenExtractor;
 import com.snackgame.server.auth.jwt.JwtMemberArgumentResolver;
-import com.snackgame.server.auth.jwt.JwtProvider;
 import com.snackgame.server.auth.oauth.support.SocialMemberSavingArgumentResolver;
-import com.snackgame.server.member.business.domain.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,17 +19,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     private static final String HOST_NAME = "snackga.me";
 
-    private final JwtProvider jwtProvider;
-    private final MemberRepository memberRepository;
+    private final JwtMemberArgumentResolver jwtMemberArgumentResolver;
+    private final SocialMemberSavingArgumentResolver socialMemberSavingArgumentResolver;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new JwtMemberArgumentResolver(
-                new BearerTokenExtractor(),
-                jwtProvider,
-                memberRepository
-        ));
-        resolvers.add(new SocialMemberSavingArgumentResolver(memberRepository));
+        resolvers.add(jwtMemberArgumentResolver);
+        resolvers.add(socialMemberSavingArgumentResolver);
     }
 
     @Override

@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.snackgame.server.annotation.ServiceTest;
+import com.snackgame.server.member.business.domain.Guest;
 import com.snackgame.server.member.business.domain.Member;
 import com.snackgame.server.member.business.domain.MemberRepository;
 import com.snackgame.server.member.business.domain.Name;
-import com.snackgame.server.member.business.domain.NameRandomizer;
 import com.snackgame.server.member.business.exception.DuplicateNameException;
 import com.snackgame.server.member.business.exception.MemberNotFoundException;
 
@@ -26,23 +26,7 @@ class MemberServiceTest {
     @Autowired
     private MemberService memberService;
     @Autowired
-    private GroupService groupService;
-    @Autowired
     private MemberRepository memberRepository;
-
-    NameRandomizer fakeNameRandomizer = new NameRandomizer() {
-        private int index = 0;
-        private final String[] names = {
-                "게스트#abc",
-                "게스트#abcd"
-        };
-
-        @Override
-        public Name get() {
-            final int index = this.index++ % names.length;
-            return new Name(names[index]);
-        }
-    };
 
     @Test
     void 이름과_그룹이름으로_사용자를_생성한다() {
@@ -78,13 +62,11 @@ class MemberServiceTest {
 
     @Test
     void 임시사용자_이름이_중복이면_다시_만든다() {
-        memberService = new MemberService(memberRepository, groupService, fakeNameRandomizer, null);
-        memberService.createWith("게스트#abc");
+        Guest existing = memberRepository.save(new Guest(new Name("게스트#abc")));
 
         Member guest = memberService.createGuest();
 
-        var created = memberRepository.findById(guest.getId()).get();
-        assertThat(created.getNameAsString()).isEqualTo("게스트#abcd");
+        assertThat(guest.getNameAsString()).isNotEqualTo(existing.getNameAsString());
     }
 
     @Test

@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.snackgame.server.auth.jwt.FromToken;
 import com.snackgame.server.auth.jwt.JwtProvider;
 import com.snackgame.server.auth.oauth.support.JustAuthenticated;
 import com.snackgame.server.member.business.MemberService;
+import com.snackgame.server.member.business.domain.Guest;
 import com.snackgame.server.member.business.domain.Member;
 import com.snackgame.server.member.business.domain.SocialMember;
 import com.snackgame.server.member.controller.dto.GroupRequest;
@@ -48,19 +50,19 @@ public class MemberController {
 
     @Operation(summary = "나의 정보", description = "현재 사용자의 정보를 받아온다")
     @GetMapping("/members/me")
-    public MemberDetailsResponse showDetailsOf(Member member) {
+    public MemberDetailsResponse showDetailsOf(@FromToken Member member) {
         return MemberDetailsResponse.of(member);
     }
 
     @Operation(summary = "나의 그룹 지정", description = "현재 사용자의 그룹을 지정한다")
     @PutMapping("/members/me/group")
-    public void changeGroup(Member member, @RequestBody GroupRequest groupRequest) {
+    public void changeGroup(@FromToken Member member, @RequestBody GroupRequest groupRequest) {
         memberService.changeGroupNameOf(member, groupRequest.getGroup());
     }
 
     @Operation(summary = "나의 이름 변경", description = "현재 사용자의 이름을 변경한다")
     @PutMapping("/members/me/name")
-    public void changeName(Member member, @RequestBody NameRequest nameRequest) {
+    public void changeName(@FromToken Member member, @RequestBody NameRequest nameRequest) {
         memberService.changeNameOf(member, nameRequest.getName());
     }
 
@@ -70,7 +72,10 @@ public class MemberController {
                           + "<b>직전에 소셜 로그인을 수행</b>해야 하고, 이 때 사용했던 <b>SESSION ID를 포함</b>해야 한다."
     )
     @PostMapping("/members/me/integrate")
-    public MemberDetailsWithTokenResponse integrate(Member victim, @JustAuthenticated SocialMember socialMember) {
+    public MemberDetailsWithTokenResponse integrate(
+            @FromToken Member victim,
+            @JustAuthenticated SocialMember socialMember
+    ) {
         Member integrated = memberService.integrate(victim, socialMember);
         String token = jwtProvider.createTokenWith(integrated.getId().toString());
         return MemberDetailsWithTokenResponse.of(integrated, token);

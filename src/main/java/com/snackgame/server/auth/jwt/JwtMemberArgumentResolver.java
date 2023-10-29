@@ -2,28 +2,27 @@ package com.snackgame.server.auth.jwt;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.snackgame.server.auth.exception.TokenAuthenticationException;
-import com.snackgame.server.member.business.domain.Member;
-import com.snackgame.server.member.business.domain.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
+@Component
 @RequiredArgsConstructor
 public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final BearerTokenExtractor bearerTokenExtractor;
+    private final BearerTokenExtractor bearerTokenExtractor = new BearerTokenExtractor();
     private final JwtProvider jwtProvider;
-    private final MemberRepository memberRepository;
+    private final MemberResolver<?> memberResolver;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return Member.class.isAssignableFrom(parameter.getParameterType())
-               && !parameter.hasParameterAnnotations();
+        return parameter.hasParameterAnnotation(FromToken.class);
     }
 
     @Override
@@ -38,7 +37,7 @@ public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver 
         jwtProvider.validate(token);
 
         Long memberId = Long.parseLong(jwtProvider.getSubjectFrom(token));
-        return memberRepository.findById(memberId)
+        return memberResolver.resolve(memberId)
                 .orElseThrow(TokenAuthenticationException::new);
     }
 }
