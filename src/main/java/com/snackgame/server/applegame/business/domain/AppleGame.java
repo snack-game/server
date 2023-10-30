@@ -46,8 +46,15 @@ public class AppleGame extends BaseEntity {
     public AppleGame(Board board, Member owner, LocalDateTime createdAt) {
         this.board = board;
         this.owner = owner;
-        this.score = 0;
         this.createdAt = createdAt;
+    }
+
+    public AppleGame(Long sessionId, Member owner, Board board, int score, boolean isEnded) {
+        this.sessionId = sessionId;
+        this.owner = owner;
+        this.board = board;
+        this.score = score;
+        this.isEnded = isEnded;
     }
 
     public static AppleGame ofRandomized(Member owner) {

@@ -3,12 +3,11 @@ package com.snackgame.server.applegame.controller.dto;
 import com.snackgame.server.applegame.business.domain.AppleGame;
 import com.snackgame.server.member.controller.dto.MemberDetailsResponse;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class RankingResponse {
 
     private final int ranking;
