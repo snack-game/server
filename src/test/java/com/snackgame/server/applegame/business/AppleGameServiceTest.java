@@ -16,7 +16,6 @@ import com.snackgame.server.applegame.business.domain.Apple;
 import com.snackgame.server.applegame.business.domain.AppleGame;
 import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
 import com.snackgame.server.applegame.controller.dto.CoordinateRequest;
-import com.snackgame.server.applegame.controller.dto.MoveRequest;
 import com.snackgame.server.applegame.controller.dto.RangeRequest;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.member.business.MemberService;
@@ -62,7 +61,7 @@ class AppleGameServiceTest {
 
         appleGameService.placeMoves(owner, game.getSessionId(), rangeRequests);
 
-        AppleGame found = appleGameService.findBy(game.getSessionId());
+        AppleGame found = appleGameSessions.getBy(game.getSessionId());
         assertThat(found.getScore()).isEqualTo(6);
     }
 

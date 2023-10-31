@@ -21,14 +21,17 @@ public class SessionOAuthRequestStoringFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        if (isOAuthAuthorizationUri(request.getRequestURI())) {
-            save(request);
-        }
+        save(request);
         doFilter(request, response, filterChain);
     }
 
-    private boolean isOAuthAuthorizationUri(String requestUri) {
-        return requestUri.startsWith(DEFAULT_AUTHORIZATION_REQUEST_BASE_URI);
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return isNotOAuthAuthorizationUri(request.getRequestURI());
+    }
+
+    private boolean isNotOAuthAuthorizationUri(String requestUri) {
+        return !requestUri.startsWith(DEFAULT_AUTHORIZATION_REQUEST_BASE_URI);
     }
 
     private void save(HttpServletRequest request) {
