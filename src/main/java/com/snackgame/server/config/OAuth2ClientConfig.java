@@ -19,17 +19,20 @@ import com.snackgame.server.auth.oauth.SessionOAuthRequestStoringFilter;
 public class OAuth2ClientConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain oAuth2FilterChain(HttpSecurity http) throws Exception {
         http.removeConfigurer(DefaultLoginPageConfigurer.class);
         return http
+                .requestMatchers()
+                .antMatchers("/oauth2/authorization/**", "/login/oauth2/code/**")
+                .and()
                 .csrf().disable()
-                .oauth2Login(configurer -> configurer
-                        .successHandler(new OAuthSuccessHandler())
-                        .failureHandler(new OAuthFailureHandler())
-                )
                 .addFilterBefore(
                         new SessionOAuthRequestStoringFilter(),
                         OAuth2AuthorizationRequestRedirectFilter.class
+                )
+                .oauth2Login(configurer -> configurer
+                        .successHandler(new OAuthSuccessHandler())
+                        .failureHandler(new OAuthFailureHandler())
                 )
                 .build();
     }
