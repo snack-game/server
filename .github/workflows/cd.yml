@@ -13,7 +13,7 @@ env:
 
 jobs:
   deploy:
-    runs-on: production
+    runs-on: snackgame
     steps:
       - uses: actions/checkout@v3
       - name: checkout secrets
