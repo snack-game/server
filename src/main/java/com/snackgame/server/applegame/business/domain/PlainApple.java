@@ -4,9 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
-public class PlainApple extends AnyApple {
+public class PlainApple extends Apple {
 
     private static final Map<Integer, PlainApple> CACHE = new ConcurrentHashMap<>();
 
@@ -14,7 +12,6 @@ public class PlainApple extends AnyApple {
         super(number);
     }
 
-    @JsonCreator
     public static PlainApple of(int number) {
         if (!CACHE.containsKey(number)) {
             CACHE.put(number, new PlainApple(number));

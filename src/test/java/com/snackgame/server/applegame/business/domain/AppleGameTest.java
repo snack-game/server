@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -65,15 +64,19 @@ class AppleGameTest {
     @Test
     void 황금사과를_제거하면_판이_초기화된다() {
         var game = new AppleGame(TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(), 땡칠());
-        var range = new Range(
+        game.removeApplesIn(new Range(
+                new Coordinate(0, 1),
+                new Coordinate(1, 1)
+        ));
+        var previousApples = game.getApples();
+
+        var golden = new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         );
-        var appleAtRightBottom = game.getApples().get(1).get(1);
+        game.removeApplesIn(golden);
 
-        game.removeApplesIn(range);
-
-        assertThat(game.getApples().get(1).get(1)).isNotEqualTo(appleAtRightBottom);
+        assertThat(game.getApples()).isNotEqualTo(previousApples);
     }
 
     @Test

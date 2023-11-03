@@ -89,7 +89,7 @@ class BoardTest {
 
         assertThat(range.getCompleteCoordinates()).allSatisfy(coordinate ->
                 assertThat(board.getApples().get(coordinate.getY()).get(coordinate.getX()))
-                        .isEqualTo(Apple.EMPTY)
+                        .isEqualTo(EmptyApple.get())
         );
     }
 
@@ -120,8 +120,8 @@ class BoardTest {
         assertThat(removed)
                 .usingRecursiveFieldByFieldElementComparator()
                 .containsExactlyInAnyOrder(
-                        new Apple(9),
-                        new Apple(1)
+                        PlainApple.of(9),
+                        PlainApple.of(1)
                 );
     }
 

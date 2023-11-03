@@ -14,14 +14,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board {
 
-    private static final int MIN_HEIGHT = 1;
-    private static final int MIN_WIDTH = 1;
     private static final int REMOVABLE_SUM = 10;
 
     private List<List<Apple>> apples;
 
     public Board(List<List<Apple>> apples) {
-        validateSizeOf(apples);
+        validateSquared(apples);
         this.apples = apples.stream()
                 .map(ArrayList::new)
                 .collect(Collectors.toList());
@@ -31,8 +29,8 @@ public class Board {
         this(ApplesFactory.createRandomized(height, width));
     }
 
-    private void validateSizeOf(List<List<Apple>> apples) {
-        if (apples.size() < MIN_HEIGHT || apples.get(0).size() < MIN_WIDTH) {
+    private void validateSquared(List<List<Apple>> apples) {
+        if (apples.isEmpty() || apples.get(0).isEmpty()) {
             throw new InvalidBoardSizeException();
         }
     }
@@ -44,15 +42,6 @@ public class Board {
     protected List<Apple> removeApplesIn(Range range) {
         validateSumOf(range.getCompleteCoordinates());
         return range.getCompleteCoordinates().stream()
-                .map(this::removeAppleAt)
-                .filter(Apple::exists)
-                .collect(Collectors.toList());
-    }
-
-    @Deprecated(forRemoval = true)
-    protected List<Apple> removeApplesInV1(List<Coordinate> coordinates) {
-        validateSumOf(coordinates);
-        return coordinates.stream()
                 .map(this::removeAppleAt)
                 .filter(Apple::exists)
                 .collect(Collectors.toList());
@@ -78,7 +67,7 @@ public class Board {
 
     private Apple removeAppleAt(Coordinate coordinate) {
         List<Apple> row = apples.get(coordinate.getY());
-        return row.set(coordinate.getX(), Apple.EMPTY);
+        return row.set(coordinate.getX(), EmptyApple.get());
     }
 
     public List<List<Apple>> getApples() {

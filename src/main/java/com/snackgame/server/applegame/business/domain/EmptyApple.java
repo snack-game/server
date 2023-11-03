@@ -1,9 +1,8 @@
 package com.snackgame.server.applegame.business.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.snackgame.server.applegame.business.exception.EmptyAppleException;
 
-public class EmptyApple extends AnyApple {
+public class EmptyApple extends Apple {
 
     private static final EmptyApple INSTANCE = new EmptyApple();
 
@@ -11,7 +10,6 @@ public class EmptyApple extends AnyApple {
         super();
     }
 
-    @JsonCreator
     public static EmptyApple get() {
         return INSTANCE;
     }

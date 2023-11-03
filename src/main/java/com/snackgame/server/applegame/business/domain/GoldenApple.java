@@ -3,9 +3,7 @@ package com.snackgame.server.applegame.business.domain;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
-public class GoldenApple extends AnyApple {
+public class GoldenApple extends Apple {
 
     private static final Map<Integer, GoldenApple> CACHE = new ConcurrentHashMap<>();
 
@@ -13,7 +11,6 @@ public class GoldenApple extends AnyApple {
         super(number);
     }
 
-    @JsonCreator
     public static GoldenApple of(int number) {
         if (!CACHE.containsKey(number)) {
             CACHE.put(number, new GoldenApple(number));
