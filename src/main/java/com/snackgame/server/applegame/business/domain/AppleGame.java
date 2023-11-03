@@ -70,13 +70,6 @@ public class AppleGame extends BaseEntity {
         score += removed.size();
     }
 
-    @Deprecated(forRemoval = true)
-    public void removeApplesInV1(List<Coordinate> coordinates) {
-        validateSessionAlive();
-        List<Apple> removed = board.removeApplesInV1(coordinates);
-        score += removed.size();
-    }
-
     public void validateOwnedBy(Member member) {
         if (!owner.equals(member)) {
             throw new NotOwnedException();

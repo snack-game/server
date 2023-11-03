@@ -8,19 +8,15 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ApplesFactory {
 
     public static List<List<Apple>> createRandomized(int height, int width) {
-        if (anyNotPositive(height, width)) {
-            return new ArrayList<>();
+        if (allPositive(height, width)) {
+            List<List<Apple>> apples = createRows(height, width);
+            goldenOneIn(apples);
+            return apples;
         }
-        List<List<Apple>> apples = createdRowsOf(height, width);
-        goldenOneIn(apples);
-        return apples;
+        return new ArrayList<>();
     }
 
-    private static boolean anyNotPositive(int... numbers) {
-        return Arrays.stream(numbers).anyMatch(number -> number <= 0);
-    }
-
-    private static List<List<Apple>> createdRowsOf(int height, int width) {
+    private static List<List<Apple>> createRows(int height, int width) {
         List<List<Apple>> apples = new ArrayList<>();
         for (int i = 0; i < height; i++) {
             apples.add(createRowOf(width));
@@ -31,26 +27,24 @@ public class ApplesFactory {
     private static List<Apple> createRowOf(int width) {
         List<Apple> row = new ArrayList<>();
         for (int j = 0; j < width; j++) {
-            row.add(Apple.ofRandomizedNumber());
+            row.add(PlainApple.ofRandomizedNumber());
         }
         return row;
     }
 
     private static void goldenOneIn(List<List<Apple>> apples) {
-        Apple picked = pickOneIn(apples);
+        int row = pickIndexIn(apples.size());
+        int column = pickIndexIn(apples.get(row).size());
+        Apple picked = apples.get(row).get(column);
 
-        apples.stream()
-                .filter(row -> row.contains(picked))
-                .findFirst()
-                .ifPresent(row -> row.set(row.indexOf(picked), picked.golden()));
-    }
-
-    private static Apple pickOneIn(List<List<Apple>> apples) {
-        List<Apple> targetRow = apples.get(pickIndexIn(apples.size()));
-        return targetRow.get(pickIndexIn(targetRow.size()));
+        apples.get(row).set(column, picked.golden());
     }
 
     private static int pickIndexIn(int size) {
         return ThreadLocalRandom.current().nextInt(size);
+    }
+
+    private static boolean allPositive(int... numbers) {
+        return Arrays.stream(numbers).allMatch(number -> number > 0);
     }
 }

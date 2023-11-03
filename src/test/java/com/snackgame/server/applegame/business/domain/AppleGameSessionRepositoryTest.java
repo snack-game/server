@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.snackgame.server.applegame.fixture.TestFixture;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -86,5 +87,17 @@ class AppleGameSessionRepositoryTest {
         games.save(game);
 
         assertThat(game.getUpdatedAt()).isAfter(localCreatedTime);
+    }
+
+    @Test
+    void 저장_후_다시_불러와도_EMPTY_구분이_가능한가() {
+        AppleGame game = new AppleGame(TestFixture.TWO_BY_FOUR(), null);
+        games.save(game);
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+
+        TestTransaction.start();
+        var apples = games.findById(game.getSessionId()).get().getApples();
+        assertThat(apples.get(0).get(2).isEmpty()).isTrue();
     }
 }

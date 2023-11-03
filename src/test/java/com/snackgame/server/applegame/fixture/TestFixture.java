@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.snackgame.server.applegame.business.domain.Apple;
 import com.snackgame.server.applegame.business.domain.Board;
+import com.snackgame.server.applegame.business.domain.EmptyApple;
+import com.snackgame.server.applegame.business.domain.PlainApple;
 
 public class TestFixture {
 
@@ -13,8 +15,8 @@ public class TestFixture {
      */
     public static Board TWO_BY_FOUR() {
         return new Board(List.of(
-                List.of(new Apple(1), new Apple(1), Apple.EMPTY, new Apple(5)),
-                List.of(new Apple(9), new Apple(2), Apple.EMPTY, new Apple(2))
+                List.of(PlainApple.of(1), PlainApple.of(1), EmptyApple.get(), PlainApple.of(5)),
+                List.of(PlainApple.of(9), PlainApple.of(2), EmptyApple.get(), PlainApple.of(2))
         ));
     }
 
@@ -27,10 +29,10 @@ public class TestFixture {
      */
     public static Board TWO_BY_TWO_WITH_GOLDEN_APPLE() {
         return new Board(List.of(
-                List.of(new Apple(1), new Apple(1)),
-                List.of(new Apple(9).golden(), new Apple(2))
+                List.of(PlainApple.of(1), PlainApple.of(8)),
+                List.of(PlainApple.of(9).golden(), PlainApple.of(2))
         ));
     }
 
-    public static final String TWO_BY_TWO_WITH_GOLDEN_APPLE_AS_JSON = "{\"apples\":[[{\"number\":1,\"isGolden\":false},{\"number\":1,\"isGolden\":false}],[{\"number\":9,\"isGolden\":true},{\"number\":2,\"isGolden\":false}]]}";
+    public static final String TWO_BY_TWO_WITH_GOLDEN_APPLE_AS_JSON = "{\"apples\":[[{\"number\":1,\"isGolden\":false},{\"number\":8,\"isGolden\":false}],[{\"number\":9,\"isGolden\":true},{\"number\":2,\"isGolden\":false}]]}";
 }
