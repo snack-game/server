@@ -3,6 +3,7 @@ package com.snackgame.server.applegame.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.snackgame.server.applegame.business.AppleGameRankingService;
@@ -20,15 +21,19 @@ public class AppleGameRankingController {
 
     private final AppleGameRankingService appleGameRankingService;
 
+    private enum Criteria {
+        BEST_SCORE;
+    }
+
     @Operation(summary = "전체 최고점수 랭킹 조회", description = "전체 랭킹을 50등까지 조회한다. 개인별 최고점수 기준이다.")
-    @GetMapping("/rankings?by=best-score")
-    public List<RankResponseV2> showRanksByBestScore() {
+    @GetMapping("/rankings")
+    public List<RankResponseV2> showRanksByBestScore(@RequestParam("by") Criteria criteria) {
         return appleGameRankingService.rank50ByBestScore();
     }
 
     @Operation(summary = "자신의 최고점수 랭킹 조회", description = "전체에서 자신의 랭킹을 조회한다. 개인별 최고점수 기준이다.")
-    @GetMapping("/rankings/me?by=best-score")
-    public RankResponseV2 showRankByBestScoreOf(@FromToken Member member) {
+    @GetMapping("/rankings/me")
+    public RankResponseV2 showRankByBestScoreOf(@FromToken Member member, @RequestParam("by") Criteria criteria) {
         return appleGameRankingService.rankByBestScoreOf(member.getId());
     }
 
