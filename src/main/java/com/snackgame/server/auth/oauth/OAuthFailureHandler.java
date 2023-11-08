@@ -29,7 +29,7 @@ public class OAuthFailureHandler implements AuthenticationFailureHandler {
     }
 
     private String getRedirectUrlFrom(HttpSession session) {
-        return getRefererFrom(session) + "/oauth/failure";
+        return getRefererFrom(session) + "oauth/failure";
     }
 
     private String getRefererFrom(HttpSession session) {
@@ -37,7 +37,7 @@ public class OAuthFailureHandler implements AuthenticationFailureHandler {
         if (referer == null) {
             log.warn("Referer를 찾지 못했습니다. sessionAttributes= {}",
                     Collections.list(session.getAttributeNames()).toArray());
-            return "https://snackga.me";
+            return "https://snackga.me/";
         }
         return referer;
     }
