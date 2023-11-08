@@ -15,7 +15,6 @@ import com.snackgame.server.auth.jwt.FromToken;
 import com.snackgame.server.auth.jwt.JwtProvider;
 import com.snackgame.server.auth.oauth.support.JustAuthenticated;
 import com.snackgame.server.member.business.MemberService;
-import com.snackgame.server.member.business.domain.Guest;
 import com.snackgame.server.member.business.domain.Member;
 import com.snackgame.server.member.business.domain.SocialMember;
 import com.snackgame.server.member.controller.dto.GroupRequest;
