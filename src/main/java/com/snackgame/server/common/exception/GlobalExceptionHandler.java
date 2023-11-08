@@ -13,6 +13,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.snackgame.server.auth.exception.AuthException;
@@ -63,6 +64,13 @@ public class GlobalExceptionHandler {
     public ExceptionResponse handleHttpMessageNotReadable(HttpMessageNotReadableException exception) {
         logDebug(exception);
         return ExceptionResponse.of("요청 페이로드를 읽지 못했습니다");
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionResponse handleHttpMessageTypeMismatch(MethodArgumentTypeMismatchException exception) {
+        logDebug(exception);
+        return ExceptionResponse.of("요청 인자가 잘못되었습니다");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

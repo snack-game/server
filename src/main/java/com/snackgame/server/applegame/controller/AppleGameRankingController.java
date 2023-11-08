@@ -22,7 +22,7 @@ public class AppleGameRankingController {
     private final AppleGameRankingService appleGameRankingService;
 
     private enum Criteria {
-        BEST_SCORE;
+        BEST_SCORE
     }
 
     @Operation(summary = "전체 최고점수 랭킹 조회", description = "전체 랭킹을 50등까지 조회한다. 개인별 최고점수 기준이다.")
