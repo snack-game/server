@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 import com.snackgame.server.auth.jwt.MemberResolver;
 
 @Component
-public class MemberResolverImpl implements MemberResolver<Member> {
+public class SnackgameMemberResolver implements MemberResolver<Member> {
 
     private final MemberRepository members;
 
-    public MemberResolverImpl(MemberRepository members) {
+    public SnackgameMemberResolver(MemberRepository members) {
         this.members = members;
     }
 
