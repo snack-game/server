@@ -8,13 +8,14 @@ import static com.snackgame.server.member.fixture.MemberFixture.주호;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+import javax.persistence.EntityManagerFactory;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -43,10 +44,10 @@ class SessionRankingDaoTest {
     @BeforeEach
     void setUp(
             @Autowired AppleGameSessionRepository appleGameSessions,
-            @Autowired TestEntityManager entityManager,
+            @Autowired EntityManagerFactory entityManagerFactory,
             @Autowired JdbcTemplate jdbcTemplate
     ) {
-        MemberFixture.persistAllWith(entityManager);
+        MemberFixture.persistAllUsing(entityManagerFactory);
 
         this.sessionRankingDao = new SessionRankingDao(jdbcTemplate);
 

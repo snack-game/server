@@ -9,6 +9,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Deprecated
 public class RankingResponse {
 
     private final int ranking;

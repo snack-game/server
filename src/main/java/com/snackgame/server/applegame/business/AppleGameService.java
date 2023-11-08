@@ -3,12 +3,14 @@ package com.snackgame.server.applegame.business;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.snackgame.server.applegame.business.domain.AppleGame;
 import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
 import com.snackgame.server.applegame.business.domain.Board;
+import com.snackgame.server.applegame.business.event.GameEndEvent;
 import com.snackgame.server.applegame.controller.dto.RangeRequest;
 import com.snackgame.server.member.business.domain.Member;
 
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class AppleGameService {
 
     private final AppleGameSessionRepository sessions;
+    private final ApplicationEventPublisher eventPublisher;
 
     public AppleGame startGameOf(Member member) {
         AppleGame game = AppleGame.ofRandomized(member);
@@ -50,5 +53,6 @@ public class AppleGameService {
         AppleGame game = sessions.getBy(sessionId);
         game.validateOwnedBy(member);
         game.end();
+        eventPublisher.publishEvent(new GameEndEvent(game));
     }
 }

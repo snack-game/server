@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.snackgame.server.applegame.dao.dto.RankingDto;
 
 @Component
+@Deprecated
 public class SessionRankingDao {
 
     private static final RowMapper<RankingDto> RANKING_DTO_ROW_MAPPER = (rs, rowNum) -> new RankingDto(
