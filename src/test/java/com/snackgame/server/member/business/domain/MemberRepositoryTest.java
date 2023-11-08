@@ -6,13 +6,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 
+import javax.persistence.EntityManagerFactory;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.DirtiesContext;
 
 import com.snackgame.server.member.business.exception.MemberNotFoundException;
@@ -28,8 +29,8 @@ class MemberRepositoryTest {
     private MemberRepository memberRepository;
 
     @BeforeEach
-    void setUp(@Autowired TestEntityManager entityManager) {
-        MemberFixture.persistAllWith(entityManager);
+    void setUp(@Autowired EntityManagerFactory entityManagerFactory) {
+        MemberFixture.persistAllUsing(entityManagerFactory);
     }
 
     @Test

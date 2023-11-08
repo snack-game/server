@@ -44,6 +44,11 @@ public class SocialMember extends Member {
         return providedId;
     }
 
+    @Override
+    public AccountType getAccountType() {
+        return AccountType.SOCIAL;
+    }
+
     public void setAdditional(String email, String nickname, String picture) {
         this.email = email;
         this.nickname = nickname;

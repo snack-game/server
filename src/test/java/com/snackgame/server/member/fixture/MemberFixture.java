@@ -3,7 +3,7 @@ package com.snackgame.server.member.fixture;
 import static com.snackgame.server.member.fixture.FixtureUtil.idIgnored;
 import static com.snackgame.server.member.fixture.FixtureUtil.pushing;
 
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import com.snackgame.server.member.business.domain.Group;
 import com.snackgame.server.member.business.domain.Member;
@@ -48,15 +48,19 @@ public class MemberFixture {
         return new Member(5L, new Name("주호"), 숭실대학교());
     }
 
-    public static void persistAllWith(TestEntityManager entityManager) {
-        var 홍천고등학교 = entityManager.persist(idIgnored(홍천고등학교()));
-        var 우테코 = entityManager.persist(idIgnored(우테코()));
-        var 숭실대학교 = entityManager.persist(idIgnored(숭실대학교()));
+    public static void persistAllUsing(EntityManagerFactory entityManagerFactory) {
+        var entityManager = entityManagerFactory.createEntityManager();
+        var transaction = entityManager.getTransaction();
+        transaction.begin();
+        entityManager.persist(idIgnored(홍천고등학교()));
+        entityManager.persist(idIgnored(우테코()));
+        entityManager.persist(idIgnored(숭실대학교()));
 
-        entityManager.persist(pushing(홍천고등학교, idIgnored(똥수())));
-        entityManager.persist(pushing(우테코, idIgnored(땡칠())));
+        entityManager.persist(pushing(홍천고등학교(), idIgnored(똥수())));
+        entityManager.persist(pushing(우테코(), idIgnored(땡칠())));
         entityManager.persist(idIgnored(땡칠2()));
-        entityManager.persist(pushing(숭실대학교, idIgnored(시연())));
-        entityManager.persist(pushing(숭실대학교, idIgnored(주호())));
+        entityManager.persist(pushing(숭실대학교(), idIgnored(시연())));
+        entityManager.persist(pushing(숭실대학교(), idIgnored(주호())));
+        transaction.commit();
     }
 }

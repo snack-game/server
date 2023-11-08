@@ -22,7 +22,7 @@ public class PlainApple extends Apple {
     public static PlainApple ofRandomizedNumber() {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int randomizedNumber = random.nextInt(NUMBER_MINIMUM, NUMBER_MAXIMUM + 1);
-        return of(randomizedNumber);
+        return PlainApple.of(randomizedNumber);
     }
 
     public GoldenApple golden() {

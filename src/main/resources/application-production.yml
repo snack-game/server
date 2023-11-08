@@ -13,3 +13,4 @@ security:
       expire-length: ${JWT_EXPIRE_LENGTH}
 server:
   port: ${APPLICATION_PORT}
+  forward-headers-strategy: native

@@ -6,12 +6,12 @@ import com.snackgame.server.auth.oauth.attributes.OAuthAttributes;
 import com.snackgame.server.auth.oauth.support.SocialMemberSaver;
 
 @Component
-public class SocialMemberSaverImpl implements SocialMemberSaver<SocialMember> {
+public class SnackgameSocialMemberSaver implements SocialMemberSaver<SocialMember> {
 
     private final MemberRepository members;
     private final DistinctNaming distinctNaming;
 
-    public SocialMemberSaverImpl(MemberRepository members, DistinctNaming distinctNaming) {
+    public SnackgameSocialMemberSaver(MemberRepository members, DistinctNaming distinctNaming) {
         this.members = members;
         this.distinctNaming = distinctNaming;
     }
