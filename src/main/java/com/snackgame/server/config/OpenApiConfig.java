@@ -70,7 +70,8 @@ public class OpenApiConfig {
         return "브라우저를 [직접 접근](/oauth2/authorization/" + provider + ")시켜야 한다.\n\n"
                + "소셜 로그인 후에는 처음 주소의 `/oauth/success`나 `/oauth/failure` 로 리다이렉트 된다.\n\n"
                + "ex) `snackga.me/game/apple-game` → oAuth Process → `snackga.me/game/apple-game/oauth/success`\n\n"
-               + "이후 관련 소셜 로그인 요청에는 브라우저에 발급된 JSESSIONID 쿠키를 함께 싣어야 한다.";
+               + "이 때, Query String에 JSESSIONID가 포함되며, \n\n"
+               + "이후 관련 소셜 로그인 요청에는 발급된 JSESSIONID 쿠키를 함께 싣어야 한다.";
     }
 
     private SecurityScheme jwtSecurityScheme() {
