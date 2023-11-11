@@ -43,6 +43,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "https://*snack-game.vercel.app",
                         "http://localhost:[*]"
                 )
-                .allowedMethods("GET", "POST", "DELETE", "PUT", "PATCH");
+                .allowedMethods("GET", "POST", "DELETE", "PUT", "PATCH")
+                .allowCredentials(true);
     }
 }
