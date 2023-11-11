@@ -14,3 +14,7 @@ security:
 server:
   port: ${APPLICATION_PORT}
   forward-headers-strategy: native
+  servlet:
+    session:
+      cookie:
+        same-site: none

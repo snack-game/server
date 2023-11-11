@@ -31,7 +31,7 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
     }
 
     private String getRedirectUrlFrom(HttpSession session) {
-        return getRefererFrom(session) + "oauth/success?JSESSIONID=" + session.getId();
+        return getRefererFrom(session) + "oauth/success";
     }
 
     private String getRefererFrom(HttpSession session) {
