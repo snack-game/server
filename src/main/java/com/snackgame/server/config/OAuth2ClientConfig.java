@@ -22,9 +22,6 @@ public class OAuth2ClientConfig {
     public SecurityFilterChain oAuth2FilterChain(HttpSecurity http) throws Exception {
         http.removeConfigurer(DefaultLoginPageConfigurer.class);
         return http
-                .requestMatchers()
-                .antMatchers("/oauth2/authorization/**", "/login/oauth2/code/**")
-                .and()
                 .csrf().disable()
                 .addFilterBefore(
                         new SessionOAuthRequestStoringFilter(),
