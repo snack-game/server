@@ -3,9 +3,9 @@ package com.snackgame.server.applegame.business;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.snackgame.server.applegame.business.domain.AppleGame;
 import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
@@ -43,7 +43,7 @@ public class AppleGameRankingService {
         return RankResponseV2.of(bestScores.rank(memberId));
     }
 
-    @TransactionalEventListener
+    @EventListener
     @Transactional
     public void registerBestScoreWith(GameEndEvent event) {
         AppleGame appleGame = event.getAppleGame();
