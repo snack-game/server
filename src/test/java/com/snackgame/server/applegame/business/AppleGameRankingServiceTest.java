@@ -91,6 +91,13 @@ class AppleGameRankingServiceTest {
                 .isEqualTo(4);
     }
 
+    @Test
+    void 전체에서_자신의_최고점수를_랭크한다() {
+        assertThat(appleGameRankingService.rankByBestScoreOf(똥수().getId()))
+                .extracting("rank")
+                .isEqualTo(2L);
+    }
+
     private AppleGame playGame(Member player, Range... ranges) {
         var game = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), player));
         for (Range range : ranges) {
