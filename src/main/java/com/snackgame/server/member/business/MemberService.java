@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.snackgame.server.member.business.domain.AccountTransfer;
 import com.snackgame.server.member.business.domain.DistinctNaming;
 import com.snackgame.server.member.business.domain.Group;
 import com.snackgame.server.member.business.domain.Guest;
@@ -15,7 +15,6 @@ import com.snackgame.server.member.business.domain.Member;
 import com.snackgame.server.member.business.domain.MemberRepository;
 import com.snackgame.server.member.business.domain.Name;
 import com.snackgame.server.member.business.domain.SocialMember;
-import com.snackgame.server.member.business.event.GameSessionTransferEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,7 +26,7 @@ public class MemberService {
     private final MemberRepository members;
     private final GroupService groupService;
     private final DistinctNaming distinctNaming;
-    private final ApplicationEventPublisher eventPublisher;
+    private final AccountTransfer accountTransfer;
 
     @Transactional
     public Member createWith(String name) {
@@ -54,7 +53,7 @@ public class MemberService {
 
     @Transactional
     public Member integrate(Member victim, SocialMember socialMember) {
-        eventPublisher.publishEvent(new GameSessionTransferEvent(victim, socialMember));
+        accountTransfer.transferAll(victim, socialMember);
         return socialMember;
     }
 
