@@ -46,25 +46,25 @@ class AppleGameRankingServiceTest {
         TestTransaction.end();
         MemberFixture.persistAllUsing(entityManagerFactory);
 
-        appleGameRankingService.registerBestScoreWith(new GameEndEvent(
+        appleGameRankingService.renewBestScoreWith(new GameEndEvent(
                 playGame(땡칠(), new Range(
                         new Coordinate(0, 1),
                         new Coordinate(1, 3)
                 ))
         ));
-        appleGameRankingService.registerBestScoreWith(new GameEndEvent(
+        appleGameRankingService.renewBestScoreWith(new GameEndEvent(
                 playGame(땡칠(), new Range(
                         new Coordinate(0, 0),
                         new Coordinate(1, 0)
                 ))
         ));
-        appleGameRankingService.registerBestScoreWith(new GameEndEvent(
+        appleGameRankingService.renewBestScoreWith(new GameEndEvent(
                 playGame(똥수(), new Range(
                         new Coordinate(0, 0),
                         new Coordinate(1, 0)
                 ))
         ));
-        appleGameRankingService.registerBestScoreWith(new GameEndEvent(
+        appleGameRankingService.renewBestScoreWith(new GameEndEvent(
                 playGame(땡칠2())
         ));
         // 최고 점수 기록 함수는 각각의 쓰레드와 트랜잭션으로 실행될 수 있다.
