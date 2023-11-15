@@ -45,7 +45,7 @@ public class AppleGameRankingService {
 
     @EventListener
     @Transactional
-    public void registerBestScoreWith(GameEndEvent event) {
+    public void renewBestScoreWith(GameEndEvent event) {
         AppleGame appleGame = event.getAppleGame();
         BestScore bestScore = bestScores.getByOwnerId(appleGame.getOwner().getId());
         bestScore.renewWith(appleGame);

@@ -25,6 +25,10 @@ public class BestScore {
     public BestScore() {
     }
 
+    public BestScore(Long ownerId) {
+        this.ownerId = ownerId;
+    }
+
     public BestScore(int score, Long ownerId, Long sessionId) {
         this.score = score;
         this.ownerId = ownerId;
@@ -34,8 +38,16 @@ public class BestScore {
     public void renewWith(AppleGame appleGame) {
         if (appleGame.getScore() >= score) {
             this.score = appleGame.getScore();
-            this.ownerId = appleGame.getOwner().getId();
             this.sessionId = appleGame.getSessionId();
         }
+    }
+
+    public void overwriteWith(BestScore other) {
+        this.score = other.getScore();
+        this.sessionId = other.getSessionId();
+    }
+
+    public boolean beats(BestScore other) {
+        return this.score >= other.score;
     }
 }

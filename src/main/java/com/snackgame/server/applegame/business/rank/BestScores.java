@@ -49,7 +49,7 @@ public interface BestScores extends JpaRepository<BestScore, Long> {
 
     default BestScore getByOwnerId(Long ownerId) {
         return findByOwnerId(ownerId)
-                .orElseGet(() -> save(new BestScore(0, ownerId, null)));
+                .orElseGet(() -> save(new BestScore(ownerId)));
     }
 
     @Modifying

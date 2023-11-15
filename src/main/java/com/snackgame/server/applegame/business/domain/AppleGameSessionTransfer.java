@@ -15,9 +15,9 @@ public class AppleGameSessionTransfer implements AccountTransfer {
     private final BestScoreTransfer bestScoreTransfer;
 
     @Override
-    public void transferAll(Member victim, Member newMember) {
-        appleGameSessions.transferAll(victim, newMember);
-        bestScoreTransfer.transfer(victim.getId(), newMember.getId());
+    public void transferAll(Member victim, Member currentMember) {
+        bestScoreTransfer.transfer(victim.getId(), currentMember.getId());
+        appleGameSessions.transferAll(victim, currentMember);
         victim.invalidate();
     }
 }
