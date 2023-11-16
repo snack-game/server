@@ -1,26 +1,23 @@
-package com.snackgame.server.member.controller.dto;
+package com.snackgame.server.applegame.controller.dto;
 
 import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.controller.dto.GroupResponse;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class MemberDetailsResponse {
+public class RankOwnerResponse {
 
     private final Long id;
     private final String name;
-    @Schema(allowableValues = {"SELF", "GUEST", "SOCIAL"})
-    private final String type;
     private final GroupResponse group;
 
-    public static MemberDetailsResponse of(Member member) {
-        return new MemberDetailsResponse(
+    public static RankOwnerResponse of(Member member) {
+        return new RankOwnerResponse(
                 member.getId(),
                 member.getNameAsString(),
-                member.getAccountType().name(),
                 GroupResponse.of(member.getGroup())
         );
     }
