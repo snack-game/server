@@ -1,9 +1,7 @@
 package com.snackgame.server.applegame.controller.dto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import com.snackgame.server.applegame.business.domain.Apple;
 import com.snackgame.server.applegame.business.domain.AppleGame;
 
 import lombok.AllArgsConstructor;
@@ -21,13 +19,7 @@ public class AppleGameResponseV2 {
         return new AppleGameResponseV2(
                 appleGame.getSessionId(),
                 appleGame.getScore(),
-                toResponses(appleGame.getApples())
+                AppleResponse.of(appleGame.getApples())
         );
-    }
-
-    private static List<List<AppleResponse>> toResponses(List<List<Apple>> apples) {
-        return apples.stream()
-                .map(AppleResponse::of)
-                .collect(Collectors.toList());
     }
 }

@@ -15,7 +15,13 @@ public class AppleResponse {
     private final int number;
     private final boolean isGolden;
 
-    public static List<AppleResponse> of(List<Apple> apples) {
+    public static List<List<AppleResponse>> of(List<List<Apple>> apples) {
+        return apples.stream()
+                .map(AppleResponse::ofRow)
+                .collect(Collectors.toList());
+    }
+
+    private static List<AppleResponse> ofRow(List<Apple> apples) {
         return apples.stream()
                 .map(it -> new AppleResponse(it.getNumber(), it.isGolden()))
                 .collect(Collectors.toList());
