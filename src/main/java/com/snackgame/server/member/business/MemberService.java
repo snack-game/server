@@ -53,7 +53,7 @@ public class MemberService {
 
     @Transactional
     public Member integrate(Member victim, SocialMember socialMember) {
-        accountTransfer.transferAll(victim, socialMember);
+        accountTransfer.transferAll(victim.getId(), socialMember.getId());
         victim.invalidate();
         return socialMember;
     }

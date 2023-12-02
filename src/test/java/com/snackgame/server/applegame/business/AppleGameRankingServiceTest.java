@@ -25,7 +25,6 @@ import com.snackgame.server.applegame.business.domain.game.AppleGame;
 import com.snackgame.server.applegame.business.domain.game.AppleGames;
 import com.snackgame.server.applegame.business.event.GameEndEvent;
 import com.snackgame.server.applegame.fixture.TestFixture;
-import com.snackgame.server.member.business.domain.Member;
 import com.snackgame.server.member.fixture.MemberFixture;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -47,25 +46,25 @@ class AppleGameRankingServiceTest {
         MemberFixture.persistAllUsing(entityManagerFactory);
 
         appleGameRankingService.renewBestScoreWith(new GameEndEvent(
-                playGame(땡칠(), new Range(
+                playGame(땡칠().getId(), new Range(
                         new Coordinate(0, 1),
                         new Coordinate(1, 3)
                 ))
         ));
         appleGameRankingService.renewBestScoreWith(new GameEndEvent(
-                playGame(땡칠(), new Range(
+                playGame(땡칠().getId(), new Range(
                         new Coordinate(0, 0),
                         new Coordinate(1, 0)
                 ))
         ));
         appleGameRankingService.renewBestScoreWith(new GameEndEvent(
-                playGame(똥수(), new Range(
+                playGame(똥수().getId(), new Range(
                         new Coordinate(0, 0),
                         new Coordinate(1, 0)
                 ))
         ));
         appleGameRankingService.renewBestScoreWith(new GameEndEvent(
-                playGame(땡칠2())
+                playGame(땡칠2().getId())
         ));
         // 최고 점수 기록 함수는 각각의 쓰레드와 트랜잭션으로 실행될 수 있다.
         // 따라서 트랜잭션이 끝나기를 기다린 후에 그 결과를 평가해야 한다.
@@ -98,8 +97,8 @@ class AppleGameRankingServiceTest {
                 .isEqualTo(2L);
     }
 
-    private AppleGame playGame(Member player, Range... ranges) {
-        var game = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), player));
+    private AppleGame playGame(Long playerId, Range... ranges) {
+        var game = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), playerId));
         for (Range range : ranges) {
             game.removeApplesIn(range);
         }

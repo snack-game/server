@@ -10,14 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 
 import com.snackgame.server.applegame.business.domain.Range;
 import com.snackgame.server.applegame.business.domain.apple.Apple;
 import com.snackgame.server.applegame.business.exception.GameSessionExpiredException;
 import com.snackgame.server.applegame.business.exception.NotOwnedException;
 import com.snackgame.server.common.domain.BaseEntity;
-import com.snackgame.server.member.business.domain.Member;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -34,30 +32,29 @@ public class AppleGame extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sessionId;
-    @ManyToOne
-    private Member owner;
+    private Long ownerId;
     @Lob
     private Board board;
     private int score = 0;
     private boolean isFinished = false;
 
-    public AppleGame(Board board, Member owner) {
+    public AppleGame(Board board, Long ownerId) {
         this.board = board;
-        this.owner = owner;
+        this.ownerId = ownerId;
     }
 
-    public AppleGame(Board board, Member owner, LocalDateTime createdAt) {
+    public AppleGame(Board board, Long ownerId, LocalDateTime createdAt) {
         this.board = board;
-        this.owner = owner;
+        this.ownerId = ownerId;
         this.createdAt = createdAt;
     }
 
-    public static AppleGame ofRandomized(Member owner) {
-        return new AppleGame(new Board(DEFAULT_HEIGHT, DEFAULT_WIDTH), owner);
+    public static AppleGame ofRandomized(Long ownerId) {
+        return new AppleGame(new Board(DEFAULT_HEIGHT, DEFAULT_WIDTH), ownerId);
     }
 
-    public void validateOwnedBy(Member member) {
-        if (!owner.equals(member)) {
+    public void validateOwnedBy(Long memberId) {
+        if (!ownerId.equals(memberId)) {
             throw new NotOwnedException();
         }
     }
@@ -97,8 +94,8 @@ public class AppleGame extends BaseEntity {
         return sessionId;
     }
 
-    public Member getOwner() {
-        return owner;
+    public Long getOwnerId() {
+        return ownerId;
     }
 
     public List<List<Apple>> getApples() {

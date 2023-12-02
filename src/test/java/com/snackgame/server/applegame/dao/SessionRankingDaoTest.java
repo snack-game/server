@@ -51,23 +51,23 @@ class SessionRankingDaoTest {
 
         this.sessionRankingDao = new SessionRankingDao(jdbcTemplate);
 
-        this.first = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 똥수()));
+        this.first = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 똥수().getId()));
         first.removeApplesIn(new Range(
                 new Coordinate(0, 1),
                 new Coordinate(1, 3)
         ));
-        this.second = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠()));
+        this.second = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId()));
         second.removeApplesIn(new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         ));
-        this.third = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠2()));
+        this.third = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠2().getId()));
         third.removeApplesIn(new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         ));
-        this.fourth = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 시연()));
-        this.fifth = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 주호()));
+        this.fourth = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 시연().getId()));
+        this.fifth = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 주호().getId()));
 
         first.finish();
         second.finish();
@@ -114,7 +114,7 @@ class SessionRankingDaoTest {
 
     @Test
     void 사용자의_최고점수_랭킹을_가져온다() {
-        assertThat(sessionRankingDao.selectBestByScoreOf(third.getOwner().getId()))
+        assertThat(sessionRankingDao.selectBestByScoreOf(third.getOwnerId()))
                 .get().usingRecursiveComparison()
                 .isEqualTo(new RankingDto(2, third.getSessionId()));
     }

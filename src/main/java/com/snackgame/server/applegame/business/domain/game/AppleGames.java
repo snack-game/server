@@ -6,14 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.snackgame.server.applegame.business.exception.NoSuchSessionException;
-import com.snackgame.server.member.business.domain.Member;
 
 @Repository
 public interface AppleGames extends JpaRepository<AppleGame, Long> {
 
     @Modifying
-    @Query("update AppleGame set owner = :to where owner = :from")
-    void transferAll(Member from, Member to);
+    @Query("update AppleGame set ownerId = :toMemberId where ownerId = :fromMemberId")
+    void transferAll(Long fromMemberId, Long toMemberId);
 
     default AppleGame getBy(Long sessionId) {
         return findById(sessionId).orElseThrow(NoSuchSessionException::new);

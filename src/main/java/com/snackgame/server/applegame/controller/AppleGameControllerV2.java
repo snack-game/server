@@ -31,7 +31,7 @@ public class AppleGameControllerV2 implements AppleGameControllerV2Docs {
     @Override
     @PostMapping("/games/1")
     public AppleGameResponseV2 startGameFor(@Authenticated Member member) {
-        AppleGame game = appleGameService.startGameFor(member);
+        AppleGame game = appleGameService.startGameFor(member.getId());
         return AppleGameResponseV2.of(game);
     }
 
@@ -42,7 +42,7 @@ public class AppleGameControllerV2 implements AppleGameControllerV2Docs {
             @PathVariable Long sessionId,
             @RequestBody List<RangeRequest> ranges
     ) {
-        return appleGameService.placeMoves(member, sessionId, ranges)
+        return appleGameService.placeMoves(member.getId(), sessionId, ranges)
                 .map(game -> ResponseEntity
                         .status(HttpStatus.CREATED)
                         .body(AppleGameResponseV2.of(game))
@@ -53,13 +53,13 @@ public class AppleGameControllerV2 implements AppleGameControllerV2Docs {
     @Override
     @DeleteMapping("/sessions/{sessionId}/board")
     public AppleGameResponseV2 restart(@Authenticated Member member, @PathVariable Long sessionId) {
-        AppleGame game = appleGameService.restart(member, sessionId);
+        AppleGame game = appleGameService.restart(member.getId(), sessionId);
         return AppleGameResponseV2.of(game);
     }
 
     @Override
     @PutMapping("/sessions/{sessionId}/end")
     public void finish(@Authenticated Member member, @PathVariable Long sessionId) {
-        appleGameService.finish(member, sessionId);
+        appleGameService.finish(member.getId(), sessionId);
     }
 }

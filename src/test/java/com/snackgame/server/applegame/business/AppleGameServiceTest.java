@@ -1,5 +1,6 @@
 package com.snackgame.server.applegame.business;
 
+import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
@@ -12,14 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.snackgame.server.annotation.ServiceTest;
-import com.snackgame.server.applegame.business.domain.apple.Apple;
 import com.snackgame.server.applegame.business.domain.game.AppleGame;
 import com.snackgame.server.applegame.business.domain.game.AppleGames;
+import com.snackgame.server.applegame.business.domain.game.Board;
 import com.snackgame.server.applegame.controller.dto.CoordinateRequest;
 import com.snackgame.server.applegame.controller.dto.RangeRequest;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.member.business.MemberService;
-import com.snackgame.server.member.business.domain.Member;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -35,9 +35,7 @@ class AppleGameServiceTest {
 
     @Test
     void 게임을_시작한다() {
-        Member owner = memberService.createGuest();
-
-        AppleGame game = appleGameService.startGameFor(owner);
+        AppleGame game = appleGameService.startGameFor(땡칠().getId());
 
         assertThat(game.getSessionId()).isNotNull();
         assertThat(game.getApples()).hasSize(AppleGame.DEFAULT_HEIGHT);
@@ -46,8 +44,7 @@ class AppleGameServiceTest {
 
     @Test
     void 게임을_조작한다() {
-        Member owner = memberService.createGuest();
-        AppleGame game = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
+        AppleGame game = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId()));
         List<RangeRequest> rangeRequests = List.of(
                 new RangeRequest(
                         new CoordinateRequest(0, 1),
@@ -59,7 +56,7 @@ class AppleGameServiceTest {
                 )
         );
 
-        appleGameService.placeMoves(owner, game.getSessionId(), rangeRequests);
+        appleGameService.placeMoves(땡칠().getId(), game.getSessionId(), rangeRequests);
 
         AppleGame found = appleGames.getBy(game.getSessionId());
         assertThat(found.getScore()).isEqualTo(6);
@@ -67,52 +64,47 @@ class AppleGameServiceTest {
 
     @Test
     void 황금사과를_제거하면_초기화된_판을_반환한다() {
-        Member owner = memberService.createGuest();
-        AppleGame game = appleGames.save(new AppleGame(TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(), owner));
-
+        AppleGame game = appleGames.save(new AppleGame(TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(), 땡칠().getId()));
         List<RangeRequest> rangeRequests = List.of(new RangeRequest(
                 new CoordinateRequest(0, 0),
                 new CoordinateRequest(1, 0))
         );
 
-        Optional<AppleGame> appleGame = appleGameService.placeMoves(owner, game.getSessionId(), rangeRequests);
+        Optional<AppleGame> appleGame = appleGameService.placeMoves(땡칠().getId(), game.getSessionId(), rangeRequests);
 
         assertThat(appleGame).isPresent();
     }
 
     @Test
-    void 황금사과를_제거하지_않으면_아무_판도_반환하지_않는다() {
-        Member owner = memberService.createGuest();
-        AppleGame game = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
+    void 황금사과를_제거하지_않으면_판을_반환하지_않는다() {
+        AppleGame game = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId()));
         var rangeRequests = List.of(new RangeRequest(
                 new CoordinateRequest(0, 0),
                 new CoordinateRequest(1, 0))
         );
 
-        Optional<AppleGame> appleGame = appleGameService.placeMoves(owner, game.getSessionId(), rangeRequests);
+        Optional<AppleGame> appleGame = appleGameService.placeMoves(땡칠().getId(), game.getSessionId(), rangeRequests);
 
         assertThat(appleGame).isEmpty();
     }
 
     @Test
-    void 게임판을_초기화한다() {
-        Member owner = memberService.createGuest();
-        AppleGame game = appleGameService.startGameFor(owner);
-        List<List<Apple>> previousApples = game.getApples();
+    void 게임을_재시작한다() {
+        AppleGame game = appleGameService.startGameFor(땡칠().getId());
+        Board previousBoard = game.getBoard();
         LocalDateTime previousCreatedAt = game.getCreatedAt();
 
-        appleGameService.restart(owner, game.getSessionId());
+        appleGameService.restart(땡칠().getId(), game.getSessionId());
 
-        assertThat(game.getApples()).isNotEqualTo(previousApples);
+        assertThat(game.getBoard()).isNotEqualTo(previousBoard);
         assertThat(game.getCreatedAt()).isAfter(previousCreatedAt);
     }
 
     @Test
     void 게임을_끝낸다() {
-        Member owner = memberService.createGuest();
-        AppleGame game = appleGameService.startGameFor(owner);
+        AppleGame game = appleGameService.startGameFor(땡칠().getId());
 
-        appleGameService.finish(owner, game.getSessionId());
+        appleGameService.finish(땡칠().getId(), game.getSessionId());
 
         assertThat(game.isFinished()).isTrue();
     }
