@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.business.domain;
+package com.snackgame.server.applegame.business.domain.apple;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,6 +25,11 @@ public class GoldenApple extends Apple {
 
     @Override
     public boolean isGolden() {
+        return true;
+    }
+
+    @Override
+    public boolean exists() {
         return true;
     }
 }

@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.business.domain;
+package com.snackgame.server.applegame.business.domain.game;
 
 import static com.snackgame.server.applegame.fixture.TestFixture.TWO_BY_FOUR;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,6 +10,11 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
+import com.snackgame.server.applegame.business.domain.Coordinate;
+import com.snackgame.server.applegame.business.domain.Range;
+import com.snackgame.server.applegame.business.domain.apple.Apple;
+import com.snackgame.server.applegame.business.domain.apple.EmptyApple;
+import com.snackgame.server.applegame.business.domain.apple.PlainApple;
 import com.snackgame.server.applegame.business.exception.AppleNotRemovableException;
 import com.snackgame.server.applegame.business.exception.InvalidBoardSizeException;
 

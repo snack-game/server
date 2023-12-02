@@ -7,8 +7,8 @@ import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.snackgame.server.auth.jwt.FromToken;
-import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.auth.jwt.Authenticated;
+import com.snackgame.server.auth.oauth.support.JustAuthenticated;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -30,7 +30,7 @@ public class OpenApiConfig {
 
     static {
         SpringDocUtils.getConfig()
-                .addRequestWrapperToIgnore(Member.class);
+                .addAnnotationsToIgnore(Authenticated.class, JustAuthenticated.class);
     }
 
     @Bean
@@ -39,8 +39,6 @@ public class OpenApiConfig {
                 .info(new Info()
                         .version("v0.0.1")
                         .title("스낵게임 API")
-                        .description(
-                                "[더 자세한 설명](https://jumbled-droplet-70f.notion.site/API-30855489790c45e58d69adc1c7198b43)")
                 )
                 .paths(oAuth2Paths())
                 .components(new Components()
@@ -85,7 +83,7 @@ public class OpenApiConfig {
     public OperationCustomizer authOperationMarker() {
         return (operation, handlerMethod) -> {
             Arrays.stream(handlerMethod.getMethodParameters())
-                    .filter(it -> it.hasParameterAnnotation(FromToken.class))
+                    .filter(it -> it.hasParameterAnnotation(Authenticated.class))
                     .findAny()
                     .ifPresent(it -> operation.addSecurityItem(JWT_SECURITY_ITEM));
             return operation;

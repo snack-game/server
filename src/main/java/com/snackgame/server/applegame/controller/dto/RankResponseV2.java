@@ -1,6 +1,6 @@
 package com.snackgame.server.applegame.controller.dto;
 
-import com.snackgame.server.applegame.business.rank.BestScoreWithRankAndOwner;
+import com.snackgame.server.applegame.business.domain.rank.BestScoreWithRankAndOwner;
 import com.snackgame.server.member.controller.dto.GroupResponse;
 
 import lombok.AccessLevel;

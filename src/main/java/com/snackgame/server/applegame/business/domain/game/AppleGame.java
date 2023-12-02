@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.business.domain;
+package com.snackgame.server.applegame.business.domain.game;
 
 import static java.time.LocalDateTime.now;
 
@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
+import com.snackgame.server.applegame.business.domain.Range;
+import com.snackgame.server.applegame.business.domain.apple.Apple;
 import com.snackgame.server.applegame.business.exception.GameSessionExpiredException;
 import com.snackgame.server.applegame.business.exception.NotOwnedException;
 import com.snackgame.server.common.domain.BaseEntity;
@@ -37,37 +39,21 @@ public class AppleGame extends BaseEntity {
     @Lob
     private Board board;
     private int score = 0;
-    private boolean isEnded = false;
+    private boolean isFinished = false;
 
     public AppleGame(Board board, Member owner) {
-        this(board, owner, now());
+        this.board = board;
+        this.owner = owner;
     }
 
     public AppleGame(Board board, Member owner, LocalDateTime createdAt) {
         this.board = board;
         this.owner = owner;
-        this.score = 0;
         this.createdAt = createdAt;
     }
 
     public static AppleGame ofRandomized(Member owner) {
         return new AppleGame(new Board(DEFAULT_HEIGHT, DEFAULT_WIDTH), owner);
-    }
-
-    public void reset() {
-        validateSessionAlive();
-        this.board = board.reset();
-        this.score = 0;
-        this.createdAt = now();
-    }
-
-    public void removeApplesIn(Range range) {
-        validateSessionAlive();
-        List<Apple> removed = board.removeApplesIn(range);
-        if (removed.stream().anyMatch(Apple::isGolden)) {
-            board = board.reset();
-        }
-        score += removed.size();
     }
 
     public void validateOwnedBy(Member member) {
@@ -76,18 +62,34 @@ public class AppleGame extends BaseEntity {
         }
     }
 
-    public void end() {
-        validateSessionAlive();
-        this.isEnded = true;
+    public void restart() {
+        validateOngoing();
+        this.board = board.reset();
+        this.score = 0;
+        this.createdAt = now();
     }
 
-    public boolean isDone() {
-        return isEnded || now().isAfter(createdAt.plusSeconds(SESSION_SECONDS).plusSeconds(SPARE_SECONDS));
+    public void removeApplesIn(Range range) {
+        validateOngoing();
+        List<Apple> removed = board.removeApplesIn(range);
+        if (removed.stream().anyMatch(Apple::isGolden)) {
+            board = board.reset();
+        }
+        score += removed.size();
     }
 
-    private void validateSessionAlive() {
-        if (this.isDone()) {
-            throw new GameSessionExpiredException("게임 세션이 이미 종료되었습니다");
+    public void finish() {
+        validateOngoing();
+        this.isFinished = true;
+    }
+
+    public boolean isFinished() {
+        return isFinished || now().isAfter(createdAt.plusSeconds(SESSION_SECONDS).plusSeconds(SPARE_SECONDS));
+    }
+
+    private void validateOngoing() {
+        if (this.isFinished()) {
+            throw new GameSessionExpiredException("이미 종료된 게임입니다");
         }
     }
 

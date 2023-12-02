@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.business.domain;
+package com.snackgame.server.applegame.business.domain.apple;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -33,13 +33,7 @@ public abstract class Apple {
     @JsonProperty("isGolden")
     public abstract boolean isGolden();
 
-    public boolean isEmpty() {
-        return false;
-    }
-
-    public boolean exists() {
-        return !isEmpty();
-    }
+    public abstract boolean exists();
 
     public int getNumber() {
         return number;

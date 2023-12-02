@@ -1,9 +1,9 @@
-package com.snackgame.server.applegame.business.rank;
+package com.snackgame.server.applegame.business.domain.rank;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.snackgame.server.applegame.business.domain.BestScoreTransfer;
+import com.snackgame.server.applegame.business.domain.game.BestScoreTransfer;
 
 import lombok.RequiredArgsConstructor;
 

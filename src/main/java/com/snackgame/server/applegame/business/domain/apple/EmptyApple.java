@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.business.domain;
+package com.snackgame.server.applegame.business.domain.apple;
 
 import com.snackgame.server.applegame.business.exception.EmptyAppleException;
 
@@ -25,7 +25,7 @@ public class EmptyApple extends Apple {
     }
 
     @Override
-    public boolean isEmpty() {
-        return true;
+    public boolean exists() {
+        return false;
     }
 }

@@ -1,10 +1,9 @@
-package com.snackgame.server.applegame.business.rank;
+package com.snackgame.server.applegame.business.domain.rank;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.snackgame.server.applegame.business.exception.NoRankingYetException;
@@ -51,8 +50,4 @@ public interface BestScores extends JpaRepository<BestScore, Long> {
         return findByOwnerId(ownerId)
                 .orElseGet(() -> save(new BestScore(ownerId)));
     }
-
-    @Modifying
-    @Query("update BestScore set ownerId = :newMemberId where ownerId = :victimMemberId")
-    void transfer(Long victimMemberId, Long newMemberId);
 }

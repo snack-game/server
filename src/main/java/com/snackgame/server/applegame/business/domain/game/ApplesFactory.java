@@ -1,9 +1,12 @@
-package com.snackgame.server.applegame.business.domain;
+package com.snackgame.server.applegame.business.domain.game;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
+import com.snackgame.server.applegame.business.domain.apple.Apple;
+import com.snackgame.server.applegame.business.domain.apple.PlainApple;
 
 public class ApplesFactory {
 

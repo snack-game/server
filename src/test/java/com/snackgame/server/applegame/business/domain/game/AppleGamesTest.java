@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.business.domain;
+package com.snackgame.server.applegame.business.domain.game;
 
 import static com.snackgame.server.applegame.fixture.TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE;
 import static com.snackgame.server.applegame.fixture.TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE_AS_JSON;
@@ -22,16 +22,17 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.snackgame.server.applegame.business.domain.apple.Apple;
 import com.snackgame.server.applegame.fixture.TestFixture;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @DataJpaTest
 @EnableJpaAuditing
-class AppleGameSessionRepositoryTest {
+class AppleGamesTest {
 
     @Autowired
-    AppleGameSessionRepository games;
+    AppleGames appleGames;
     @Autowired
     JdbcTemplate jdbcTemplate;
     ObjectMapper objectMapper = new ObjectMapper();
@@ -47,7 +48,7 @@ class AppleGameSessionRepositoryTest {
     @Test
     void 게임판의_사과들은_직렬화되어_저장된다() throws JsonProcessingException {
         AppleGame game = new AppleGame(TWO_BY_TWO_WITH_GOLDEN_APPLE(), null);
-        games.save(game);
+        appleGames.save(game);
 
         String applesJson = jdbcTemplate.queryForObject(
                 "SELECT board FROM apple_game WHERE session_id = " + game.getSessionId(),
@@ -57,12 +58,12 @@ class AppleGameSessionRepositoryTest {
 
     @Test
     void 직렬화되어_저장된_게임판을_불러온다() {
-        var saved = games.save(new AppleGame(TWO_BY_TWO_WITH_GOLDEN_APPLE(), null));
+        var saved = appleGames.save(new AppleGame(TWO_BY_TWO_WITH_GOLDEN_APPLE(), null));
         TestTransaction.flagForCommit();
         TestTransaction.end();
 
         TestTransaction.start();
-        var game = games.findById(saved.getSessionId()).get();
+        var game = appleGames.findById(saved.getSessionId()).get();
 
         assertThat(game.getApples()).hasSize(2);
         assertThat(game.getApples().get(0)).hasSize(2);
@@ -73,7 +74,7 @@ class AppleGameSessionRepositoryTest {
     void 사과를_저장하면_생성시각도_저장된다() {
         AppleGame game = AppleGame.ofRandomized(null);
 
-        games.save(game);
+        appleGames.save(game);
 
         assertThat(game.getCreatedAt()).isNotNull();
     }
@@ -81,23 +82,36 @@ class AppleGameSessionRepositoryTest {
     @Test
     void 생성시각은_리셋시_덮어씌워진다() {
         AppleGame game = AppleGame.ofRandomized(null);
-        game.reset();
+        game.restart();
         LocalDateTime localCreatedTime = game.getCreatedAt();
 
-        games.save(game);
+        appleGames.save(game);
 
         assertThat(game.getUpdatedAt()).isAfter(localCreatedTime);
     }
 
     @Test
-    void 저장_후_다시_불러와도_EMPTY_구분이_가능한가() {
+    void 저장_후_다시_불러와도_존재하는지_구분이_가능한가() {
         AppleGame game = new AppleGame(TestFixture.TWO_BY_FOUR(), null);
-        games.save(game);
+        appleGames.save(game);
         TestTransaction.flagForCommit();
         TestTransaction.end();
 
         TestTransaction.start();
-        var apples = games.findById(game.getSessionId()).get().getApples();
-        assertThat(apples.get(0).get(2).isEmpty()).isTrue();
+        var apples = appleGames.findById(game.getSessionId()).get().getApples();
+        assertThat(apples.get(0).get(2).exists()).isFalse();
+    }
+
+    @Test
+    void 저장_후_다시_불러와도_같은_사과인가() {
+        AppleGame game = new AppleGame(TestFixture.TWO_BY_FOUR(), null);
+        appleGames.save(game);
+        Apple previous = game.getApples().get(0).get(2);
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+
+        TestTransaction.start();
+        var apples = appleGames.findById(game.getSessionId()).get().getApples();
+        assertThat(apples.get(0).get(2)).isEqualTo(previous);
     }
 }

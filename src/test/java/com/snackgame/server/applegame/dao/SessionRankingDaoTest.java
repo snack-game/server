@@ -19,10 +19,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 
-import com.snackgame.server.applegame.business.domain.AppleGame;
-import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
 import com.snackgame.server.applegame.business.domain.Coordinate;
 import com.snackgame.server.applegame.business.domain.Range;
+import com.snackgame.server.applegame.business.domain.game.AppleGame;
+import com.snackgame.server.applegame.business.domain.game.AppleGames;
 import com.snackgame.server.applegame.dao.dto.RankingDto;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.member.fixture.MemberFixture;
@@ -43,7 +43,7 @@ class SessionRankingDaoTest {
 
     @BeforeEach
     void setUp(
-            @Autowired AppleGameSessionRepository appleGameSessions,
+            @Autowired AppleGames appleGames,
             @Autowired EntityManagerFactory entityManagerFactory,
             @Autowired JdbcTemplate jdbcTemplate
     ) {
@@ -51,31 +51,31 @@ class SessionRankingDaoTest {
 
         this.sessionRankingDao = new SessionRankingDao(jdbcTemplate);
 
-        this.first = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 똥수()));
+        this.first = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 똥수()));
         first.removeApplesIn(new Range(
                 new Coordinate(0, 1),
                 new Coordinate(1, 3)
         ));
-        this.second = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠()));
+        this.second = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠()));
         second.removeApplesIn(new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         ));
-        this.third = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠2()));
+        this.third = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠2()));
         third.removeApplesIn(new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         ));
-        this.fourth = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 시연()));
-        this.fifth = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 주호()));
+        this.fourth = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 시연()));
+        this.fifth = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 주호()));
 
-        first.end();
-        second.end();
-        third.end();
-        fourth.end();
-        fifth.end();
+        first.finish();
+        second.finish();
+        third.finish();
+        fourth.finish();
+        fifth.finish();
 
-        appleGameSessions.flush();
+        appleGames.flush();
     }
 
     @Test

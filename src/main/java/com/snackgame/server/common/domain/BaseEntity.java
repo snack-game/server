@@ -17,7 +17,7 @@ import lombok.Getter;
 public abstract class BaseEntity {
 
     @CreatedDate
-    protected LocalDateTime createdAt;
+    protected LocalDateTime createdAt = LocalDateTime.now();
 
     @LastModifiedDate
     protected LocalDateTime updatedAt;

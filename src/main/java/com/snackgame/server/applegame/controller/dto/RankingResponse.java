@@ -1,6 +1,6 @@
 package com.snackgame.server.applegame.controller.dto;
 
-import com.snackgame.server.applegame.business.domain.AppleGame;
+import com.snackgame.server.applegame.business.domain.game.AppleGame;
 import com.snackgame.server.member.controller.dto.MemberDetailsResponse;
 
 import lombok.AccessLevel;

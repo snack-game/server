@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.business.rank;
+package com.snackgame.server.applegame.business.domain.rank;
 
 import org.springframework.beans.factory.annotation.Value;
 

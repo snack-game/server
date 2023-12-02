@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.business.domain;
+package com.snackgame.server.applegame.business.domain.apple;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -18,7 +18,6 @@ class EmptyAppleTest {
         var emptyApple = EmptyApple.get();
 
         assertThat(emptyApple.exists()).isFalse();
-        assertThat(emptyApple.isEmpty()).isTrue();
     }
 
     @Test

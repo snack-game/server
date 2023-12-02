@@ -19,10 +19,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.test.context.transaction.TestTransaction;
 
 import com.snackgame.server.annotation.ServiceTest;
-import com.snackgame.server.applegame.business.domain.AppleGame;
-import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
 import com.snackgame.server.applegame.business.domain.Coordinate;
 import com.snackgame.server.applegame.business.domain.Range;
+import com.snackgame.server.applegame.business.domain.game.AppleGame;
+import com.snackgame.server.applegame.business.domain.game.AppleGames;
 import com.snackgame.server.applegame.business.event.GameEndEvent;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.member.business.domain.Member;
@@ -34,7 +34,7 @@ import com.snackgame.server.member.fixture.MemberFixture;
 class AppleGameRankingServiceTest {
 
     @Autowired
-    AppleGameSessionRepository appleGameSessions;
+    AppleGames appleGames;
     @Autowired
     private AppleGameRankingService appleGameRankingService;
 
@@ -99,11 +99,11 @@ class AppleGameRankingServiceTest {
     }
 
     private AppleGame playGame(Member player, Range... ranges) {
-        var game = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), player));
+        var game = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), player));
         for (Range range : ranges) {
             game.removeApplesIn(range);
         }
-        game.end();
+        game.finish();
         return game;
     }
 }

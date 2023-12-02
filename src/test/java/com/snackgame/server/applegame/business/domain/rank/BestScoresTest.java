@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.business.rank;
+package com.snackgame.server.applegame.business.domain.rank;
 
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠2;

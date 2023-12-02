@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.business.domain;
+package com.snackgame.server.applegame.business.domain.game;
 
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
 import static com.snackgame.server.member.fixture.MemberFixture.똥수;
@@ -11,6 +11,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
+import com.snackgame.server.applegame.business.domain.Coordinate;
+import com.snackgame.server.applegame.business.domain.Range;
 import com.snackgame.server.applegame.business.exception.GameSessionExpiredException;
 import com.snackgame.server.applegame.business.exception.NotOwnedException;
 import com.snackgame.server.applegame.fixture.TestFixture;
@@ -41,7 +43,7 @@ class AppleGameTest {
         var previousBoard = game.getBoard();
         var previousCreatedAt = game.getCreatedAt();
 
-        game.reset();
+        game.restart();
 
         assertThat(game.getBoard()).isNotEqualTo(previousBoard);
         assertThat(game.getScore()).isZero();
@@ -111,9 +113,9 @@ class AppleGameTest {
     void 만든지_2분_그리고_여유시간이_지나면_초기화할_수_없다() {
         var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠(), LocalDateTime.now().minusSeconds(125));
 
-        assertThatThrownBy(() -> game.reset())
+        assertThatThrownBy(() -> game.restart())
                 .isInstanceOf(GameSessionExpiredException.class)
-                .hasMessage("게임 세션이 이미 종료되었습니다");
+                .hasMessage("이미 종료된 게임입니다");
     }
 
     @Test
@@ -126,7 +128,7 @@ class AppleGameTest {
 
         assertThatThrownBy(() -> game.removeApplesIn(range))
                 .isInstanceOf(GameSessionExpiredException.class)
-                .hasMessage("게임 세션이 이미 종료되었습니다");
+                .hasMessage("이미 종료된 게임입니다");
     }
 
     @Test
@@ -142,8 +144,8 @@ class AppleGameTest {
     void 게임을_끝낸다() {
         var game = AppleGame.ofRandomized(똥수());
 
-        game.end();
+        game.finish();
 
-        game.isDone();
+        game.isFinished();
     }
 }

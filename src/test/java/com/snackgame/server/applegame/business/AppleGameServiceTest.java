@@ -12,9 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.snackgame.server.annotation.ServiceTest;
-import com.snackgame.server.applegame.business.domain.Apple;
-import com.snackgame.server.applegame.business.domain.AppleGame;
-import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
+import com.snackgame.server.applegame.business.domain.apple.Apple;
+import com.snackgame.server.applegame.business.domain.game.AppleGame;
+import com.snackgame.server.applegame.business.domain.game.AppleGames;
 import com.snackgame.server.applegame.controller.dto.CoordinateRequest;
 import com.snackgame.server.applegame.controller.dto.RangeRequest;
 import com.snackgame.server.applegame.fixture.TestFixture;
@@ -31,13 +31,13 @@ class AppleGameServiceTest {
     @Autowired
     MemberService memberService;
     @Autowired
-    AppleGameSessionRepository appleGameSessions;
+    AppleGames appleGames;
 
     @Test
     void 게임을_시작한다() {
         Member owner = memberService.createGuest();
 
-        AppleGame game = appleGameService.startGameOf(owner);
+        AppleGame game = appleGameService.startGameFor(owner);
 
         assertThat(game.getSessionId()).isNotNull();
         assertThat(game.getApples()).hasSize(AppleGame.DEFAULT_HEIGHT);
@@ -47,7 +47,7 @@ class AppleGameServiceTest {
     @Test
     void 게임을_조작한다() {
         Member owner = memberService.createGuest();
-        AppleGame game = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
+        AppleGame game = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
         List<RangeRequest> rangeRequests = List.of(
                 new RangeRequest(
                         new CoordinateRequest(0, 1),
@@ -61,14 +61,14 @@ class AppleGameServiceTest {
 
         appleGameService.placeMoves(owner, game.getSessionId(), rangeRequests);
 
-        AppleGame found = appleGameSessions.getBy(game.getSessionId());
+        AppleGame found = appleGames.getBy(game.getSessionId());
         assertThat(found.getScore()).isEqualTo(6);
     }
 
     @Test
     void 황금사과를_제거하면_초기화된_판을_반환한다() {
         Member owner = memberService.createGuest();
-        AppleGame game = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(), owner));
+        AppleGame game = appleGames.save(new AppleGame(TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(), owner));
 
         List<RangeRequest> rangeRequests = List.of(new RangeRequest(
                 new CoordinateRequest(0, 0),
@@ -83,7 +83,7 @@ class AppleGameServiceTest {
     @Test
     void 황금사과를_제거하지_않으면_아무_판도_반환하지_않는다() {
         Member owner = memberService.createGuest();
-        AppleGame game = appleGameSessions.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
+        AppleGame game = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), owner));
         var rangeRequests = List.of(new RangeRequest(
                 new CoordinateRequest(0, 0),
                 new CoordinateRequest(1, 0))
@@ -97,11 +97,11 @@ class AppleGameServiceTest {
     @Test
     void 게임판을_초기화한다() {
         Member owner = memberService.createGuest();
-        AppleGame game = appleGameService.startGameOf(owner);
+        AppleGame game = appleGameService.startGameFor(owner);
         List<List<Apple>> previousApples = game.getApples();
         LocalDateTime previousCreatedAt = game.getCreatedAt();
 
-        appleGameService.resetBoard(owner, game.getSessionId());
+        appleGameService.restart(owner, game.getSessionId());
 
         assertThat(game.getApples()).isNotEqualTo(previousApples);
         assertThat(game.getCreatedAt()).isAfter(previousCreatedAt);
@@ -110,10 +110,10 @@ class AppleGameServiceTest {
     @Test
     void 게임을_끝낸다() {
         Member owner = memberService.createGuest();
-        AppleGame game = appleGameService.startGameOf(owner);
+        AppleGame game = appleGameService.startGameFor(owner);
 
-        appleGameService.endSession(owner, game.getSessionId());
+        appleGameService.finish(owner, game.getSessionId());
 
-        assertThat(game.isDone()).isTrue();
+        assertThat(game.isFinished()).isTrue();
     }
 }

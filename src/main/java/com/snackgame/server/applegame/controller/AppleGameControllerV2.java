@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.snackgame.server.applegame.business.AppleGameService;
-import com.snackgame.server.applegame.business.domain.AppleGame;
+import com.snackgame.server.applegame.business.domain.game.AppleGame;
 import com.snackgame.server.applegame.controller.dto.AppleGameResponseV2;
 import com.snackgame.server.applegame.controller.dto.RangeRequest;
-import com.snackgame.server.auth.jwt.FromToken;
+import com.snackgame.server.auth.jwt.Authenticated;
 import com.snackgame.server.member.business.domain.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -30,15 +30,15 @@ public class AppleGameControllerV2 implements AppleGameControllerV2Docs {
 
     @Override
     @PostMapping("/games/1")
-    public AppleGameResponseV2 startGameFor(@FromToken Member member) {
-        AppleGame game = appleGameService.startGameOf(member);
+    public AppleGameResponseV2 startGameFor(@Authenticated Member member) {
+        AppleGame game = appleGameService.startGameFor(member);
         return AppleGameResponseV2.of(game);
     }
 
     @Override
     @PutMapping("/sessions/{sessionId}/moves")
     public ResponseEntity<AppleGameResponseV2> placeMoves(
-            @FromToken Member member,
+            @Authenticated Member member,
             @PathVariable Long sessionId,
             @RequestBody List<RangeRequest> ranges
     ) {
@@ -52,14 +52,14 @@ public class AppleGameControllerV2 implements AppleGameControllerV2Docs {
 
     @Override
     @DeleteMapping("/sessions/{sessionId}/board")
-    public AppleGameResponseV2 resetBoard(@FromToken Member member, @PathVariable Long sessionId) {
-        AppleGame game = appleGameService.resetBoard(member, sessionId);
+    public AppleGameResponseV2 restart(@Authenticated Member member, @PathVariable Long sessionId) {
+        AppleGame game = appleGameService.restart(member, sessionId);
         return AppleGameResponseV2.of(game);
     }
 
     @Override
     @PutMapping("/sessions/{sessionId}/end")
-    public void endSession(@FromToken Member member, @PathVariable Long sessionId) {
-        appleGameService.endSession(member, sessionId);
+    public void finish(@Authenticated Member member, @PathVariable Long sessionId) {
+        appleGameService.finish(member, sessionId);
     }
 }

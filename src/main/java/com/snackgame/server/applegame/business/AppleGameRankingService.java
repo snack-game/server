@@ -7,12 +7,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.snackgame.server.applegame.business.domain.AppleGame;
-import com.snackgame.server.applegame.business.domain.AppleGameSessionRepository;
+import com.snackgame.server.applegame.business.domain.game.AppleGame;
+import com.snackgame.server.applegame.business.domain.game.AppleGames;
+import com.snackgame.server.applegame.business.domain.rank.BestScore;
+import com.snackgame.server.applegame.business.domain.rank.BestScores;
 import com.snackgame.server.applegame.business.event.GameEndEvent;
 import com.snackgame.server.applegame.business.exception.NoRankingYetException;
-import com.snackgame.server.applegame.business.rank.BestScore;
-import com.snackgame.server.applegame.business.rank.BestScores;
 import com.snackgame.server.applegame.controller.dto.RankResponseV2;
 import com.snackgame.server.applegame.controller.dto.RankingResponse;
 import com.snackgame.server.applegame.dao.SessionRankingDao;
@@ -27,7 +27,7 @@ public class AppleGameRankingService {
     private static final int RANKING_PAGE_SIZE = 50;
 
     private final SessionRankingDao sessionRankingDao;
-    private final AppleGameSessionRepository sessions;
+    private final AppleGames appleGames;
     private final BestScores bestScores;
 
     @Transactional(readOnly = true)
@@ -73,7 +73,7 @@ public class AppleGameRankingService {
     private RankingResponse getResponseOf(RankingDto rankingDto) {
         return RankingResponse.of(
                 rankingDto.getRanking(),
-                sessions.getBy(rankingDto.getSessionId())
+                appleGames.getBy(rankingDto.getSessionId())
         );
     }
 }

@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.business.domain;
+package com.snackgame.server.applegame.business.domain.game;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -9,7 +9,7 @@ import com.snackgame.server.applegame.business.exception.NoSuchSessionException;
 import com.snackgame.server.member.business.domain.Member;
 
 @Repository
-public interface AppleGameSessionRepository extends JpaRepository<AppleGame, Long> {
+public interface AppleGames extends JpaRepository<AppleGame, Long> {
 
     @Modifying
     @Query("update AppleGame set owner = :to where owner = :from")

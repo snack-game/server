@@ -1,6 +1,6 @@
 package com.snackgame.server.applegame.business.event;
 
-import com.snackgame.server.applegame.business.domain.AppleGame;
+import com.snackgame.server.applegame.business.domain.game.AppleGame;
 
 public class GameEndEvent {
 

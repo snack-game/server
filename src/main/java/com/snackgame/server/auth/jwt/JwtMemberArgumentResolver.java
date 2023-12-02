@@ -22,7 +22,7 @@ public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver 
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(FromToken.class);
+        return parameter.hasParameterAnnotation(Authenticated.class);
     }
 
     @Override

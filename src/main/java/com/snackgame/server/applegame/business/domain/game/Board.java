@@ -1,10 +1,14 @@
-package com.snackgame.server.applegame.business.domain;
+package com.snackgame.server.applegame.business.domain.game;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.snackgame.server.applegame.business.domain.Coordinate;
+import com.snackgame.server.applegame.business.domain.Range;
+import com.snackgame.server.applegame.business.domain.apple.Apple;
+import com.snackgame.server.applegame.business.domain.apple.EmptyApple;
 import com.snackgame.server.applegame.business.exception.AppleNotRemovableException;
 import com.snackgame.server.applegame.business.exception.InvalidBoardSizeException;
 

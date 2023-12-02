@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.business.domain;
+package com.snackgame.server.applegame.business.domain.game;
 
 import org.springframework.stereotype.Component;
 
@@ -9,15 +9,14 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class AppleGameSessionTransfer implements AccountTransfer {
+public class AppleGamesTransfer implements AccountTransfer {
 
-    private final AppleGameSessionRepository appleGameSessions;
+    private final AppleGames appleGames;
     private final BestScoreTransfer bestScoreTransfer;
 
     @Override
     public void transferAll(Member victim, Member currentMember) {
         bestScoreTransfer.transfer(victim.getId(), currentMember.getId());
-        appleGameSessions.transferAll(victim, currentMember);
-        victim.invalidate();
+        appleGames.transferAll(victim, currentMember);
     }
 }

@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame.business.domain;
+package com.snackgame.server.applegame.business.domain.apple;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -18,11 +18,10 @@ import com.snackgame.server.applegame.business.exception.AppleNumberRangeExcepti
 class PlainAppleTest {
 
     @Test
-    void 비어있지_않다() {
+    void 존재한다() {
         var plainApple = PlainApple.of(9);
 
         assertThat(plainApple.exists()).isTrue();
-        assertThat(plainApple.isEmpty()).isFalse();
     }
 
     @ParameterizedTest
