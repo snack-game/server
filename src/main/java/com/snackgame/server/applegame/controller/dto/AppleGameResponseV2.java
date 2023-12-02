@@ -2,7 +2,7 @@ package com.snackgame.server.applegame.controller.dto;
 
 import java.util.List;
 
-import com.snackgame.server.applegame.business.domain.game.AppleGame;
+import com.snackgame.server.applegame.domain.game.AppleGame;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

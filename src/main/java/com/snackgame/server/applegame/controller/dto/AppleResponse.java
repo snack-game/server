@@ -3,7 +3,7 @@ package com.snackgame.server.applegame.controller.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.snackgame.server.applegame.business.domain.apple.Apple;
+import com.snackgame.server.applegame.domain.apple.Apple;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

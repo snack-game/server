@@ -1,6 +1,6 @@
 package com.snackgame.server.applegame.controller.dto;
 
-import com.snackgame.server.applegame.business.domain.Range;
+import com.snackgame.server.applegame.domain.Range;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
