@@ -14,7 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 @Retention(RetentionPolicy.RUNTIME)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@Transactional
+@Transactional // TODO: 서비스 통합 테스트에서 Transactional 제거
 public @interface ServiceTest {
 
 }

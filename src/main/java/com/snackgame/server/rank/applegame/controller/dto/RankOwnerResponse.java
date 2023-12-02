@@ -1,7 +1,7 @@
 package com.snackgame.server.rank.applegame.controller.dto;
 
-import com.snackgame.server.member.business.domain.Member;
 import com.snackgame.server.member.controller.dto.GroupResponse;
+import com.snackgame.server.member.domain.Member;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

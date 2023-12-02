@@ -17,7 +17,7 @@ import com.snackgame.server.applegame.controller.dto.AppleGameResponseV2;
 import com.snackgame.server.applegame.controller.dto.RangeRequest;
 import com.snackgame.server.applegame.domain.game.AppleGame;
 import com.snackgame.server.auth.jwt.Authenticated;
-import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.domain.Member;
 
 import lombok.RequiredArgsConstructor;
 

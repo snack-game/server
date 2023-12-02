@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.snackgame.server.applegame.controller.dto.AppleGameResponseV2;
 import com.snackgame.server.applegame.controller.dto.RangeRequest;
-import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.domain.Member;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

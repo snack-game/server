@@ -5,10 +5,10 @@ import static com.snackgame.server.member.fixture.FixtureUtil.pushing;
 
 import javax.persistence.EntityManagerFactory;
 
-import com.snackgame.server.member.business.domain.Group;
-import com.snackgame.server.member.business.domain.Member;
-import com.snackgame.server.member.business.domain.Name;
-import com.snackgame.server.member.business.domain.SocialMember;
+import com.snackgame.server.member.domain.Group;
+import com.snackgame.server.member.domain.Member;
+import com.snackgame.server.member.domain.Name;
+import com.snackgame.server.member.domain.SocialMember;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class MemberFixture {

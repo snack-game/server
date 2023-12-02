@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.snackgame.server.auth.jwt.Authenticated;
 import com.snackgame.server.auth.jwt.JwtProvider;
 import com.snackgame.server.auth.oauth.support.JustAuthenticated;
-import com.snackgame.server.member.business.MemberService;
-import com.snackgame.server.member.business.domain.Member;
-import com.snackgame.server.member.business.domain.SocialMember;
+import com.snackgame.server.member.MemberService;
 import com.snackgame.server.member.controller.dto.GroupRequest;
 import com.snackgame.server.member.controller.dto.MemberDetailsResponse;
 import com.snackgame.server.member.controller.dto.MemberDetailsWithTokenResponse;
 import com.snackgame.server.member.controller.dto.MemberRequest;
 import com.snackgame.server.member.controller.dto.NameRequest;
+import com.snackgame.server.member.domain.Member;
+import com.snackgame.server.member.domain.SocialMember;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;

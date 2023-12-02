@@ -1,6 +1,6 @@
 package com.snackgame.server.member.controller.dto;
 
-import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.domain.Member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

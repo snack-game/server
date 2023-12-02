@@ -19,7 +19,7 @@ import com.snackgame.server.applegame.domain.game.AppleGame;
 import com.snackgame.server.applegame.domain.game.AppleGames;
 import com.snackgame.server.applegame.domain.game.Board;
 import com.snackgame.server.applegame.fixture.TestFixture;
-import com.snackgame.server.member.business.MemberService;
+import com.snackgame.server.member.MemberService;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
