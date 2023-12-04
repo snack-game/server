@@ -1,6 +1,6 @@
 package com.snackgame.server.member.controller.dto;
 
-import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.domain.Member;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

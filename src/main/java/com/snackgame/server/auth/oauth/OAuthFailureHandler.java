@@ -25,7 +25,6 @@ public class OAuthFailureHandler implements AuthenticationFailureHandler {
         HttpSession session = request.getSession();
         String redirectHost = getRedirectUrlFrom(session);
         response.sendRedirect(redirectHost);
-        session.removeAttribute(SessionOAuthRequestStoringFilter.REFERER_ATTRIBUTE_NAME);
     }
 
     private String getRedirectUrlFrom(HttpSession session) {
@@ -34,6 +33,8 @@ public class OAuthFailureHandler implements AuthenticationFailureHandler {
 
     private String getRefererFrom(HttpSession session) {
         String referer = (String)session.getAttribute(SessionOAuthRequestStoringFilter.REFERER_ATTRIBUTE_NAME);
+        session.removeAttribute(SessionOAuthRequestStoringFilter.REFERER_ATTRIBUTE_NAME);
+
         if (referer == null) {
             log.warn("Referer를 찾지 못했습니다. sessionAttributes= {}",
                     Collections.list(session.getAttributeNames()).toArray());

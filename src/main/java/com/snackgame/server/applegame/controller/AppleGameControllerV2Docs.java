@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.snackgame.server.applegame.controller.dto.AppleGameResponseV2;
 import com.snackgame.server.applegame.controller.dto.RangeRequest;
-import com.snackgame.server.member.business.domain.Member;
+import com.snackgame.server.member.domain.Member;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -45,8 +45,8 @@ public interface AppleGameControllerV2Docs {
     );
 
     @Operation(summary = "게임판 초기화", description = "지정한 세션의 게임판을 초기화한다. 황금사과와는 별도의 기능이다.")
-    AppleGameResponseV2 resetBoard(Member member, @PathVariable Long sessionId);
+    AppleGameResponseV2 restart(Member member, @PathVariable Long sessionId);
 
     @Operation(summary = "게임 세션 종료", description = "현재 세션의 종료를 알린다")
-    void endSession(Member member, @PathVariable Long sessionId);
+    void finish(Member member, @PathVariable Long sessionId);
 }

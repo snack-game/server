@@ -2,7 +2,7 @@ package com.snackgame.server.member.controller.dto;
 
 import java.util.Objects;
 
-import com.snackgame.server.member.business.domain.Group;
+import com.snackgame.server.member.domain.Group;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
