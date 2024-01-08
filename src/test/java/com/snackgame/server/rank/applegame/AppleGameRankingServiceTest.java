@@ -6,6 +6,9 @@ import static com.snackgame.server.member.fixture.MemberFixture.똥수;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+import com.snackgame.server.member.MemberService;
+import com.snackgame.server.member.domain.Member;
+import com.snackgame.server.rank.applegame.domain.BestScores;
 import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManagerFactory;
@@ -36,6 +39,12 @@ class AppleGameRankingServiceTest {
     AppleGames appleGames;
     @Autowired
     private AppleGameRankingService appleGameRankingService;
+
+    @Autowired
+    private MemberService memberService;
+
+    @Autowired
+    private BestScores bestScores;
 
     @BeforeEach
     void setUp(
@@ -96,6 +105,20 @@ class AppleGameRankingServiceTest {
                 .extracting("rank")
                 .isEqualTo(2L);
     }
+
+    @Test
+    void 게스트의_점수가_랭크에서_제외된다(){
+        Member guest = memberService.createGuest();
+        appleGameRankingService.renewBestScoreWith(new GameEndEvent(
+                playGame(guest.getId(), new Range(
+                        new Coordinate(0, 0),
+                        new Coordinate(1, 0)
+                ))
+        ));
+
+        assertThat(bestScores.findByOwnerId(guest.getId())).isEmpty();
+    }
+
 
     private AppleGame playGame(Long playerId, Range... ranges) {
         var game = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), playerId));
