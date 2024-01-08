@@ -6,9 +6,6 @@ import static com.snackgame.server.member.fixture.MemberFixture.똥수;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-import com.snackgame.server.member.MemberService;
-import com.snackgame.server.member.domain.Member;
-import com.snackgame.server.rank.applegame.domain.BestScores;
 import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManagerFactory;
@@ -28,7 +25,10 @@ import com.snackgame.server.applegame.domain.game.AppleGame;
 import com.snackgame.server.applegame.domain.game.AppleGames;
 import com.snackgame.server.applegame.event.GameEndEvent;
 import com.snackgame.server.applegame.fixture.TestFixture;
+import com.snackgame.server.member.MemberService;
+import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.fixture.MemberFixture;
+import com.snackgame.server.rank.applegame.domain.BestScores;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -107,7 +107,7 @@ class AppleGameRankingServiceTest {
     }
 
     @Test
-    void 게스트의_점수가_랭크에서_제외된다(){
+    void 게스트_점수는_랭크에_기록되지_않는다() {
         Member guest = memberService.createGuest();
         appleGameRankingService.renewBestScoreWith(new GameEndEvent(
                 playGame(guest.getId(), new Range(
@@ -118,7 +118,6 @@ class AppleGameRankingServiceTest {
 
         assertThat(bestScores.findByOwnerId(guest.getId())).isEmpty();
     }
-
 
     private AppleGame playGame(Long playerId, Range... ranges) {
         var game = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), playerId));
