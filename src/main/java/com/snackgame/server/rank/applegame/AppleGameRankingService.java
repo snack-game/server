@@ -1,5 +1,8 @@
 package com.snackgame.server.rank.applegame;
 
+import com.snackgame.server.member.domain.AccountType;
+import com.snackgame.server.member.domain.Member;
+import com.snackgame.server.member.domain.MemberRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +33,8 @@ public class AppleGameRankingService {
     private final AppleGames appleGames;
     private final BestScores bestScores;
 
+    private final MemberRepository memberRepository;
+
     @Transactional(readOnly = true)
     public List<RankResponseV2> rank50ByBestScore() {
         return bestScores.rank(RANKING_PAGE_SIZE)
@@ -47,8 +52,11 @@ public class AppleGameRankingService {
     @Transactional
     public void renewBestScoreWith(GameEndEvent event) {
         AppleGame appleGame = event.getAppleGame();
-        BestScore bestScore = bestScores.getByOwnerId(appleGame.getOwnerId());
-        bestScore.renewWith(appleGame);
+        Member owner = memberRepository.getById(appleGame.getOwnerId());
+        if(owner.getAccountType() != AccountType.GUEST) {
+            BestScore bestScore = bestScores.getByOwnerId(appleGame.getOwnerId());
+            bestScore.renewWith(appleGame);
+        }
     }
 
     @Deprecated

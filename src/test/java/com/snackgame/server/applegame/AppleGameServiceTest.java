@@ -3,23 +3,26 @@ package com.snackgame.server.applegame;
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManagerFactory;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.transaction.TestTransaction;
 
 import com.snackgame.server.annotation.ServiceTest;
 import com.snackgame.server.applegame.controller.dto.CoordinateRequest;
 import com.snackgame.server.applegame.controller.dto.RangeRequest;
 import com.snackgame.server.applegame.domain.game.AppleGame;
 import com.snackgame.server.applegame.domain.game.AppleGames;
-import com.snackgame.server.applegame.domain.game.Board;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.member.MemberService;
+import com.snackgame.server.member.fixture.MemberFixture;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -32,6 +35,12 @@ class AppleGameServiceTest {
     MemberService memberService;
     @Autowired
     AppleGames appleGames;
+
+    @BeforeEach
+    void setUp(@Autowired EntityManagerFactory entityManagerFactory) {
+        TestTransaction.end();
+        MemberFixture.persistAllUsing(entityManagerFactory);
+    }
 
     @Test
     void 게임을_시작한다() {
@@ -90,22 +99,23 @@ class AppleGameServiceTest {
 
     @Test
     void 게임을_재시작한다() {
-        AppleGame game = appleGameService.startGameFor(땡칠().getId());
-        Board previousBoard = game.getBoard();
-        LocalDateTime previousCreatedAt = game.getCreatedAt();
+        AppleGame previous = appleGameService.startGameFor(땡칠().getId());
 
-        appleGameService.restart(땡칠().getId(), game.getSessionId());
+        appleGameService.restart(땡칠().getId(), previous.getSessionId());
 
-        assertThat(game.getBoard()).isNotEqualTo(previousBoard);
-        assertThat(game.getCreatedAt()).isAfter(previousCreatedAt);
+        AppleGame current = appleGames.getBy(previous.getSessionId());
+        assertThat(current.getCreatedAt()).isAfter(previous.getCreatedAt());
+        assertThat(current.getBoard())
+                .usingRecursiveComparison()
+                .isNotEqualTo(previous.getBoard());
     }
 
     @Test
     void 게임을_끝낸다() {
-        AppleGame game = appleGameService.startGameFor(땡칠().getId());
+        Long sessionId = appleGameService.startGameFor(땡칠().getId()).getSessionId();
+        appleGameService.finish(땡칠().getId(), sessionId);
 
-        appleGameService.finish(땡칠().getId(), game.getSessionId());
-
+        AppleGame game = appleGames.getBy(sessionId);
         assertThat(game.isFinished()).isTrue();
     }
 }
