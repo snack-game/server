@@ -44,11 +44,11 @@ jobs:
         shell: bash {0}
         run: |
           if [ -n "lsof -ti:${{ vars.APPLICATION_PORT_A }}" ]; then
-            echo "BLUE_PORT=${{ vars.APPLICATION_PORT_A }}" >> "$GITHUB_ENV";
-            echo "GREEN_PORT=${{ vars.APPLICATION_PORT_B }}" >> "$GITHUB_ENV";
+            echo "BLUE_PORT=${{ vars.APPLICATION_PORT_A }}" >> "$GITHUB_ENV"
+            echo "GREEN_PORT=${{ vars.APPLICATION_PORT_B }}" >> "$GITHUB_ENV"
           else
-            echo "BLUE_PORT=${{ vars.APPLICATION_PORT_B }}" >> "$GITHUB_ENV";
-            echo "GREEN_PORT=${{ vars.APPLICATION_PORT_A }}" >> "$GITHUB_ENV";
+            echo "BLUE_PORT=${{ vars.APPLICATION_PORT_B }}" >> "$GITHUB_ENV"
+            echo "GREEN_PORT=${{ vars.APPLICATION_PORT_A }}" >> "$GITHUB_ENV"
           fi
 
       - name: 그린 어플리케이션 실행
