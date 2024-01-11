@@ -43,7 +43,7 @@ jobs:
       - name: 현재 사용중인 어플리케이션 포트 확인
         shell: bash {0}
         run: |
-          if [ -n "lsof -ti:${{ vars.APPLICATION_PORT_A }}" ]; then
+          if [ -n "$(lsof -ti:${{ vars.APPLICATION_PORT_A }})" ]; then
             echo "BLUE_PORT=${{ vars.APPLICATION_PORT_A }}" >> "$GITHUB_ENV"
             echo "GREEN_PORT=${{ vars.APPLICATION_PORT_B }}" >> "$GITHUB_ENV"
           else
