@@ -77,7 +77,7 @@ jobs:
       - name: 리버스 프록시 설정 변경
         shell: bash {0}
         run: |
-          echo "proxy_pass http://localhost:$GREEN_PORT;" > /etc/nginx/conf.d/snackgame-port.inc;
+          echo "proxy_pass http://localhost:$GREEN_PORT;" | sudo tee /etc/nginx/conf.d/snackgame-port.inc;
           sudo nginx -s reload;
 
       - name: 블루 어플리케이션 종료
