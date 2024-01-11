@@ -3,7 +3,7 @@ name: Production CD
 on:
   workflow_dispatch:
   push:
-    branches: [ "main", "feature/zero-downtime-deployment" ]
+    branches: [ "main" ]
 permissions:
   contents: read
 
@@ -73,6 +73,15 @@ jobs:
           -Ddd.service=snackgame \
           -Ddd.env=production \
           -jar $JAR_NAME > ~/snackgame-server.log &
+
+      - name: 그린 어플리케이션이 접속 가능할 때까지 기다린다
+        shell: bash {0}
+        run: |
+          while [ "$(curl -o /dev/null -s -w %{http_code} localhost:$GREEN_PORT/rankings?by=BEST_SCORE)" != 200 ]
+          do
+              echo "새로운 어플리케이션을 띄우는 중입니다.";
+              sleep 5;
+          done
 
       - name: 리버스 프록시 설정 변경
         shell: bash {0}
