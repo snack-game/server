@@ -16,12 +16,14 @@ jobs:
     runs-on: production
     steps:
       - uses: actions/checkout@v3
+
       - name: checkout secrets
         uses: actions/checkout@v3
         with:
           repository: snack-game/secrets
           ssh-key: ${{ secrets.SECRETS_REPO_PRIVATE_KEY }}
           path: src/main/resources/secrets
+
       - name: Create bootjar
         run: |
           chmod +x ./gradlew
@@ -38,16 +40,18 @@ jobs:
         run: |
           wget -O dd-java-agent.jar 'https://dtdg.co/latest-java-tracer'
 
-      - name: Kill previous process
+      - name: 현재 사용중인 어플리케이션 포트 확인
         shell: bash {0}
         run: |
-          PROCESS_ID=$(pgrep -f "$JAR_NAME")
-          if [ -n "$PROCESS_ID" ]; then
-            sudo kill -9 $PROCESS_ID
-            echo "구동중인 애플리케이션을 종료했습니다. (pid : $PROCESS_ID)\n"
+          if [ -n "$(lsof -ti:${{ vars.APPLICATION_PORT_A }})" ]; then
+            echo "BLUE_PORT=${{ vars.APPLICATION_PORT_A }}" >> "$GITHUB_ENV"
+            echo "GREEN_PORT=${{ vars.APPLICATION_PORT_B }}" >> "$GITHUB_ENV"
+          else
+            echo "BLUE_PORT=${{ vars.APPLICATION_PORT_B }}" >> "$GITHUB_ENV"
+            echo "GREEN_PORT=${{ vars.APPLICATION_PORT_A }}" >> "$GITHUB_ENV"
           fi
 
-      - name: Run Jar
+      - name: 그린 어플리케이션 실행
         env:
           RUNNER_TRACKING_ID: ""
         shell: bash
@@ -57,7 +61,7 @@ jobs:
           -Dspring.profiles.active=production \
           -DJWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
           -DJWT_EXPIRE_LENGTH=${{ secrets.JWT_EXPIRE_LENGTH }} \
-          -Dserver.port=${{ vars.APPLICATION_PORT }} \
+          -Dserver.port=$GREEN_PORT \
           -DPRODUCTION_DB_URL=${{ secrets.PRODUCTION_DB_URL }} \
           -DPRODUCTION_DB_USERNAME=${{ secrets.PRODUCTION_DB_USERNAME }} \
           -DPRODUCTION_DB_PASSWORD=${{ secrets.PRODUCTION_DB_PASSWORD }} \
@@ -69,3 +73,27 @@ jobs:
           -Ddd.service=snackgame \
           -Ddd.env=production \
           -jar $JAR_NAME > ~/snackgame-server.log &
+
+      - name: 그린 어플리케이션이 접속 가능할 때까지 기다린다
+        shell: bash {0}
+        run: |
+          while [ "$(curl -o /dev/null -s -w %{http_code} localhost:$GREEN_PORT/rankings?by=BEST_SCORE)" != 200 ]
+          do
+              echo "새로운 어플리케이션을 띄우는 중입니다.";
+              sleep 5;
+          done
+
+      - name: 리버스 프록시 설정 변경
+        shell: bash {0}
+        run: |
+          echo "proxy_pass http://localhost:$GREEN_PORT;" | sudo tee /etc/nginx/conf.d/snackgame-port.inc;
+          sudo nginx -s reload;
+
+      - name: 블루 어플리케이션 종료
+        shell: bash {0}
+        run: |
+          PROCESS_ID="$(lsof -i:$BLUE_PORT -t)"
+          if [ -n "$PROCESS_ID" ]; then
+            sudo kill -9 $PROCESS_ID
+            echo "구동중인 애플리케이션을 종료했습니다. (pid : $PROCESS_ID)\n"
+          fi
