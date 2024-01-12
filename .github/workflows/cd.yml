@@ -74,6 +74,15 @@ jobs:
           -Ddd.env=production \
           -jar $JAR_NAME > ~/snackgame-server.log &
 
+      - name: 그린 어플리케이션 실행 검증
+        shell: bash {0}
+        run: |
+          PROCESS_ID="$(lsof -i:$GREEN_PORT -t)"
+          if [ -n "$PROCESS_ID" ]; then
+            echo "::error title=배포 실패::블루 어플리케이션으로 롤백합니다.";
+            exit 1;
+          fi
+
       - name: 그린 어플리케이션이 접속 가능할 때까지 기다린다
         shell: bash {0}
         run: |
