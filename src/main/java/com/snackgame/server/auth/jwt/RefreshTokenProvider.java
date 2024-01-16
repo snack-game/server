@@ -1,11 +1,12 @@
 package com.snackgame.server.auth.jwt;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -24,10 +25,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class RefreshTokenProvider {
-
-    private static final String COOKIE_PATH = "/";
-
-    private static final String COOKIE_DOMAIN = "snackga.me";
     private final String refreshSecretKey;
     private final long refreshExpireMilliseconds;
 
@@ -76,22 +73,6 @@ public class RefreshTokenProvider {
                 .compact();
     }
 
-    /**
-     * RefreshToken 쿠키에 저장
-     *
-     * @param response
-     * @param refreshToken
-     */
-    public void sendRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
-        Cookie cookie = new Cookie(HttpHeaders.AUTHORIZATION, refreshToken);
-        cookie.setMaxAge((int)refreshExpireMilliseconds);
-        cookie.setHttpOnly(true);
-        cookie.setPath(COOKIE_PATH);
-        cookie.setDomain(COOKIE_DOMAIN);
-        cookie.setSecure(true);
-        response.addCookie(cookie);
-    }
-
     public String getSubjectFrom(String token) {
         JwtParser jwtParser = Jwts.parser().setSigningKey(refreshSecretKey);
         return jwtParser.parseClaimsJws(token)
@@ -116,4 +97,14 @@ public class RefreshTokenProvider {
             throw new TokenUnresolvableException();
         }
     }
+
+    public String extractRefreshTokenFrom(HttpServletRequest request) {
+
+        return Arrays.stream(request.getCookies())
+                .filter(cookie -> cookie.getName().equals(HttpHeaders.AUTHORIZATION))
+                .map(Cookie::getValue)
+                .findFirst()
+                .orElseThrow();
+    }
+
 }

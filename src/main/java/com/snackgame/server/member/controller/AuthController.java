@@ -3,6 +3,7 @@ package com.snackgame.server.member.controller;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpHeaders;
@@ -71,7 +72,9 @@ public class AuthController {
 
     @Operation(summary = "토큰 재발급", description = "토큰을 재발급한다")
     @PostMapping("/tokens/reissue")
-    public TokenResponse reissueToken(String refreshToken, HttpServletResponse response) {
+    public TokenResponse reissueToken(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = refreshTokenProvider.extractRefreshTokenFrom(request);
+
         List<String> tokens = refreshTokenProvider.reissue(refreshToken);
         String accessToken = tokens.get(0);
         String newRefreshToken = tokens.get(1);

@@ -22,8 +22,8 @@ public class AccessTokenProvider {
     private final long expireMilliseconds;
 
     public AccessTokenProvider(
-            @Value("${security.jwt.token.secret-key}") String secretKey,
-            @Value("${security.jwt.token.expire-length}") long expireMilliseconds
+            @Value("${security.jwt.token.access-secret-key}") String secretKey,
+            @Value("${security.jwt.token.access-expire-length}") long expireMilliseconds
     ) {
         this.secretKey = secretKey;
         this.expireMilliseconds = expireMilliseconds;
