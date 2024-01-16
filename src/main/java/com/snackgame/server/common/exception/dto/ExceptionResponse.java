@@ -8,6 +8,7 @@ public class ExceptionResponse {
 
     private final List<String> messages;
 
+
     private ExceptionResponse(List<String> messages) {
         this.messages = messages;
     }

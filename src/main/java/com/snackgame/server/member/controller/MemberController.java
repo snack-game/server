@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.snackgame.server.auth.jwt.Authenticated;
-import com.snackgame.server.auth.jwt.JwtProvider;
+import com.snackgame.server.auth.jwt.AccessTokenProvider;
 import com.snackgame.server.auth.oauth.support.JustAuthenticated;
 import com.snackgame.server.member.MemberService;
 import com.snackgame.server.member.controller.dto.GroupRequest;
@@ -31,13 +31,13 @@ import lombok.RequiredArgsConstructor;
 public class MemberController {
 
     private final MemberService memberService;
-    private final JwtProvider jwtProvider;
+    private final AccessTokenProvider accessTokenProvider;
 
     @Operation(summary = "일반 사용자 생성", description = "이름, 그룹으로 사용자를 생성한다")
     @PostMapping("/members")
     public MemberDetailsWithTokenResponse addMember(@Valid @RequestBody MemberRequest memberRequest) {
         Member added = memberService.createWith(memberRequest.getName(), memberRequest.getGroup());
-        String accessToken = jwtProvider.createTokenWith(added.getId().toString());
+        String accessToken = accessTokenProvider.createTokenWith(added.getId().toString());
         return MemberDetailsWithTokenResponse.of(added, accessToken);
     }
 
@@ -76,7 +76,7 @@ public class MemberController {
             @JustAuthenticated SocialMember socialMember
     ) {
         Member integrated = memberService.integrate(victim, socialMember);
-        String token = jwtProvider.createTokenWith(integrated.getId().toString());
+        String token = accessTokenProvider.createTokenWith(integrated.getId().toString());
         return MemberDetailsWithTokenResponse.of(integrated, token);
     }
 
@@ -85,7 +85,7 @@ public class MemberController {
     @PostMapping("/members/guest")
     public MemberDetailsWithTokenResponse addGuest() {
         Member guest = memberService.createGuest();
-        String accessToken = jwtProvider.createTokenWith(guest.getId().toString());
+        String accessToken = accessTokenProvider.createTokenWith(guest.getId().toString());
         return MemberDetailsWithTokenResponse.of(guest, accessToken);
     }
 
@@ -94,7 +94,7 @@ public class MemberController {
     @PostMapping("/members/token")
     public MemberDetailsWithTokenResponse issueToken(@RequestBody NameRequest nameRequest) {
         Member found = memberService.getBy(nameRequest.getName());
-        String accessToken = jwtProvider.createTokenWith(found.getId().toString());
+        String accessToken = accessTokenProvider.createTokenWith(found.getId().toString());
         return MemberDetailsWithTokenResponse.of(found, accessToken);
     }
 }

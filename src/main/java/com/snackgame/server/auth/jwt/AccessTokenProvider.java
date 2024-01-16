@@ -16,12 +16,12 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
-public class JwtProvider {
+public class AccessTokenProvider {
 
     private final String secretKey;
     private final long expireMilliseconds;
 
-    public JwtProvider(
+    public AccessTokenProvider(
             @Value("${security.jwt.token.secret-key}") String secretKey,
             @Value("${security.jwt.token.expire-length}") long expireMilliseconds
     ) {

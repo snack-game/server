@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final BearerTokenExtractor bearerTokenExtractor = new BearerTokenExtractor();
-    private final JwtProvider jwtProvider;
+    private final AccessTokenProvider accessTokenProvider;
     private final MemberResolver<?> memberResolver;
 
     @Override
@@ -34,9 +34,9 @@ public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver 
     ) {
         String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
         String token = bearerTokenExtractor.extract(authorization);
-        jwtProvider.validate(token);
+        accessTokenProvider.validate(token);
 
-        Long memberId = Long.parseLong(jwtProvider.getSubjectFrom(token));
+        Long memberId = Long.parseLong(accessTokenProvider.getSubjectFrom(token));
         return memberResolver.resolve(memberId)
                 .orElseThrow(TokenAuthenticationException::new);
     }
