@@ -1,14 +1,3 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-  h2:
-    console:
-      enabled: true
-  sql:
-    init:
-      mode: never
-security:
-  jwt:
-    token:
-      secret-key: testsecretkey1234567890
-      expire-length: 86400000
+  profiles:
+    active: test
