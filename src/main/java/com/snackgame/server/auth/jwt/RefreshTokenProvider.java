@@ -99,9 +99,8 @@ public class RefreshTokenProvider {
     }
 
     public String extractRefreshTokenFrom(HttpServletRequest request) {
-
         return Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals(HttpHeaders.AUTHORIZATION))
+                .filter(cookie -> cookie.getName().equals("refreshToken"))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElseThrow();
