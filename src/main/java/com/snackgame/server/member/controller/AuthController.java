@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.snackgame.server.auth.jwt.TokenService;
+import com.snackgame.server.auth.token.TokenService;
 import com.snackgame.server.auth.oauth.support.JustAuthenticated;
 import com.snackgame.server.member.MemberService;
 import com.snackgame.server.member.controller.dto.MemberDetailsWithTokenResponse;

@@ -1,4 +1,4 @@
-package com.snackgame.server.auth.jwt.domain;
+package com.snackgame.server.auth.token.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

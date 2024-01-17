@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.snackgame.server.auth.jwt.support.JwtMemberArgumentResolver;
+import com.snackgame.server.auth.token.support.JwtMemberArgumentResolver;
 import com.snackgame.server.auth.oauth.support.SocialMemberSavingArgumentResolver;
 
 import lombok.RequiredArgsConstructor;

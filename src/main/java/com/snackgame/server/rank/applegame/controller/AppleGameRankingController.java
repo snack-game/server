@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.snackgame.server.auth.jwt.support.Authenticated;
+import com.snackgame.server.auth.token.support.Authenticated;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.rank.applegame.AppleGameRankingService;
 import com.snackgame.server.rank.applegame.controller.dto.RankResponseV2;

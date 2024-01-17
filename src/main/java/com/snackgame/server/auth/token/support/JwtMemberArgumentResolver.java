@@ -1,4 +1,4 @@
-package com.snackgame.server.auth.jwt.support;
+package com.snackgame.server.auth.token.support;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -9,8 +9,8 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.snackgame.server.auth.exception.TokenAuthenticationException;
-import com.snackgame.server.auth.jwt.util.BearerTokenExtractor;
-import com.snackgame.server.auth.jwt.util.JwtProvider;
+import com.snackgame.server.auth.token.util.BearerTokenExtractor;
+import com.snackgame.server.auth.token.util.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,4 +1,4 @@
-package com.snackgame.server.auth.jwt;
+package com.snackgame.server.auth.token;
 
 import java.time.Duration;
 
@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.snackgame.server.auth.jwt.domain.RefreshToken;
-import com.snackgame.server.auth.jwt.domain.RefreshTokenRepository;
-import com.snackgame.server.auth.jwt.util.JwtProvider;
+import com.snackgame.server.auth.token.domain.RefreshToken;
+import com.snackgame.server.auth.token.domain.RefreshTokenRepository;
+import com.snackgame.server.auth.token.util.JwtProvider;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

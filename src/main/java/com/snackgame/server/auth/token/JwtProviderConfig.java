@@ -1,10 +1,10 @@
-package com.snackgame.server.auth.jwt;
+package com.snackgame.server.auth.token;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.snackgame.server.auth.jwt.util.JwtProvider;
+import com.snackgame.server.auth.token.util.JwtProvider;
 
 @Configuration
 public class JwtProviderConfig {

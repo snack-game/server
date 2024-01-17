@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.snackgame.server.auth.jwt.support.Authenticated;
-import com.snackgame.server.auth.jwt.util.JwtProvider;
+import com.snackgame.server.auth.token.support.Authenticated;
+import com.snackgame.server.auth.token.util.JwtProvider;
 import com.snackgame.server.auth.oauth.support.JustAuthenticated;
 import com.snackgame.server.member.MemberService;
 import com.snackgame.server.member.controller.dto.GroupRequest;
