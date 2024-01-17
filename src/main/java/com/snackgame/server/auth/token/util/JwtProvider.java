@@ -3,10 +3,12 @@ package com.snackgame.server.auth.token.util;
 import java.util.Date;
 import java.util.Objects;
 
-import com.snackgame.server.auth.exception.InvalidTokenException;
+import com.snackgame.server.auth.exception.TokenExpiredException;
+import com.snackgame.server.auth.exception.TokenInvalidException;
 import com.snackgame.server.auth.exception.TokenUnresolvableException;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
@@ -65,8 +67,10 @@ public class JwtProvider {
                     .getBody()
                     .getSubject();
             validateHas(subject);
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException();
         } catch (JwtException | IllegalArgumentException e) {
-            throw new InvalidTokenException();
+            throw new TokenInvalidException();
         }
     }
 

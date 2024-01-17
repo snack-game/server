@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
     public ExceptionResponse handleAuthenticationException(AuthException exception) {
         log.warn(exception.getMessage(), exception);
 
-        return new ExceptionResponse(exception.getMessage());
+        return new ExceptionResponse(exception.getAction(), exception.getMessage());
     }
 
     @ExceptionHandler
