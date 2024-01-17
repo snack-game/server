@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -53,6 +54,14 @@ public class GlobalExceptionHandler {
         log.debug(exception.getMessage(), exception);
 
         return new ExceptionResponse("리소스를 찾지 못했습니다");
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public ExceptionResponse handleMissingRequestParameter(HttpRequestMethodNotSupportedException exception) {
+        log.debug(exception.getMessage(), exception);
+
+        return new ExceptionResponse("HTTP 메서드가 잘못되었습니다");
     }
 
     @ExceptionHandler
