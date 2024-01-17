@@ -11,18 +11,18 @@ import com.snackgame.server.auth.token.domain.RefreshTokenRepository;
 import com.snackgame.server.auth.token.dto.TokenDto;
 import com.snackgame.server.auth.token.util.JwtProvider;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class TokenService {
 
+    @Value("${security.jwt.token.refresh-expire-length}")
+    private long refreshTokenExpiry;
+
     private final JwtProvider accessTokenProvider;
     private final JwtProvider refreshTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-    @Value("${security.jwt.token.refresh-expire-length}")
-    private long refreshTokenExpiry;
 
     @Transactional
     public TokenDto issueFor(Long memberId) {

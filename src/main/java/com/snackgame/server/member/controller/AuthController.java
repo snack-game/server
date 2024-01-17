@@ -1,7 +1,5 @@
 package com.snackgame.server.member.controller;
 
-import java.time.Duration;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController {
 
+    private static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
+
     private final MemberService memberService;
     private final TokenService tokenService;
 
@@ -36,7 +36,7 @@ public class AuthController {
         Member guest = memberService.createGuest();
         TokenDto token = tokenService.issueFor(guest.getId());
 
-        return responseWith(token.getRefreshToken())
+        return responseWith(token)
                 .body(MemberDetailsWithTokenResponse.of(guest, token.getAccessToken()));
     }
 
@@ -46,7 +46,7 @@ public class AuthController {
         Member member = memberService.getBy(nameRequest.getName());
         TokenDto token = tokenService.issueFor(member.getId());
 
-        return responseWith(token.getRefreshToken())
+        return responseWith(token)
                 .body(MemberDetailsWithTokenResponse.of(member, token.getAccessToken()));
     }
 
@@ -59,25 +59,25 @@ public class AuthController {
     public ResponseEntity<MemberDetailsWithTokenResponse> issueToken(@JustAuthenticated SocialMember socialMember) {
         TokenDto token = tokenService.issueFor(socialMember.getId());
 
-        return responseWith(token.getRefreshToken())
+        return responseWith(token)
                 .body(MemberDetailsWithTokenResponse.of(socialMember, token.getAccessToken()));
     }
 
     @Operation(summary = "토큰 재발급", description = "토큰을 재발급한다")
     @PostMapping("/tokens/reissue")
-    public ResponseEntity<TokenResponse> reissueToken(@CookieValue("refreshToken") String refreshToken) {
+    public ResponseEntity<TokenResponse> reissueToken(@CookieValue(REFRESH_TOKEN_COOKIE_NAME) String refreshToken) {
         TokenDto reissued = tokenService.reissueFrom(refreshToken);
 
-        return responseWith(reissued.getRefreshToken())
+        return responseWith(reissued)
                 .body(new TokenResponse(reissued.getAccessToken()));
     }
 
-    private ResponseEntity.BodyBuilder responseWith(String refreshToken) {
+    private ResponseEntity.BodyBuilder responseWith(TokenDto token) {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE,
-                        ResponseCookie.from("refreshToken", refreshToken)
+                        ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, token.getRefreshToken())
                                 .path("/tokens/reissue")
-                                .maxAge(Duration.ofDays(30))
+                                .maxAge(token.getRefreshTokenExpiry())
                                 .httpOnly(true)
                                 .secure(true)
                                 .build()
