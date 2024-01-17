@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.snackgame.server.auth.token.domain.RefreshToken;
 import com.snackgame.server.auth.token.domain.RefreshTokenRepository;
+import com.snackgame.server.auth.token.dto.TokenDto;
 import com.snackgame.server.auth.token.util.JwtProvider;
 
 import lombok.Getter;
@@ -17,12 +18,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TokenService {
 
-    @Value("${security.jwt.token.refresh-expire-length}")
-    private long refreshTokenExpiry;
-
     private final JwtProvider accessTokenProvider;
     private final JwtProvider refreshTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    @Value("${security.jwt.token.refresh-expire-length}")
+    private long refreshTokenExpiry;
 
     @Transactional
     public TokenDto issueFor(Long memberId) {
@@ -64,14 +64,5 @@ public class TokenService {
         String newRefreshToken = issueRefreshTokenFor(Long.parseLong(subject));
         refreshTokenRepository.deleteByToken(refreshToken);
         return newRefreshToken;
-    }
-
-    @RequiredArgsConstructor
-    @Getter
-    public static class TokenDto {
-
-        private final String accessToken;
-        private final String refreshToken;
-        private final Duration refreshTokenExpiry;
     }
 }
