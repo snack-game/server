@@ -20,4 +20,7 @@ public class RefreshToken {
     public RefreshToken() {
     }
 
+    public String getToken() {
+        return token;
+    }
 }

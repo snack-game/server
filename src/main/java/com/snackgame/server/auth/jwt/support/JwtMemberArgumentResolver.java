@@ -1,4 +1,4 @@
-package com.snackgame.server.auth.jwt;
+package com.snackgame.server.auth.jwt.support;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -9,6 +9,8 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.snackgame.server.auth.exception.TokenAuthenticationException;
+import com.snackgame.server.auth.jwt.util.BearerTokenExtractor;
+import com.snackgame.server.auth.jwt.util.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final BearerTokenExtractor bearerTokenExtractor = new BearerTokenExtractor();
-    private final AccessTokenProvider accessTokenProvider;
+    private final JwtProvider accessTokenProvider;
     private final MemberResolver<?> memberResolver;
 
     @Override

@@ -7,7 +7,7 @@ import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.snackgame.server.auth.jwt.Authenticated;
+import com.snackgame.server.auth.jwt.support.Authenticated;
 import com.snackgame.server.auth.oauth.support.JustAuthenticated;
 
 import io.swagger.v3.oas.models.Components;

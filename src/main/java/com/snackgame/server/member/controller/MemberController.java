@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.snackgame.server.auth.jwt.Authenticated;
-import com.snackgame.server.auth.jwt.AccessTokenProvider;
+import com.snackgame.server.auth.jwt.support.Authenticated;
+import com.snackgame.server.auth.jwt.util.JwtProvider;
 import com.snackgame.server.auth.oauth.support.JustAuthenticated;
 import com.snackgame.server.member.MemberService;
 import com.snackgame.server.member.controller.dto.GroupRequest;
@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberController {
 
     private final MemberService memberService;
-    private final AccessTokenProvider accessTokenProvider;
+    private final JwtProvider accessTokenProvider;
 
     @Operation(summary = "일반 사용자 생성", description = "이름, 그룹으로 사용자를 생성한다")
     @PostMapping("/members")

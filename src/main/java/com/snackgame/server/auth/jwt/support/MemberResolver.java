@@ -1,4 +1,4 @@
-package com.snackgame.server.auth.jwt;
+package com.snackgame.server.auth.jwt.support;
 
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package com.snackgame.server.auth.jwt.repository;
+package com.snackgame.server.auth.jwt.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

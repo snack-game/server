@@ -1,10 +1,7 @@
-package com.snackgame.server.auth.jwt;
+package com.snackgame.server.auth.jwt.util;
 
 import java.util.Date;
 import java.util.Objects;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import com.snackgame.server.auth.exception.InvalidTokenException;
 import com.snackgame.server.auth.exception.TokenUnresolvableException;
@@ -15,18 +12,30 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-@Component
-public class AccessTokenProvider {
+public class JwtProvider {
 
     private final String secretKey;
     private final long expireMilliseconds;
 
-    public AccessTokenProvider(
-            @Value("${security.jwt.token.access-secret-key}") String secretKey,
-            @Value("${security.jwt.token.access-expire-length}") long expireMilliseconds
+    public JwtProvider(
+            String secretKey,
+            long expireMilliseconds
     ) {
         this.secretKey = secretKey;
         this.expireMilliseconds = expireMilliseconds;
+    }
+
+    public String createTokenWith(Long memberId) {
+        Claims claims = Jwts.claims().setSubject(memberId.toString());
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + expireMilliseconds);
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(expiration)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
     }
 
     public String createTokenWith(String payload) {
