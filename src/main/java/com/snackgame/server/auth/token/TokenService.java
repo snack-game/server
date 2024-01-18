@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.snackgame.server.auth.exception.TokenExpiredException;
 import com.snackgame.server.auth.token.domain.RefreshToken;
 import com.snackgame.server.auth.token.domain.RefreshTokenRepository;
 import com.snackgame.server.auth.token.dto.TokenDto;
@@ -35,13 +36,20 @@ public class TokenService {
 
     @Transactional
     public TokenDto reissueFrom(String refreshToken) {
-        refreshTokenProvider.validate(refreshToken);
-
+        handleExpiration(() -> refreshTokenProvider.validate(refreshToken));
         return new TokenDto(
                 reissueAccessTokenFrom(refreshToken),
                 reissueRefreshTokenFrom(refreshToken),
                 Duration.ofSeconds(refreshTokenExpiry)
         );
+    }
+
+    private void handleExpiration(Runnable runnable) {
+        try {
+            runnable.run();
+        } catch (TokenExpiredException exception) {
+            throw exception.withLogoutAction();
+        }
     }
 
     private String issueAccessTokenFor(Long memberId) {
