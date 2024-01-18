@@ -61,6 +61,8 @@ jobs:
           -Dspring.profiles.active=production \
           -DJWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
           -DJWT_EXPIRE_LENGTH=${{ secrets.JWT_EXPIRE_LENGTH }} \
+          -DJWT_REFRESH_SECRET_KEY=${{ secrets.JWT_REFRESH_SECRET_KEY }} \
+          -DJWT_REFRESH_EXPIRE_LENGTH=${{ secrets.JWT_REFRESH_EXPIRE_LENGTH }} \
           -Dserver.port=$GREEN_PORT \
           -DPRODUCTION_DB_URL=${{ secrets.PRODUCTION_DB_URL }} \
           -DPRODUCTION_DB_USERNAME=${{ secrets.PRODUCTION_DB_USERNAME }} \
@@ -74,22 +76,18 @@ jobs:
           -Ddd.env=production \
           -jar $JAR_NAME > ~/snackgame-server.log &
 
-      - name: 그린 어플리케이션 실행 검증
-        shell: bash {0}
-        run: |
-          PROCESS_ID="$(lsof -i:$GREEN_PORT -t)"
-          if [ -n "$PROCESS_ID" ]; then
-            echo "::error title=배포 실패::블루 어플리케이션으로 롤백합니다.";
-            exit 1;
-          fi
-
       - name: 그린 어플리케이션이 접속 가능할 때까지 기다린다
         shell: bash {0}
         run: |
+          PROCESS_ID="$(lsof -i:$GREEN_PORT -t)"
           while [ "$(curl -o /dev/null -s -w %{http_code} localhost:$GREEN_PORT/rankings?by=BEST_SCORE)" != 200 ]
           do
-              echo "새로운 어플리케이션을 띄우는 중입니다.";
-              sleep 5;
+            if [ -n "$PROCESS_ID" ]; then
+              echo "::error title=배포 실패::블루 어플리케이션으로 롤백합니다.";
+              exit 1;
+            fi
+            echo "새로운 어플리케이션을 띄우는 중입니다.";
+            sleep 5;
           done
 
       - name: 리버스 프록시 설정 변경
