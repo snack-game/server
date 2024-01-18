@@ -45,11 +45,11 @@ public class TokenService {
     }
 
     private String issueAccessTokenFor(Long memberId) {
-        return accessTokenProvider.createTokenWith(memberId);
+        return accessTokenProvider.createTokenWith(memberId.toString());
     }
 
     private String issueRefreshTokenFor(Long memberId) {
-        String refreshToken = refreshTokenProvider.createTokenWith(memberId);
+        String refreshToken = refreshTokenProvider.createTokenWith(memberId.toString());
         return refreshTokenRepository.save(new RefreshToken(refreshToken))
                 .getToken();
     }
