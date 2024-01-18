@@ -61,6 +61,8 @@ jobs:
           -Dspring.profiles.active=production \
           -DJWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
           -DJWT_EXPIRE_LENGTH=${{ secrets.JWT_EXPIRE_LENGTH }} \
+          -DJWT_REFRESH_SECRET_KEY=${{ secrets.JWT_REFRESH_SECRET_KEY }} \
+          -DJWT_REFRESH_EXPIRE_LENGTH=${{ secrets.JWT_REFRESH_EXPIRE_LENGTH }} \
           -Dserver.port=$GREEN_PORT \
           -DPRODUCTION_DB_URL=${{ secrets.PRODUCTION_DB_URL }} \
           -DPRODUCTION_DB_USERNAME=${{ secrets.PRODUCTION_DB_USERNAME }} \
