@@ -27,19 +27,6 @@ public class JwtProvider {
         this.expireMilliseconds = expireMilliseconds;
     }
 
-    public String createTokenWith(Long memberId) {
-        Claims claims = Jwts.claims().setSubject(memberId.toString());
-        Date now = new Date();
-        Date expiration = new Date(now.getTime() + expireMilliseconds);
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(expiration)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-    }
-
     public String createTokenWith(String payload) {
         Claims claims = Jwts.claims().setSubject(payload);
         Date now = new Date();
