@@ -63,7 +63,13 @@ public class AuthController {
                 .body(MemberDetailsWithTokenResponse.of(socialMember, token.getAccessToken()));
     }
 
-    @Operation(summary = "토큰 재발급", description = "토큰을 재발급한다")
+    @Operation(
+            summary = "토큰 재발급",
+            description = "리프레시 토큰으로 토큰을 재발급한다\n\n"
+                          + "**예외 조치 종류**\n\n"
+                          + "`REISSUE`: 액세스 토큰 재발급이 필요하다\n\n"
+                          + "`LOGOUT`: 리프레시 토큰이 만료되어 토큰 재발급이 불가, 로그아웃 해야한다"
+    )
     @PostMapping("/tokens/reissue")
     public ResponseEntity<TokenResponse> reissueToken(@CookieValue(REFRESH_TOKEN_COOKIE_NAME) String refreshToken) {
         TokenDto reissued = tokenService.reissueFrom(refreshToken);
