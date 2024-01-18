@@ -1,4 +1,4 @@
-package com.snackgame.server.auth.jwt;
+package com.snackgame.server.auth.token.util;
 
 import java.util.Objects;
 

@@ -1,0 +1,18 @@
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+  datasource:
+    url: jdbc:h2:mem:testdb
+  h2:
+    console:
+      enabled: true
+  sql:
+    init:
+      mode: never
+security:
+  jwt:
+    token:
+      access-secret-key: testsecretkey1234567890
+      access-expire-length: 86400000
+      refresh-secret-key: testrefreshsecretkey1234567890
+      refresh-expire-length: 8640000

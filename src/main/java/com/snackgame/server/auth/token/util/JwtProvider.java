@@ -1,29 +1,27 @@
-package com.snackgame.server.auth.jwt;
+package com.snackgame.server.auth.token.util;
 
 import java.util.Date;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import com.snackgame.server.auth.exception.InvalidTokenException;
+import com.snackgame.server.auth.exception.TokenExpiredException;
+import com.snackgame.server.auth.exception.TokenInvalidException;
 import com.snackgame.server.auth.exception.TokenUnresolvableException;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-@Component
 public class JwtProvider {
 
     private final String secretKey;
     private final long expireMilliseconds;
 
     public JwtProvider(
-            @Value("${security.jwt.token.secret-key}") String secretKey,
-            @Value("${security.jwt.token.expire-length}") long expireMilliseconds
+            String secretKey,
+            long expireMilliseconds
     ) {
         this.secretKey = secretKey;
         this.expireMilliseconds = expireMilliseconds;
@@ -56,8 +54,10 @@ public class JwtProvider {
                     .getBody()
                     .getSubject();
             validateHas(subject);
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException();
         } catch (JwtException | IllegalArgumentException e) {
-            throw new InvalidTokenException();
+            throw new TokenInvalidException();
         }
     }
 

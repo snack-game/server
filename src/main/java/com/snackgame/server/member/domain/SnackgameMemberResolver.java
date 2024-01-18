@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.snackgame.server.auth.jwt.MemberResolver;
+import com.snackgame.server.auth.token.support.MemberResolver;
 
 @Component
 public class SnackgameMemberResolver implements MemberResolver<Member> {
