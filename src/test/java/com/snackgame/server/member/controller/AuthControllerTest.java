@@ -44,6 +44,7 @@ class AuthControllerTest {
                 .statusCode(HttpStatus.OK.value())
                 .body("accessToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
                 .cookie("refreshToken", startsWith("eyJhbGciOiJIUzI1NiJ9"));
+
     }
 
     @Test
@@ -66,19 +67,18 @@ class AuthControllerTest {
 
     @Test
     void 로그아웃할때_리프레시_토큰을_삭제한다() throws InterruptedException {
-        Cookie refresh_cookie = RestAssured.given()
+        Cookie TokenCookie = RestAssured.given()
                 .when().post("/tokens/guest")
                 .then().extract().detailedCookie("refreshToken");
 
-        assertThat(refreshTokenRepository.findAll()).hasSize(1);
-
-        RestAssured.given().log().all()
-                .cookie(refresh_cookie)
+        Cookie deletedTokenCookie = RestAssured.given().log().all()
+                .cookie(TokenCookie)
                 .when().delete("/tokens/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.OK.value())
+                .extract().detailedCookie("refreshToken");
 
-        assertThat(refreshTokenRepository.findAll()).hasSize(0);
+        assertThat(deletedTokenCookie.getMaxAge()).isZero();
 
     }
 

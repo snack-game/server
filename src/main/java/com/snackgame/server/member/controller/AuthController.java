@@ -1,5 +1,7 @@
 package com.snackgame.server.member.controller;
 
+import java.time.Duration;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -87,13 +89,13 @@ public class AuthController {
     @DeleteMapping("/tokens/me")
     public ResponseEntity<Void> logout(@CookieValue(REFRESH_TOKEN_COOKIE_NAME) String refreshToken) {
 
-        tokenService.addBlackList(refreshToken);
+        tokenService.delete(refreshToken);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE,
                         ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, null)
                                 .path("/tokens/reissue")
-                                .maxAge(0)
+                                .maxAge(Duration.ZERO)
                                 .httpOnly(true)
                                 .secure(true)
                                 .build()
