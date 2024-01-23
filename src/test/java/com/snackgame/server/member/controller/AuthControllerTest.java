@@ -56,7 +56,7 @@ class AuthControllerTest {
 
         RestAssured.given().log().all()
                 .cookie(refreshToken)
-                .when().post("/tokens/reissue")
+                .when().patch("/tokens/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("accessToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
@@ -74,7 +74,7 @@ class AuthControllerTest {
 
         RestAssured.given().log().all()
                 .cookie(refresh_cookie)
-                .when().delete("/tokens")
+                .when().delete("/tokens/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
 
