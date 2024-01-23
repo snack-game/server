@@ -16,9 +16,7 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.test.context.transaction.TestTransaction;
 
-import com.snackgame.server.annotation.ServiceTest;
 import com.snackgame.server.applegame.domain.Coordinate;
 import com.snackgame.server.applegame.domain.Range;
 import com.snackgame.server.applegame.domain.game.AppleGame;
@@ -29,6 +27,7 @@ import com.snackgame.server.member.MemberService;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.fixture.MemberFixture;
 import com.snackgame.server.rank.applegame.domain.BestScores;
+import com.snackgame.server.support.general.ServiceTest;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -51,7 +50,6 @@ class AppleGameRankingServiceTest {
             @Autowired EntityManagerFactory entityManagerFactory,
             @Autowired ThreadPoolTaskExecutor taskExecutor
     ) throws InterruptedException {
-        TestTransaction.end();
         MemberFixture.persistAllUsing(entityManagerFactory);
 
         appleGameRankingService.renewBestScoreWith(new GameEndEvent(

@@ -13,9 +13,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.transaction.TestTransaction;
 
-import com.snackgame.server.annotation.ServiceTest;
+import com.snackgame.server.support.general.ServiceTest;
 import com.snackgame.server.applegame.controller.dto.CoordinateRequest;
 import com.snackgame.server.applegame.controller.dto.RangeRequest;
 import com.snackgame.server.applegame.domain.game.AppleGame;
@@ -38,7 +37,6 @@ class AppleGameServiceTest {
 
     @BeforeEach
     void setUp(@Autowired EntityManagerFactory entityManagerFactory) {
-        TestTransaction.end();
         MemberFixture.persistAllUsing(entityManagerFactory);
     }
 

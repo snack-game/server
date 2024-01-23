@@ -62,5 +62,6 @@ public class MemberFixture {
         entityManager.persist(pushing(숭실대학교(), idIgnored(시연())));
         entityManager.persist(pushing(숭실대학교(), idIgnored(주호())));
         transaction.commit();
+        entityManager.close();
     }
 }

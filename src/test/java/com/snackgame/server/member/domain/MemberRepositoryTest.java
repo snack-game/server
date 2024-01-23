@@ -13,16 +13,14 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.snackgame.server.member.exception.MemberNotFoundException;
 import com.snackgame.server.member.fixture.MemberFixture;
+import com.snackgame.server.support.general.DatabaseCleaningDataJpaTest;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@DataJpaTest
+@DatabaseCleaningDataJpaTest
 class MemberRepositoryTest {
 
     @Autowired
