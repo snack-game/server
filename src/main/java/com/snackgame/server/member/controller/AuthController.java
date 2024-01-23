@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -90,4 +91,22 @@ public class AuthController {
                                 .toString()
                 );
     }
+
+    @DeleteMapping("/tokens")
+    public ResponseEntity<Void> logout(@CookieValue(REFRESH_TOKEN_COOKIE_NAME) String refreshToken) {
+
+        tokenService.addBlackList(refreshToken);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE,
+                        ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, null)
+                                .path("/tokens/reissue")
+                                .maxAge(0)
+                                .httpOnly(true)
+                                .secure(true)
+                                .build()
+                                .toString()
+                ).build();
+    }
+
 }

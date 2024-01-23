@@ -18,12 +18,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TokenService {
 
-    @Value("${security.jwt.token.refresh-expire-length}")
-    private long refreshTokenExpiry;
-
     private final JwtProvider accessTokenProvider;
     private final JwtProvider refreshTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    @Value("${security.jwt.token.refresh-expire-length}")
+    private long refreshTokenExpiry;
 
     @Transactional
     public TokenDto issueFor(Long memberId) {
@@ -72,5 +71,10 @@ public class TokenService {
         String newRefreshToken = issueRefreshTokenFor(Long.parseLong(subject));
         refreshTokenRepository.deleteByToken(refreshToken);
         return newRefreshToken;
+    }
+
+    @Transactional
+    public void addBlackList(String refreshToken) {
+        refreshTokenRepository.deleteByToken(refreshToken);
     }
 }
