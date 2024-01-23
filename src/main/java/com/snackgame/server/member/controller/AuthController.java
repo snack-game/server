@@ -5,6 +5,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,7 +72,7 @@ public class AuthController {
                           + "`REISSUE`: 액세스 토큰 재발급이 필요하다\n\n"
                           + "`LOGOUT`: 리프레시 토큰이 만료되어 토큰 재발급이 불가, 로그아웃 해야한다"
     )
-    @PostMapping("/tokens/reissue")
+    @PatchMapping("/tokens/me")
     public ResponseEntity<TokenResponse> reissueToken(@CookieValue(REFRESH_TOKEN_COOKIE_NAME) String refreshToken) {
         TokenDto reissued = tokenService.reissueFrom(refreshToken);
 
@@ -79,20 +80,11 @@ public class AuthController {
                 .body(new TokenResponse(reissued.getAccessToken()));
     }
 
-    private ResponseEntity.BodyBuilder responseWith(TokenDto token) {
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE,
-                        ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, token.getRefreshToken())
-                                .path("/tokens/reissue")
-                                .maxAge(token.getRefreshTokenExpiry())
-                                .httpOnly(true)
-                                .secure(true)
-                                .build()
-                                .toString()
-                );
-    }
-
-    @DeleteMapping("/tokens")
+    @Operation(
+            summary = "로그아웃",
+            description = "쿠키에 저장된 토큰을 제거한다"
+    )
+    @DeleteMapping("/tokens/me")
     public ResponseEntity<Void> logout(@CookieValue(REFRESH_TOKEN_COOKIE_NAME) String refreshToken) {
 
         tokenService.addBlackList(refreshToken);
@@ -109,4 +101,16 @@ public class AuthController {
                 ).build();
     }
 
+    private ResponseEntity.BodyBuilder responseWith(TokenDto token) {
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE,
+                        ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, token.getRefreshToken())
+                                .path("/tokens/reissue")
+                                .maxAge(token.getRefreshTokenExpiry())
+                                .httpOnly(true)
+                                .secure(true)
+                                .build()
+                                .toString()
+                );
+    }
 }
