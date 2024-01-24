@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TokenService {
-
     @Value("${security.jwt.token.refresh-expire-length}")
     private long refreshTokenExpiry;
 
@@ -42,6 +41,11 @@ public class TokenService {
                 reissueRefreshTokenFrom(refreshToken),
                 Duration.ofSeconds(refreshTokenExpiry)
         );
+    }
+
+    @Transactional
+    public void delete(String refreshToken) {
+        refreshTokenRepository.deleteByToken(refreshToken);
     }
 
     private void handleExpiration(Runnable runnable) {

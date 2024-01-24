@@ -1,9 +1,13 @@
 package com.snackgame.server.member.controller;
 
+import java.time.Duration;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -70,12 +74,33 @@ public class AuthController {
                           + "`REISSUE`: 액세스 토큰 재발급이 필요하다\n\n"
                           + "`LOGOUT`: 리프레시 토큰이 만료되어 토큰 재발급이 불가, 로그아웃 해야한다"
     )
-    @PostMapping("/tokens/reissue")
+    @PatchMapping("/tokens/me")
     public ResponseEntity<TokenResponse> reissueToken(@CookieValue(REFRESH_TOKEN_COOKIE_NAME) String refreshToken) {
         TokenDto reissued = tokenService.reissueFrom(refreshToken);
 
         return responseWith(reissued)
                 .body(new TokenResponse(reissued.getAccessToken()));
+    }
+
+    @Operation(
+            summary = "로그아웃",
+            description = "쿠키에 저장된 토큰을 제거한다"
+    )
+    @DeleteMapping("/tokens/me")
+    public ResponseEntity<Void> logout(@CookieValue(REFRESH_TOKEN_COOKIE_NAME) String refreshToken) {
+
+        tokenService.delete(refreshToken);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE,
+                        ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, null)
+                                .path("/tokens/reissue")
+                                .maxAge(Duration.ZERO)
+                                .httpOnly(true)
+                                .secure(true)
+                                .build()
+                                .toString()
+                ).build();
     }
 
     private ResponseEntity.BodyBuilder responseWith(TokenDto token) {
