@@ -2,15 +2,19 @@ package com.snackgame.server.auth.token;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.snackgame.server.annotation.ServiceTest;
 import com.snackgame.server.auth.token.domain.RefreshToken;
 import com.snackgame.server.auth.token.domain.RefreshTokenRepository;
 import com.snackgame.server.member.MemberService;
 import com.snackgame.server.member.domain.Member;
+import com.snackgame.server.support.general.ServiceTest;
 
+@SuppressWarnings("NonAsciiCharacters")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @ServiceTest
 class TokenServiceTest {
 
@@ -39,5 +43,4 @@ class TokenServiceTest {
 
         assertThat(refreshTokenRepository.findAll()).isEmpty();
     }
-
 }
