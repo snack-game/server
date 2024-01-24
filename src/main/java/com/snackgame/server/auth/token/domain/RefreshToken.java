@@ -19,14 +19,13 @@ public class RefreshToken extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String token;
+    private final boolean deleted = false;
 
-    private boolean deleted = Boolean.FALSE;
+    protected RefreshToken() {
+    }
 
     public RefreshToken(String token) {
         this.token = token;
-    }
-
-    public RefreshToken() {
     }
 
     public Long getId() {
