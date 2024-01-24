@@ -4,37 +4,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
 
-import com.snackgame.server.auth.token.domain.RefreshTokenRepository;
+import com.snackgame.server.support.restassured.RestAssuredTest;
 
 import io.restassured.RestAssured;
 import io.restassured.http.Cookie;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@RestAssuredTest
 class AuthControllerTest {
-
-    @LocalServerPort
-    private int port;
-
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
-
-    @BeforeEach
-    void setUp() {
-        RestAssured.port = port;
-    }
 
     @Test
     void 토큰을_발급한다() {
@@ -44,7 +27,6 @@ class AuthControllerTest {
                 .statusCode(HttpStatus.OK.value())
                 .body("accessToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
                 .cookie("refreshToken", startsWith("eyJhbGciOiJIUzI1NiJ9"));
-
     }
 
     @Test
@@ -79,7 +61,5 @@ class AuthControllerTest {
                 .extract().detailedCookie("refreshToken");
 
         assertThat(deletedTokenCookie.getMaxAge()).isZero();
-
     }
-
 }

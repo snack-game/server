@@ -7,8 +7,8 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.snackgame.server.annotation.ServiceTest;
 import com.snackgame.server.member.domain.Group;
+import com.snackgame.server.support.general.ServiceTest;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)

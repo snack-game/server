@@ -56,13 +56,13 @@ public class MemberController {
     @Operation(summary = "나의 그룹 지정", description = "현재 사용자의 그룹을 지정한다")
     @PutMapping("/members/me/group")
     public void changeGroup(@Authenticated Member member, @RequestBody GroupRequest groupRequest) {
-        memberService.changeGroupNameOf(member, groupRequest.getGroup());
+        memberService.changeGroupNameOf(member.getId(), groupRequest.getGroup());
     }
 
     @Operation(summary = "나의 이름 변경", description = "현재 사용자의 이름을 변경한다")
     @PutMapping("/members/me/name")
     public void changeName(@Authenticated Member member, @RequestBody NameRequest nameRequest) {
-        memberService.changeNameOf(member, nameRequest.getName());
+        memberService.changeNameOf(member.getId(), nameRequest.getName());
     }
 
     @Operation(

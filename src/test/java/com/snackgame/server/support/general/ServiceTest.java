@@ -1,20 +1,19 @@
-package com.snackgame.server.annotation;
+package com.snackgame.server.support.general;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.transaction.Transactional;
-
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+
+import com.snackgame.server.support.database.CleanDatabaseBeforeEach;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@ExtendWith(CleanDatabaseBeforeEach.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@Transactional // TODO: 서비스 통합 테스트에서 Transactional 제거
 public @interface ServiceTest {
 
 }

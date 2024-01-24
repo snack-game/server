@@ -21,11 +21,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import com.snackgame.server.member.fixture.MemberFixture;
+import com.snackgame.server.support.general.DatabaseCleaningDataJpaTest;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@DataJpaTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DatabaseCleaningDataJpaTest
 class BestScoresTest {
 
     @Autowired

@@ -10,13 +10,13 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.snackgame.server.annotation.ServiceTest;
 import com.snackgame.server.member.domain.Guest;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.domain.MemberRepository;
 import com.snackgame.server.member.domain.Name;
 import com.snackgame.server.member.exception.DuplicateNameException;
 import com.snackgame.server.member.exception.MemberNotFoundException;
+import com.snackgame.server.support.general.ServiceTest;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -81,7 +81,7 @@ class MemberServiceTest {
     @Test
     void 사용자_이름을_수정한다() {
         Member member = memberService.createWith(똥수().getNameAsString());
-        memberService.changeNameOf(member, "똥똥수");
+        memberService.changeNameOf(member.getId(), "똥똥수");
 
         var found = memberRepository.findById(member.getId()).get();
         assertThat(found.getNameAsString())
@@ -93,7 +93,7 @@ class MemberServiceTest {
         memberService.createWith(땡칠().getNameAsString());
         Member member = memberService.createWith(똥수().getNameAsString());
 
-        assertThatThrownBy(() -> memberService.changeNameOf(member, 땡칠().getNameAsString()))
+        assertThatThrownBy(() -> memberService.changeNameOf(member.getId(), 땡칠().getNameAsString()))
                 .isInstanceOf(DuplicateNameException.class)
                 .hasMessage("이미 존재하는 이름입니다");
     }
@@ -101,7 +101,7 @@ class MemberServiceTest {
     @Test
     void 그룹_이름을_수정한다() {
         Member member = memberService.createWith(똥수().getNameAsString(), 똥수().getGroup().getName());
-        memberService.changeGroupNameOf(member, "홍천고");
+        memberService.changeGroupNameOf(member.getId(), "홍천고");
 
         assertThat(memberService.getBy(member.getId()).getGroup().getName())
                 .isEqualTo("홍천고");

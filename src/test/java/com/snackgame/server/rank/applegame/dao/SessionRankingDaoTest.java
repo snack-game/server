@@ -15,9 +15,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.snackgame.server.applegame.domain.Coordinate;
 import com.snackgame.server.applegame.domain.Range;
@@ -26,11 +24,11 @@ import com.snackgame.server.applegame.domain.game.AppleGames;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.member.fixture.MemberFixture;
 import com.snackgame.server.rank.applegame.dao.dto.RankingDto;
+import com.snackgame.server.support.general.DatabaseCleaningDataJpaTest;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@DataJpaTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DatabaseCleaningDataJpaTest
 class SessionRankingDaoTest {
 
     private SessionRankingDao sessionRankingDao;

@@ -59,14 +59,16 @@ public class MemberService {
     }
 
     @Transactional
-    public void changeNameOf(Member member, String name) {
+    public void changeNameOf(Long memberId, String name) {
+        Member member = members.getById(memberId);
         Name otherName = new Name(name);
         distinctNaming.validate(otherName);
         member.changeNameTo(otherName);
     }
 
     @Transactional
-    public void changeGroupNameOf(Member member, String groupName) {
+    public void changeGroupNameOf(Long memberId, String groupName) {
+        Member member = members.getById(memberId);
         Group group = groupService.createIfNotExists(groupName);
         member.changeGroupTo(group);
     }
