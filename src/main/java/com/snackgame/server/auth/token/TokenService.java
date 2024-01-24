@@ -43,6 +43,11 @@ public class TokenService {
         );
     }
 
+    @Transactional
+    public void delete(String refreshToken) {
+        refreshTokenRepository.deleteByToken(refreshToken);
+    }
+
     private void handleExpiration(Runnable runnable) {
         try {
             runnable.run();
@@ -71,10 +76,5 @@ public class TokenService {
         String newRefreshToken = issueRefreshTokenFor(Long.parseLong(subject));
         refreshTokenRepository.deleteByToken(refreshToken);
         return newRefreshToken;
-    }
-
-    @Transactional
-    public void delete(String refreshToken) {
-        refreshTokenRepository.deleteByToken(refreshToken);
     }
 }
