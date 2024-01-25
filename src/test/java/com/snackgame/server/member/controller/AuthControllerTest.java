@@ -1,6 +1,7 @@
 package com.snackgame.server.member.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 
@@ -56,18 +57,17 @@ class AuthControllerTest {
     }
 
     @Test
-    void 로그아웃할때_리프레시_토큰을_삭제한다() throws InterruptedException {
-        Cookie TokenCookie = RestAssured.given()
+    void 로그아웃할때_토큰을_삭제한다() {
+        var cookies = RestAssured.given()
                 .when().post("/tokens/guest")
-                .then().extract().detailedCookie("refreshToken");
+                .then().extract().detailedCookies();
 
-        Cookie deletedTokenCookie = RestAssured.given().log().all()
-                .cookie(TokenCookie)
+        RestAssured.given().log().all()
+                .cookies(cookies)
                 .when().delete("/tokens/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract().detailedCookie("refreshToken");
-
-        assertThat(deletedTokenCookie.getMaxAge()).isZero();
+                .cookie("accessToken", is(emptyString()))
+                .cookie("refreshToken", is(emptyString()));
     }
 }
