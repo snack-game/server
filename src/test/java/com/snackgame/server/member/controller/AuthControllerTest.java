@@ -27,6 +27,7 @@ class AuthControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("accessToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
+                .cookie("accessToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
                 .cookie("refreshToken", startsWith("eyJhbGciOiJIUzI1NiJ9"));
     }
 
@@ -35,7 +36,8 @@ class AuthControllerTest {
         RestAssured.given()
                 .when().post("/tokens/guest")
                 .then().log().all()
-                .cookie("accessToken", startsWith("eyJhbGciOiJIUzI1NiJ9"));
+                .cookie("accessToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
+                .cookie("refreshToken", startsWith("eyJhbGciOiJIUzI1NiJ9"));
     }
 
     @Test
@@ -52,6 +54,7 @@ class AuthControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("accessToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
+                .cookie("accessToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
                 .cookie("refreshToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
                 .cookie("refreshToken", not(refreshToken.getValue()));
     }
