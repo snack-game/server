@@ -30,6 +30,14 @@ class AuthControllerTest {
     }
 
     @Test
+    void 토큰을_쿠키에_싣는다() {
+        RestAssured.given()
+                .when().post("/tokens/guest")
+                .then().log().all()
+                .cookie("accessToken", startsWith("eyJhbGciOiJIUzI1NiJ9"));
+    }
+
+    @Test
     void 리프레시_토큰으로_토큰을_재발급한다() throws InterruptedException {
         Cookie refreshToken = RestAssured.given()
                 .when().post("/tokens/guest")
