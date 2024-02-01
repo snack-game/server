@@ -11,5 +11,6 @@ public class TokenDto {
 
     private final String accessToken;
     private final String refreshToken;
+    private final Duration accessTokenExpiry;
     private final Duration refreshTokenExpiry;
 }

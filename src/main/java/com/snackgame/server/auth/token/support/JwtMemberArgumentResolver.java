@@ -1,5 +1,11 @@
 package com.snackgame.server.auth.token.support;
 
+import java.util.Arrays;
+import java.util.Optional;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -34,11 +40,28 @@ public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver 
             NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory
     ) {
-        String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
-        String token = bearerTokenExtractor.extract(authorization);
-        accessTokenProvider.validate(token);
+        HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
 
-        Long memberId = Long.parseLong(accessTokenProvider.getSubjectFrom(token));
+        Long memberId = null ;
+
+        if(request.getCookies() != null) {
+            Optional<Cookie> foundCookie = Arrays.stream(request.getCookies())
+                    .filter(cookie -> cookie.getName().equals("accessToken"))
+                    .findFirst();
+            if(foundCookie.isPresent()){
+                String cookieToken = foundCookie.get().getValue();
+                accessTokenProvider.validate(cookieToken);
+
+                memberId = Long.parseLong(accessTokenProvider.getSubjectFrom(cookieToken));
+            }
+
+        } else {
+            String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
+            String headerToken = bearerTokenExtractor.extract(authorization);
+            accessTokenProvider.validate(headerToken);
+
+            memberId = Long.parseLong(accessTokenProvider.getSubjectFrom(headerToken));
+        }
         return memberResolver.resolve(memberId)
                 .orElseThrow(TokenAuthenticationException::new);
     }
