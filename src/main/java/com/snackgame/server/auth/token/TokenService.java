@@ -20,6 +20,9 @@ public class TokenService {
     @Value("${security.jwt.token.refresh-expire-length}")
     private long refreshTokenExpiry;
 
+    @Value("${security.jwt.token.access-expire-length}")
+    private long accessTokenExpiry;
+
     private final JwtProvider accessTokenProvider;
     private final JwtProvider refreshTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -29,6 +32,7 @@ public class TokenService {
         return new TokenDto(
                 issueAccessTokenFor(memberId),
                 issueRefreshTokenFor(memberId),
+                Duration.ofSeconds(accessTokenExpiry),
                 Duration.ofSeconds(refreshTokenExpiry)
         );
     }
@@ -39,6 +43,7 @@ public class TokenService {
         return new TokenDto(
                 reissueAccessTokenFrom(refreshToken),
                 reissueRefreshTokenFrom(refreshToken),
+                Duration.ofSeconds(accessTokenExpiry),
                 Duration.ofSeconds(refreshTokenExpiry)
         );
     }
