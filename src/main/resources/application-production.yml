@@ -9,10 +9,10 @@ spring:
 security:
   jwt:
     token:
-      access-secret-key: ${JWT_SECRET_KEY}
-      access-expiry-days: ${JWT_EXPIRE_LENGTH}
-      refresh-secret-key: ${JWT_REFRESH_SECRET_KEY}
-      refresh-expiry-days: ${JWT_REFRESH_EXPIRE_LENGTH}
+      access-secret-key: ${ACCESS_TOKEN_SECRET_KEY}
+      access-expiry-days: ${ACCESS_TOKEN_EXPIRY_DAYS}
+      refresh-secret-key: ${REFRESH_TOKEN_SECRET_KEY}
+      refresh-expiry-days: ${REFRESH_TOKEN_EXPIRY_DAYS}
 server:
   port: ${APPLICATION_PORT}
   forward-headers-strategy: native
