@@ -8,7 +8,6 @@ import org.springdoc.core.SpringDocUtils;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 
 import com.snackgame.server.auth.oauth.support.JustAuthenticated;
 import com.snackgame.server.auth.token.support.Authenticated;
@@ -47,7 +46,6 @@ public class OpenApiConfig {
                 .addServersItem(new Server().url("/"));
     }
 
-    @Order(1)
     @Bean
     public GroupedOpenApi userApis() {
         return GroupedOpenApi.builder()
@@ -58,7 +56,6 @@ public class OpenApiConfig {
                 .addAllOperationCustomizer(List.of(accessTokenOperationMarker(), refreshTokenOperationMarker()));
     }
 
-    @Order(2)
     @Bean
     public GroupedOpenApi authApis() {
         return GroupedOpenApi.builder()
