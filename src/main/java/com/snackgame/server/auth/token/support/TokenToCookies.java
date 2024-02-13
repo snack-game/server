@@ -35,7 +35,7 @@ public class TokenToCookies {
                 baseCookieFrom(accessTokenProvider.getCanonicalName(), EMPTY)
                         .path("/")
                         .build().toString(),
-                ResponseCookie.from(refreshTokenProvider.getCanonicalName(), EMPTY)
+                baseCookieFrom(refreshTokenProvider.getCanonicalName(), EMPTY)
                         .path("/tokens/me")
                         .build().toString()
         };
