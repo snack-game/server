@@ -1,5 +1,7 @@
 package com.snackgame.server.auth.token.util;
 
+import java.time.Duration;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
 
@@ -7,51 +9,56 @@ import com.snackgame.server.auth.exception.TokenExpiredException;
 import com.snackgame.server.auth.exception.TokenInvalidException;
 import com.snackgame.server.auth.exception.TokenUnresolvableException;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 public class JwtProvider {
 
-    private final String secretKey;
-    private final long expireMilliseconds;
+    private final String canonicalName;
+    private final KeyLocator secretKey;
+    private final Duration expiry;
 
     public JwtProvider(
+            String canonicalName,
             String secretKey,
-            long expireMilliseconds
+            Duration expiry
     ) {
-        this.secretKey = secretKey;
-        this.expireMilliseconds = expireMilliseconds;
+        this.canonicalName = canonicalName;
+        this.secretKey = new KeyLocator(Keys.hmacShaKeyFor(
+                Base64.getEncoder().encode(secretKey.getBytes())
+        ));
+        this.expiry = expiry;
     }
 
     public String createTokenWith(String payload) {
-        Claims claims = Jwts.claims().setSubject(payload);
         Date now = new Date();
-        Date expiration = new Date(now.getTime() + expireMilliseconds);
+        Date expiration = new Date(now.getTime() + expiry.toMillis());
 
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(expiration)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .subject(payload)
+                .issuedAt(now)
+                .expiration(expiration)
+                .signWith(secretKey.getKey())
                 .compact();
     }
 
     public String getSubjectFrom(String token) {
-        JwtParser jwtParser = Jwts.parser().setSigningKey(secretKey);
-        return jwtParser.parseClaimsJws(token)
-                .getBody()
+        JwtParser jwtParser = Jwts.parser().keyLocator(secretKey).build();
+
+        return jwtParser.parseSignedClaims(token)
+                .getPayload()
                 .getSubject();
     }
 
     public void validate(String token) {
         try {
             validateHas(token);
-            String subject = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
-                    .getBody()
+            String subject = Jwts.parser().keyLocator(secretKey).build()
+                    .parseSignedClaims(token)
+                    .getPayload()
                     .getSubject();
             validateHas(subject);
         } catch (ExpiredJwtException e) {
@@ -65,6 +72,14 @@ public class JwtProvider {
         if (Objects.isNull(token)) {
             throw new TokenUnresolvableException();
         }
+    }
+
+    public Duration getExpiry() {
+        return expiry;
+    }
+
+    public String getCanonicalName() {
+        return canonicalName;
     }
 }
 

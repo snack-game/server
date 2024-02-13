@@ -21,6 +21,6 @@ security:
   jwt:
     token:
       access-secret-key: snackgamelocalsecretkey12345
-      access-expire-length: 86400000
+      access-expiry-days: 7
       refresh-secret-key: snackgamelocalrefreshsecretkey12345
-      refresh-expire-length: 8640000
+      refresh-expiry-days: 30

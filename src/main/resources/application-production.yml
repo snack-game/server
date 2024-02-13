@@ -10,9 +10,9 @@ security:
   jwt:
     token:
       access-secret-key: ${JWT_SECRET_KEY}
-      access-expire-length: ${JWT_EXPIRE_LENGTH}
+      access-expiry-days: ${JWT_EXPIRE_LENGTH}
       refresh-secret-key: ${JWT_REFRESH_SECRET_KEY}
-      refresh-expire-length: ${JWT_REFRESH_EXPIRE_LENGTH}
+      refresh-expiry-days: ${JWT_REFRESH_EXPIRE_LENGTH}
 server:
   port: ${APPLICATION_PORT}
   forward-headers-strategy: native

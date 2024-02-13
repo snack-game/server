@@ -10,6 +10,6 @@ security:
   jwt:
     token:
       access-secret-key: testsecretkey1234567890
-      access-expire-length: 86400000
+      access-expiry-days: 7
       refresh-secret-key: testrefreshsecretkey1234567890
-      refresh-expire-length: 8640000
+      refresh-expiry-days: 30
