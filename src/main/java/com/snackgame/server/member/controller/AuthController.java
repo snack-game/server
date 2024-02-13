@@ -71,9 +71,9 @@ public class AuthController {
     @Operation(
             summary = "토큰 재발급",
             description = "리프레시 토큰으로 토큰을 재발급한다\n\n"
-                          + "**예외 조치 종류**\n\n"
-                          + "`REISSUE`: 액세스 토큰 재발급이 필요하다\n\n"
-                          + "`LOGOUT`: 리프레시 토큰이 만료되어 토큰 재발급이 불가, 로그아웃 해야한다"
+                          + "**각 상황에 대한 응답**\n\n"
+                          + "액세스 토큰만 만료된 경우: `401 UNAUTHORIZED` + action: `REISSUE`\n\n"
+                          + "리프레시 토큰도 만료된 경우: `401 UNAUTHORIZED`"
     )
     @PatchMapping("/tokens/me")
     public ResponseEntity<TokenResponse> reissueToken(@TokensFromCookie TokensDto tokens) {

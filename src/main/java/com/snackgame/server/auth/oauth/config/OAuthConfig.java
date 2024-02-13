@@ -22,8 +22,8 @@ import io.swagger.v3.oas.models.Paths;
 @Profile({"local", "production"})
 public class OAuthConfig {
 
-    public OAuthConfig(Paths customPaths) {
-        addOAuthTo(customPaths);
+    public OAuthConfig(Paths authCustomPaths) {
+        addOAuthTo(authCustomPaths);
     }
 
     @Bean
