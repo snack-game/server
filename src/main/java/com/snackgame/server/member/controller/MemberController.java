@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.snackgame.server.auth.oauth.support.JustAuthenticated;
 import com.snackgame.server.auth.token.support.Authenticated;
 import com.snackgame.server.auth.token.util.JwtProvider;
-import com.snackgame.server.auth.oauth.support.JustAuthenticated;
 import com.snackgame.server.member.MemberService;
 import com.snackgame.server.member.controller.dto.GroupRequest;
 import com.snackgame.server.member.controller.dto.MemberDetailsResponse;
@@ -78,23 +78,5 @@ public class MemberController {
         Member integrated = memberService.integrate(victim, socialMember);
         String token = accessTokenProvider.createTokenWith(integrated.getId().toString());
         return MemberDetailsWithTokenResponse.of(integrated, token);
-    }
-
-    @Deprecated
-    @Operation(summary = "게스트 토큰 발급", description = "추가정보 없이 임시 사용자 토큰을 발급한다")
-    @PostMapping("/members/guest")
-    public MemberDetailsWithTokenResponse addGuest() {
-        Member guest = memberService.createGuest();
-        String accessToken = accessTokenProvider.createTokenWith(guest.getId().toString());
-        return MemberDetailsWithTokenResponse.of(guest, accessToken);
-    }
-
-    @Deprecated
-    @Operation(summary = "사용자의 토큰 발급", description = "어떤 이름을 가진 사용자의 토큰을 발급한다")
-    @PostMapping("/members/token")
-    public MemberDetailsWithTokenResponse issueToken(@RequestBody NameRequest nameRequest) {
-        Member found = memberService.getBy(nameRequest.getName());
-        String accessToken = accessTokenProvider.createTokenWith(found.getId().toString());
-        return MemberDetailsWithTokenResponse.of(found, accessToken);
     }
 }
