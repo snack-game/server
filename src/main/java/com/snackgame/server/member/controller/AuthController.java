@@ -22,6 +22,9 @@ import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.domain.SocialMember;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -71,9 +74,33 @@ public class AuthController {
     @Operation(
             summary = "토큰 재발급",
             description = "리프레시 토큰으로 토큰을 재발급한다\n\n"
-                          + "**각 상황에 대한 응답**\n\n"
-                          + "액세스 토큰만 만료된 경우: `401 UNAUTHORIZED` + action: `REISSUE`\n\n"
-                          + "리프레시 토큰도 만료된 경우: `401 UNAUTHORIZED`"
+                          + "**각 상황에 대한 응답은 하단 참고**",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "액세스 토큰이 만료되었을 때, 인증이 필요한 API를 호출한 경우",
+                            content = @Content(examples = @ExampleObject(
+                                    "{\n"
+                                    + "  \"action\": \"REISSUE\",\n"
+                                    + "  \"messages\": [\n"
+                                    + "    \"토큰이 만료되었습니다\"\n"
+                                    + "  ]\n"
+                                    + "}"
+                            ))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401 ",
+                            description = "리프레시 토큰도 만료되었을 때, 인증이 필요한 API를 호출한 경우",
+                            content = @Content(examples = @ExampleObject(
+                                    "{\n"
+                                    + "  \"action\": null,\n"
+                                    + "  \"messages\": [\n"
+                                    + "    \"토큰을 읽지 못했습니다\"\n"
+                                    + "  ]\n"
+                                    + "}"
+                            ))
+                    )
+            }
     )
     @PatchMapping("/tokens/me")
     public ResponseEntity<TokenResponse> reissueToken(@TokensFromCookie TokensDto tokens) {
