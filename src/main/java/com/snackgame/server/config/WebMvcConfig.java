@@ -10,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.snackgame.server.auth.token.support.JwtMemberArgumentResolver;
 import com.snackgame.server.auth.oauth.support.SocialMemberSavingArgumentResolver;
+import com.snackgame.server.auth.token.support.TokensResolver;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,11 +20,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     private static final String HOST_NAME = "snackga.me";
 
+    private final TokensResolver tokensResolver;
     private final JwtMemberArgumentResolver jwtMemberArgumentResolver;
     private final SocialMemberSavingArgumentResolver socialMemberSavingArgumentResolver;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(tokensResolver);
         resolvers.add(jwtMemberArgumentResolver);
         resolvers.add(socialMemberSavingArgumentResolver);
     }

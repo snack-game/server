@@ -1,11 +1,8 @@
 package com.snackgame.server.member.controller;
 
-import java.time.Duration;
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.snackgame.server.auth.oauth.support.JustAuthenticated;
 import com.snackgame.server.auth.token.TokenService;
-import com.snackgame.server.auth.token.dto.TokenDto;
+import com.snackgame.server.auth.token.dto.TokensDto;
+import com.snackgame.server.auth.token.support.TokenToCookies;
+import com.snackgame.server.auth.token.support.TokensFromCookie;
 import com.snackgame.server.member.MemberService;
 import com.snackgame.server.member.controller.dto.MemberDetailsWithTokenResponse;
 import com.snackgame.server.member.controller.dto.NameRequest;
@@ -23,36 +22,39 @@ import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.domain.SocialMember;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
 
-    private static final String ACCESS_TOKEN_COOKIE_NAME = "accessToken";
-    private static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
-
-    private final MemberService memberService;
+    private final TokenToCookies tokenToCookies;
     private final TokenService tokenService;
+    private final MemberService memberService;
 
     @Operation(summary = "게스트 토큰 발급", description = "임시 사용자를 생성하고, 토큰을 발급한다")
     @PostMapping("/tokens/guest")
     public ResponseEntity<MemberDetailsWithTokenResponse> issueToken() {
         Member guest = memberService.createGuest();
-        TokenDto token = tokenService.issueFor(guest.getId());
+        TokensDto tokens = tokenService.issueFor(guest.getId());
 
-        return responseWith(token)
-                .body(MemberDetailsWithTokenResponse.of(guest, token.getAccessToken()));
+        return ResponseEntity.ok()
+                .header(SET_COOKIE, tokenToCookies.from(tokens))
+                .body(MemberDetailsWithTokenResponse.of(guest, tokens.getAccessToken()));
     }
 
     @Operation(summary = "일반 사용자 토큰 발급", description = "사용자의 이름으로 토큰을 발급한다")
     @PostMapping("/tokens")
     public ResponseEntity<MemberDetailsWithTokenResponse> issueToken(@RequestBody NameRequest nameRequest) {
         Member member = memberService.getBy(nameRequest.getName());
-        TokenDto token = tokenService.issueFor(member.getId());
+        TokensDto tokens = tokenService.issueFor(member.getId());
 
-        return responseWith(token)
-                .body(MemberDetailsWithTokenResponse.of(member, token.getAccessToken()));
+        return ResponseEntity.ok()
+                .header(SET_COOKIE, tokenToCookies.from(tokens))
+                .body(MemberDetailsWithTokenResponse.of(member, tokens.getAccessToken()));
     }
 
     @Operation(
@@ -62,24 +64,50 @@ public class AuthController {
     )
     @PostMapping("/tokens/social")
     public ResponseEntity<MemberDetailsWithTokenResponse> issueToken(@JustAuthenticated SocialMember socialMember) {
-        TokenDto token = tokenService.issueFor(socialMember.getId());
+        TokensDto tokens = tokenService.issueFor(socialMember.getId());
 
-        return responseWith(token)
-                .body(MemberDetailsWithTokenResponse.of(socialMember, token.getAccessToken()));
+        return ResponseEntity.ok()
+                .header(SET_COOKIE, tokenToCookies.from(tokens))
+                .body(MemberDetailsWithTokenResponse.of(socialMember, tokens.getAccessToken()));
     }
 
     @Operation(
             summary = "토큰 재발급",
             description = "리프레시 토큰으로 토큰을 재발급한다\n\n"
-                          + "**예외 조치 종류**\n\n"
-                          + "`REISSUE`: 액세스 토큰 재발급이 필요하다\n\n"
-                          + "`LOGOUT`: 리프레시 토큰이 만료되어 토큰 재발급이 불가, 로그아웃 해야한다"
+                          + "**각 상황에 대한 응답은 하단 참고**",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "액세스 토큰이 만료되었을 때, 인증이 필요한 API를 호출한 경우",
+                            content = @Content(examples = @ExampleObject(
+                                    "{\n"
+                                    + "  \"action\": \"REISSUE\",\n"
+                                    + "  \"messages\": [\n"
+                                    + "    \"토큰이 만료되었습니다\"\n"
+                                    + "  ]\n"
+                                    + "}"
+                            ))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401 ",
+                            description = "리프레시 토큰도 만료되었을 때, 인증이 필요한 API를 호출한 경우",
+                            content = @Content(examples = @ExampleObject(
+                                    "{\n"
+                                    + "  \"action\": null,\n"
+                                    + "  \"messages\": [\n"
+                                    + "    \"토큰을 읽지 못했습니다\"\n"
+                                    + "  ]\n"
+                                    + "}"
+                            ))
+                    )
+            }
     )
     @PatchMapping("/tokens/me")
-    public ResponseEntity<TokenResponse> reissueToken(@CookieValue(REFRESH_TOKEN_COOKIE_NAME) String refreshToken) {
-        TokenDto reissued = tokenService.reissueFrom(refreshToken);
+    public ResponseEntity<TokenResponse> reissueToken(@TokensFromCookie TokensDto tokens) {
+        TokensDto reissued = tokenService.reissueFrom(tokens.getRefreshToken());
 
-        return responseWith(reissued)
+        return ResponseEntity.ok()
+                .header(SET_COOKIE, tokenToCookies.from(reissued))
                 .body(new TokenResponse(reissued.getAccessToken()));
     }
 
@@ -88,46 +116,11 @@ public class AuthController {
             description = "쿠키에 저장된 토큰을 제거한다"
     )
     @DeleteMapping("/tokens/me")
-    public ResponseEntity<Void> logout(@CookieValue(REFRESH_TOKEN_COOKIE_NAME) String refreshToken) {
+    public ResponseEntity<Void> logout(@TokensFromCookie TokensDto tokens) {
+        tokenService.delete(tokens.getRefreshToken());
 
-        tokenService.delete(refreshToken);
-
-        return deleteWith();
-    }
-
-    private ResponseEntity.BodyBuilder responseWith(TokenDto token) {
-        return responseEntityBuilder(token.getAccessToken(), token.getRefreshToken(),
-                token.getAccessTokenExpiry(), token.getRefreshTokenExpiry());
-    }
-
-    private ResponseEntity deleteWith() {
-        return responseEntityBuilder(null, null, Duration.ZERO, Duration.ZERO).build();
-    }
-
-    private ResponseEntity.BodyBuilder responseEntityBuilder(
-            String accessToken,
-            String refreshToken,
-            Duration accessAge,
-            Duration refreshAge) {
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE,
-                        ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, refreshToken)
-                                .path("/tokens/me")
-                                .maxAge(refreshAge)
-                                .httpOnly(true)
-                                .sameSite("None")
-                                .secure(true)
-                                .build()
-                                .toString(),
-                        ResponseCookie.from(ACCESS_TOKEN_COOKIE_NAME, accessToken)
-                                .path("/")
-                                .maxAge(accessAge)
-                                .httpOnly(true)
-                                .sameSite("None")
-                                .secure(true)
-                                .build()
-                                .toString()
-                );
+                .header(SET_COOKIE, tokenToCookies.empty())
+                .build();
     }
-
 }

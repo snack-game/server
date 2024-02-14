@@ -59,10 +59,10 @@ jobs:
         run: |
           nohup java -javaagent:dd-java-agent.jar \
           -Dspring.profiles.active=production \
-          -DJWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
-          -DJWT_EXPIRE_LENGTH=${{ secrets.JWT_EXPIRE_LENGTH }} \
-          -DJWT_REFRESH_SECRET_KEY=${{ secrets.JWT_REFRESH_SECRET_KEY }} \
-          -DJWT_REFRESH_EXPIRE_LENGTH=${{ secrets.JWT_REFRESH_EXPIRE_LENGTH }} \
+          -DACCESS_TOKEN_SECRET_KEY=${{ secrets.ACCESS_TOKEN_SECRET_KEY }} \
+          -DACCESS_TOKEN_EXPIRY_DAYS=${{ secrets.ACCESS_TOKEN_EXPIRY_DAYS }} \
+          -DREFRESH_TOKEN_SECRET_KEY=${{ secrets.REFRESH_TOKEN_SECRET_KEY }} \
+          -DREFRESH_TOKEN_EXPIRY_DAYS=${{ secrets.REFRESH_TOKEN_EXPIRY_DAYS }} \
           -Dserver.port=$GREEN_PORT \
           -DPRODUCTION_DB_URL=${{ secrets.PRODUCTION_DB_URL }} \
           -DPRODUCTION_DB_USERNAME=${{ secrets.PRODUCTION_DB_USERNAME }} \

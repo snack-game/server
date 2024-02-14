@@ -25,7 +25,7 @@ class AuthControllerTest {
 
     @Test
     void 토큰을_발급한다() {
-        Cookies cookies = RestAssured.given().log().all()
+        var cookies = RestAssured.given().log().all()
                 .when().post("/tokens/guest")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -36,7 +36,6 @@ class AuthControllerTest {
 
         assertThat(cookies.get("accessToken").getSameSite()).isEqualTo("None");
         assertThat(cookies.get("refreshToken").getSameSite()).isEqualTo("None");
-
     }
 
     @Test
@@ -50,21 +49,21 @@ class AuthControllerTest {
 
     @Test
     void 리프레시_토큰으로_토큰을_재발급한다() throws InterruptedException {
-        Cookie refreshToken = RestAssured.given()
+        var cookies = RestAssured.given()
                 .when().post("/tokens/guest")
-                .then().extract().detailedCookie("refreshToken");
+                .then().extract().detailedCookies();
 
         Thread.sleep(1000);
 
         RestAssured.given().log().all()
-                .cookie(refreshToken)
+                .cookies(cookies)
                 .when().patch("/tokens/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("accessToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
                 .cookie("accessToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
                 .cookie("refreshToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
-                .cookie("refreshToken", not(refreshToken.getValue()));
+                .cookie("refreshToken", not(cookies.getValue("refreshToken")));
     }
 
     @Test

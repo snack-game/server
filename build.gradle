@@ -21,8 +21,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'io.jsonwebtoken:jjwt:0.9.1'
-	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.15'
+	implementation 'io.jsonwebtoken:jjwt:0.12.3'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.7.0'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
 	implementation 'com.github.ben-manes.caffeine:caffeine'

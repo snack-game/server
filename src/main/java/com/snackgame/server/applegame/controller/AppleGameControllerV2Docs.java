@@ -26,8 +26,7 @@ public interface AppleGameControllerV2Docs {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "판이 초기화되지 않은 경우",
-                            content = @Content()
+                            description = "판이 초기화되지 않은 경우"
                     ),
                     @ApiResponse(
                             responseCode = "201",

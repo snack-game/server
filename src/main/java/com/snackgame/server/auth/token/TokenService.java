@@ -1,15 +1,12 @@
 package com.snackgame.server.auth.token;
 
-import java.time.Duration;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.snackgame.server.auth.exception.TokenExpiredException;
 import com.snackgame.server.auth.token.domain.RefreshToken;
 import com.snackgame.server.auth.token.domain.RefreshTokenRepository;
-import com.snackgame.server.auth.token.dto.TokenDto;
+import com.snackgame.server.auth.token.dto.TokensDto;
 import com.snackgame.server.auth.token.util.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
@@ -17,34 +14,25 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TokenService {
-    @Value("${security.jwt.token.refresh-expire-length}")
-    private long refreshTokenExpiry;
-
-    @Value("${security.jwt.token.access-expire-length}")
-    private long accessTokenExpiry;
 
     private final JwtProvider accessTokenProvider;
     private final JwtProvider refreshTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
-    public TokenDto issueFor(Long memberId) {
-        return new TokenDto(
+    public TokensDto issueFor(Long memberId) {
+        return new TokensDto(
                 issueAccessTokenFor(memberId),
-                issueRefreshTokenFor(memberId),
-                Duration.ofSeconds(accessTokenExpiry),
-                Duration.ofSeconds(refreshTokenExpiry)
+                issueRefreshTokenFor(memberId)
         );
     }
 
     @Transactional
-    public TokenDto reissueFrom(String refreshToken) {
+    public TokensDto reissueFrom(String refreshToken) {
         handleExpiration(() -> refreshTokenProvider.validate(refreshToken));
-        return new TokenDto(
+        return new TokensDto(
                 reissueAccessTokenFrom(refreshToken),
-                reissueRefreshTokenFrom(refreshToken),
-                Duration.ofSeconds(accessTokenExpiry),
-                Duration.ofSeconds(refreshTokenExpiry)
+                reissueRefreshTokenFrom(refreshToken)
         );
     }
 
