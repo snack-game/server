@@ -29,10 +29,9 @@ public class AppleGameService {
     }
 
     public Optional<AppleGame> placeMoves(Long memberId, Long sessionId, List<RangeRequest> rangeRequests) {
-        AppleGame game = appleGames.getBy(sessionId);
-        game.validateOwnedBy(memberId);
-
+        AppleGame game = appleGames.getBy(memberId, sessionId);
         Board previous = game.getBoard();
+
         rangeRequests.forEach(request -> game.removeApplesIn(request.toRange()));
 
         if (!game.getBoard().equals(previous)) {
@@ -42,15 +41,13 @@ public class AppleGameService {
     }
 
     public AppleGame restart(Long memberId, Long sessionId) {
-        AppleGame game = appleGames.getBy(sessionId);
-        game.validateOwnedBy(memberId);
+        AppleGame game = appleGames.getBy(memberId, sessionId);
         game.restart();
         return game;
     }
 
     public void finish(Long memberId, Long sessionId) {
-        AppleGame game = appleGames.getBy(sessionId);
-        game.validateOwnedBy(memberId);
+        AppleGame game = appleGames.getBy(memberId, sessionId);
         game.finish();
         eventPublisher.publishEvent(new GameEndEvent(game));
     }

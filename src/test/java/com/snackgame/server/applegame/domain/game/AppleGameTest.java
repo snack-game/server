@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import com.snackgame.server.applegame.domain.Coordinate;
 import com.snackgame.server.applegame.domain.Range;
 import com.snackgame.server.applegame.exception.GameSessionExpiredException;
-import com.snackgame.server.applegame.exception.NotOwnedException;
 import com.snackgame.server.applegame.fixture.TestFixture;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -128,14 +127,6 @@ class AppleGameTest {
         assertThatThrownBy(() -> game.removeApplesIn(range))
                 .isInstanceOf(GameSessionExpiredException.class)
                 .hasMessage("이미 종료된 게임입니다");
-    }
-
-    @Test
-    void 게임의_주인이_아니면_예외를_던진다() {
-        var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 똥수().getId(), LocalDateTime.now().minusSeconds(120));
-
-        assertThatThrownBy(() -> game.validateOwnedBy(땡칠().getId()))
-                .isInstanceOf(NotOwnedException.class);
     }
 
     @Test

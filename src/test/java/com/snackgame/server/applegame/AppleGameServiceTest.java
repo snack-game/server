@@ -14,7 +14,6 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.snackgame.server.support.general.ServiceTest;
 import com.snackgame.server.applegame.controller.dto.CoordinateRequest;
 import com.snackgame.server.applegame.controller.dto.RangeRequest;
 import com.snackgame.server.applegame.domain.game.AppleGame;
@@ -22,6 +21,7 @@ import com.snackgame.server.applegame.domain.game.AppleGames;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.member.MemberService;
 import com.snackgame.server.member.fixture.MemberFixture;
+import com.snackgame.server.support.general.ServiceTest;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -65,7 +65,7 @@ class AppleGameServiceTest {
 
         appleGameService.placeMoves(땡칠().getId(), game.getSessionId(), rangeRequests);
 
-        AppleGame found = appleGames.getBy(game.getSessionId());
+        AppleGame found = appleGames.getBy(땡칠().getId(), game.getSessionId());
         assertThat(found.getScore()).isEqualTo(6);
     }
 
@@ -101,7 +101,7 @@ class AppleGameServiceTest {
 
         appleGameService.restart(땡칠().getId(), previous.getSessionId());
 
-        AppleGame current = appleGames.getBy(previous.getSessionId());
+        AppleGame current = appleGames.getBy(땡칠().getId(), previous.getSessionId());
         assertThat(current.getCreatedAt()).isAfter(previous.getCreatedAt());
         assertThat(current.getBoard())
                 .usingRecursiveComparison()
@@ -113,7 +113,7 @@ class AppleGameServiceTest {
         Long sessionId = appleGameService.startGameFor(땡칠().getId()).getSessionId();
         appleGameService.finish(땡칠().getId(), sessionId);
 
-        AppleGame game = appleGames.getBy(sessionId);
+        AppleGame game = appleGames.getBy(땡칠().getId(), sessionId);
         assertThat(game.isFinished()).isTrue();
     }
 }

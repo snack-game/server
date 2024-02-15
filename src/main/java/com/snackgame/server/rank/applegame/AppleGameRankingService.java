@@ -1,8 +1,5 @@
 package com.snackgame.server.rank.applegame;
 
-import com.snackgame.server.member.domain.AccountType;
-import com.snackgame.server.member.domain.Member;
-import com.snackgame.server.member.domain.MemberRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +11,9 @@ import com.snackgame.server.applegame.domain.game.AppleGame;
 import com.snackgame.server.applegame.domain.game.AppleGames;
 import com.snackgame.server.applegame.event.GameEndEvent;
 import com.snackgame.server.applegame.exception.NoRankingYetException;
+import com.snackgame.server.member.domain.AccountType;
+import com.snackgame.server.member.domain.Member;
+import com.snackgame.server.member.domain.MemberRepository;
 import com.snackgame.server.rank.applegame.controller.dto.RankResponseV2;
 import com.snackgame.server.rank.applegame.controller.dto.RankingResponse;
 import com.snackgame.server.rank.applegame.dao.SessionRankingDao;
@@ -53,13 +53,13 @@ public class AppleGameRankingService {
     public void renewBestScoreWith(GameEndEvent event) {
         AppleGame appleGame = event.getAppleGame();
         Member owner = memberRepository.getById(appleGame.getOwnerId());
-        if(owner.getAccountType() != AccountType.GUEST) {
+        if (owner.getAccountType() != AccountType.GUEST) {
             BestScore bestScore = bestScores.getByOwnerId(appleGame.getOwnerId());
             bestScore.renewWith(appleGame);
         }
     }
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     @Transactional(readOnly = true)
     public List<RankingResponse> getEntireRankings() {
         List<RankingDto> top50Rankings = sessionRankingDao.selectTopsByScoreIn(RANKING_PAGE_SIZE);
@@ -69,7 +69,7 @@ public class AppleGameRankingService {
                 .collect(Collectors.toList());
     }
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     @Transactional(readOnly = true)
     public RankingResponse getBestRankingOf(Long memberId) {
         return sessionRankingDao.selectBestByScoreOf(memberId)
@@ -77,7 +77,7 @@ public class AppleGameRankingService {
                 .orElseThrow(NoRankingYetException::new);
     }
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     private RankingResponse getResponseOf(RankingDto rankingDto) {
         return RankingResponse.of(
                 rankingDto.getRanking(),

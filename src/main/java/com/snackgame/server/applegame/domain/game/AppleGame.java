@@ -14,7 +14,6 @@ import javax.persistence.Lob;
 import com.snackgame.server.applegame.domain.Range;
 import com.snackgame.server.applegame.domain.apple.Apple;
 import com.snackgame.server.applegame.exception.GameSessionExpiredException;
-import com.snackgame.server.applegame.exception.NotOwnedException;
 import com.snackgame.server.common.domain.BaseEntity;
 
 import lombok.AccessLevel;
@@ -51,12 +50,6 @@ public class AppleGame extends BaseEntity {
 
     public static AppleGame ofRandomized(Long ownerId) {
         return new AppleGame(new Board(DEFAULT_HEIGHT, DEFAULT_WIDTH), ownerId);
-    }
-
-    public void validateOwnedBy(Long memberId) {
-        if (!ownerId.equals(memberId)) {
-            throw new NotOwnedException();
-        }
     }
 
     public void restart() {
