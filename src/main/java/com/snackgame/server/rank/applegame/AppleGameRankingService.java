@@ -59,6 +59,7 @@ public class AppleGameRankingService {
         }
     }
 
+    // TODO: Deprecated 된 기존 방식을 개선 정도(MTT) 테스트 후 제거
     @Deprecated(forRemoval = true)
     @Transactional(readOnly = true)
     public List<RankingResponse> getEntireRankings() {
