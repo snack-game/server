@@ -25,9 +25,9 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class AppleGameRankingService {
+public class BestScoreRankingService {
 
-    private static final int RANKING_PAGE_SIZE = 50;
+    private static final int RANK_PAGE_SIZE = 50;
 
     private final SessionRankingDao sessionRankingDao;
     private final AppleGames appleGames;
@@ -36,16 +36,29 @@ public class AppleGameRankingService {
     private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
-    public List<RankResponseV2> rank50ByBestScore() {
-        return bestScores.rank(RANKING_PAGE_SIZE)
+    public List<RankResponseV2> rankLeadingBestScores() {
+        return bestScores.rankLeaders(RANK_PAGE_SIZE)
                 .stream()
                 .map(RankResponseV2::of)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public RankResponseV2 rankByBestScoreOf(Long memberId) {
+    public List<RankResponseV2> rankLeadingBestScoresBy(Long seasonId) {
+        return bestScores.rankLeadersBy(seasonId, RANK_PAGE_SIZE)
+                .stream()
+                .map(RankResponseV2::of)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public RankResponseV2 rankBestScoreOf(Long memberId) {
         return RankResponseV2.of(bestScores.rank(memberId));
+    }
+
+    @Transactional(readOnly = true)
+    public RankResponseV2 rankBestScoreOf(Long memberId, Long seasonId) {
+        return RankResponseV2.of(bestScores.rank(memberId, seasonId));
     }
 
     @EventListener
@@ -63,7 +76,7 @@ public class AppleGameRankingService {
     @Deprecated(forRemoval = true)
     @Transactional(readOnly = true)
     public List<RankingResponse> getEntireRankings() {
-        List<RankingDto> top50Rankings = sessionRankingDao.selectTopsByScoreIn(RANKING_PAGE_SIZE);
+        List<RankingDto> top50Rankings = sessionRankingDao.selectTopsByScoreIn(RANK_PAGE_SIZE);
 
         return top50Rankings.stream()
                 .map(this::getResponseOf)

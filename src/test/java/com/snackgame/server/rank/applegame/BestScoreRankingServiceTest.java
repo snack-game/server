@@ -32,12 +32,12 @@ import com.snackgame.server.support.general.ServiceTest;
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @ServiceTest
-class AppleGameRankingServiceTest {
+class BestScoreRankingServiceTest {
 
     @Autowired
     AppleGames appleGames;
     @Autowired
-    private AppleGameRankingService appleGameRankingService;
+    private BestScoreRankingService bestScoreRankingService;
 
     @Autowired
     private MemberService memberService;
@@ -52,25 +52,25 @@ class AppleGameRankingServiceTest {
     ) throws InterruptedException {
         MemberFixture.persistAllUsing(entityManagerFactory);
 
-        appleGameRankingService.renewBestScoreWith(new GameEndEvent(
+        bestScoreRankingService.renewBestScoreWith(new GameEndEvent(
                 playGame(땡칠().getId(), new Range(
                         new Coordinate(0, 1),
                         new Coordinate(1, 3)
                 ))
         ));
-        appleGameRankingService.renewBestScoreWith(new GameEndEvent(
+        bestScoreRankingService.renewBestScoreWith(new GameEndEvent(
                 playGame(땡칠().getId(), new Range(
                         new Coordinate(0, 0),
                         new Coordinate(1, 0)
                 ))
         ));
-        appleGameRankingService.renewBestScoreWith(new GameEndEvent(
+        bestScoreRankingService.renewBestScoreWith(new GameEndEvent(
                 playGame(똥수().getId(), new Range(
                         new Coordinate(0, 0),
                         new Coordinate(1, 0)
                 ))
         ));
-        appleGameRankingService.renewBestScoreWith(new GameEndEvent(
+        bestScoreRankingService.renewBestScoreWith(new GameEndEvent(
                 playGame(땡칠2().getId())
         ));
         // 최고 점수 기록 함수는 각각의 쓰레드와 트랜잭션으로 실행될 수 있다.
@@ -81,7 +81,7 @@ class AppleGameRankingServiceTest {
 
     @Test
     void 전체_랭킹을_가져온다() {
-        assertThat(appleGameRankingService.rank50ByBestScore())
+        assertThat(bestScoreRankingService.rankLeadingBestScores())
                 .extracting("rank", "score")
                 .containsExactly(
                         tuple(1L, 4),
@@ -92,14 +92,14 @@ class AppleGameRankingServiceTest {
 
     @Test
     void 자신의_최대_랭킹을_가져온다() {
-        assertThat(appleGameRankingService.rankByBestScoreOf(땡칠().getId()))
+        assertThat(bestScoreRankingService.rankBestScoreOf(땡칠().getId()))
                 .extracting("score")
                 .isEqualTo(4);
     }
 
     @Test
     void 전체에서_자신의_최고점수를_랭크한다() {
-        assertThat(appleGameRankingService.rankByBestScoreOf(똥수().getId()))
+        assertThat(bestScoreRankingService.rankBestScoreOf(똥수().getId()))
                 .extracting("rank")
                 .isEqualTo(2L);
     }
@@ -107,7 +107,7 @@ class AppleGameRankingServiceTest {
     @Test
     void 게스트_점수는_랭크에_기록되지_않는다() {
         Member guest = memberService.createGuest();
-        appleGameRankingService.renewBestScoreWith(new GameEndEvent(
+        bestScoreRankingService.renewBestScoreWith(new GameEndEvent(
                 playGame(guest.getId(), new Range(
                         new Coordinate(0, 0),
                         new Coordinate(1, 0)

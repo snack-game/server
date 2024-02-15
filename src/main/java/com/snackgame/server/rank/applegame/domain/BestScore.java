@@ -4,14 +4,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import com.snackgame.server.applegame.domain.game.AppleGame;
 
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString
 @Entity
 public class BestScore {
 
@@ -21,9 +24,9 @@ public class BestScore {
     private int score = 0;
     private Long ownerId = null;
     private Long sessionId = null;
-
-    public BestScore() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "season_id")
+    private Season season;
 
     public BestScore(Long ownerId) {
         this.ownerId = ownerId;

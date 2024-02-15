@@ -17,8 +17,6 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.snackgame.server.member.fixture.MemberFixture;
 import com.snackgame.server.support.general.DatabaseCleaningDataJpaTest;
@@ -45,7 +43,7 @@ class BestScoresTest {
 
     @Test
     void 높은_점수_순으로_50개의_랭킹을_찾아온다() {
-        assertThat(bestScores.rank(50))
+        assertThat(bestScores.rankLeaders(50))
                 .extracting("ownerName")
                 .containsExactly(
                         똥수().getNameAsString(),
@@ -58,7 +56,7 @@ class BestScoresTest {
 
     @Test
     void 점수가_같으면_같은_순위로_가져온다() {
-        var ranks = bestScores.rank(50);
+        var ranks = bestScores.rankLeaders(50);
 
         assertThat(ranks.get(0).getRank()).isEqualTo(ranks.get(1).getRank());
         assertThat(ranks.get(2).getRank()).isEqualTo(ranks.get(3).getRank());
@@ -66,7 +64,7 @@ class BestScoresTest {
 
     @Test
     void 공동3등_2명_다음은_5등이다() {
-        assertThat(bestScores.rank(50))
+        assertThat(bestScores.rankLeaders(50))
                 .extracting("rank", "score")
                 .containsSubsequence(
                         tuple(3L, 8),
