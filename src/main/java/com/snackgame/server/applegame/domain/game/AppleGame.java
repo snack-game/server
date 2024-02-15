@@ -2,6 +2,7 @@ package com.snackgame.server.applegame.domain.game;
 
 import static java.time.LocalDateTime.now;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,16 +18,18 @@ import com.snackgame.server.applegame.exception.GameSessionExpiredException;
 import com.snackgame.server.common.domain.BaseEntity;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@Entity
 public class AppleGame extends BaseEntity {
 
     public static final int DEFAULT_HEIGHT = 10;
     public static final int DEFAULT_WIDTH = 12;
-    private static final int SESSION_SECONDS = 120;
-    private static final int SPARE_SECONDS = 5;
+    private static final Duration SESSION_TIME = Duration.ofSeconds(120);
+    private static final Duration SPARE_TIME = Duration.ofSeconds(5);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,33 +76,17 @@ public class AppleGame extends BaseEntity {
         this.isFinished = true;
     }
 
-    public boolean isFinished() {
-        return isFinished || now().isAfter(createdAt.plusSeconds(SESSION_SECONDS).plusSeconds(SPARE_SECONDS));
-    }
-
     private void validateOngoing() {
         if (this.isFinished()) {
             throw new GameSessionExpiredException("이미 종료된 게임입니다");
         }
     }
 
-    public Long getSessionId() {
-        return sessionId;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
+    public boolean isFinished() {
+        return isFinished || now().isAfter(createdAt.plus(SESSION_TIME).plus(SPARE_TIME));
     }
 
     public List<List<Apple>> getApples() {
         return board.getApples();
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public Board getBoard() {
-        return board;
     }
 }
