@@ -6,8 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.EntityManagerFactory;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -36,8 +34,8 @@ class AppleGameServiceTest {
     AppleGames appleGames;
 
     @BeforeEach
-    void setUp(@Autowired EntityManagerFactory entityManagerFactory) {
-        MemberFixture.persistAllUsing(entityManagerFactory);
+    void setUp() {
+        MemberFixture.saveAll();
     }
 
     @Test

@@ -30,8 +30,8 @@ class BestScoresTest {
     private BestScores bestScores;
 
     @BeforeEach
-    void setUp(@Autowired EntityManagerFactory entityManagerFactory) {
-        MemberFixture.persistAllUsing(entityManagerFactory);
+    void setUp() {
+        MemberFixture.saveAll();
         bestScores.saveAll(List.of(
                 new BestScore(10, 똥수().getId(), 1L),
                 new BestScore(10, 땡칠().getId(), 2L),

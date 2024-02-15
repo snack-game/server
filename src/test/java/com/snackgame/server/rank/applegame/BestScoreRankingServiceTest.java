@@ -8,8 +8,6 @@ import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.persistence.EntityManagerFactory;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -46,11 +44,8 @@ class BestScoreRankingServiceTest {
     private BestScores bestScores;
 
     @BeforeEach
-    void setUp(
-            @Autowired EntityManagerFactory entityManagerFactory,
-            @Autowired ThreadPoolTaskExecutor taskExecutor
-    ) throws InterruptedException {
-        MemberFixture.persistAllUsing(entityManagerFactory);
+    void setUp(@Autowired ThreadPoolTaskExecutor taskExecutor) throws InterruptedException {
+        MemberFixture.saveAll();
 
         bestScoreRankingService.renewBestScoreWith(new GameEndEvent(
                 playGame(땡칠().getId(), new Range(

@@ -27,8 +27,8 @@ class MemberRepositoryTest {
     private MemberRepository memberRepository;
 
     @BeforeEach
-    void setUp(@Autowired EntityManagerFactory entityManagerFactory) {
-        MemberFixture.persistAllUsing(entityManagerFactory);
+    void setUp() {
+        MemberFixture.saveAll();
     }
 
     @Test
