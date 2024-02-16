@@ -1,14 +1,12 @@
 package com.snackgame.server.rank.applegame.dao;
 
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
-import static com.snackgame.server.member.fixture.MemberFixture.땡칠2;
+import static com.snackgame.server.member.fixture.MemberFixture.정환;
 import static com.snackgame.server.member.fixture.MemberFixture.똥수;
-import static com.snackgame.server.member.fixture.MemberFixture.시연;
-import static com.snackgame.server.member.fixture.MemberFixture.주호;
+import static com.snackgame.server.member.fixture.MemberFixture.유진;
+import static com.snackgame.server.member.fixture.MemberFixture.정언;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-
-import javax.persistence.EntityManagerFactory;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -40,12 +38,8 @@ class SessionRankingDaoTest {
     private AppleGame fifth;
 
     @BeforeEach
-    void setUp(
-            @Autowired AppleGames appleGames,
-            @Autowired EntityManagerFactory entityManagerFactory,
-            @Autowired JdbcTemplate jdbcTemplate
-    ) {
-        MemberFixture.persistAllUsing(entityManagerFactory);
+    void setUp(@Autowired AppleGames appleGames, @Autowired JdbcTemplate jdbcTemplate) {
+        MemberFixture.saveAll();
 
         this.sessionRankingDao = new SessionRankingDao(jdbcTemplate);
 
@@ -59,13 +53,13 @@ class SessionRankingDaoTest {
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         ));
-        this.third = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠2().getId()));
+        this.third = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 정환().getId()));
         third.removeApplesIn(new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         ));
-        this.fourth = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 시연().getId()));
-        this.fifth = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 주호().getId()));
+        this.fourth = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 유진().getId()));
+        this.fifth = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 정언().getId()));
 
         first.finish();
         second.finish();
