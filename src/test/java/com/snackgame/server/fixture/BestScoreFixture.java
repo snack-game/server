@@ -23,36 +23,32 @@ public class BestScoreFixture {
         return new BestScore(10, 땡칠().getId(), 베타시즌().getId(), 2L);
     }
 
-    public static BestScore 베타시즌_땡칠_18점() {
-        return new BestScore(18, 땡칠().getId(), 베타시즌().getId(), 3L);
-    }
-
     public static BestScore 베타시즌_정환_8점() {
-        return new BestScore(8, 정환().getId(), 베타시즌().getId(), 4L);
+        return new BestScore(8, 정환().getId(), 베타시즌().getId(), 3L);
     }
 
     public static BestScore 베타시즌_유진_6점() {
-        return new BestScore(6, 유진().getId(), 베타시즌().getId(), 5L);
+        return new BestScore(6, 유진().getId(), 베타시즌().getId(), 4L);
     }
 
     public static BestScore 베타시즌_정언_8점() {
-        return new BestScore(8, 정언().getId(), 베타시즌().getId(), 6L);
+        return new BestScore(8, 정언().getId(), 베타시즌().getId(), 5L);
     }
 
     public static BestScore 시즌1_땡칠_20점() {
-        return new BestScore(20, 땡칠().getId(), 시즌1().getId(), 7L);
+        return new BestScore(20, 땡칠().getId(), 시즌1().getId(), 6L);
     }
 
     public static BestScore 시즌1_정환_20점() {
-        return new BestScore(20, 정환().getId(), 시즌1().getId(), 8L);
+        return new BestScore(20, 정환().getId(), 시즌1().getId(), 7L);
     }
 
     public static BestScore 시즌1_유진_20점() {
-        return new BestScore(20, 유진().getId(), 시즌1().getId(), 9L);
+        return new BestScore(20, 유진().getId(), 시즌1().getId(), 8L);
     }
 
     public static BestScore 시즌1_정언_8점() {
-        return new BestScore(8, 정언().getId(), 시즌1().getId(), 10L);
+        return new BestScore(8, 정언().getId(), 시즌1().getId(), 9L);
     }
 
     public static void saveAll() {
@@ -61,7 +57,6 @@ public class BestScoreFixture {
         FixtureSaver.save(
                 베타시즌_똥수_10점(),
                 베타시즌_땡칠_10점(),
-                베타시즌_땡칠_18점(),
                 베타시즌_정환_8점(),
                 베타시즌_유진_6점(),
                 베타시즌_정언_8점(),
