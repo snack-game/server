@@ -25,35 +25,35 @@ public class AppleGameRankingController {
     private final BestScoreRankingService bestScoreRankingService;
     private final SeasonRepository seasonRepository;
 
-    @Operation(summary = "전체 시즌 최고점수 랭크 조회", description = "전체 시즌에서 최고점수 랭킹을 50등까지 조회한다")
+    @Operation(summary = "전체 시즌 - 선두 랭크 조회", description = "전체 시즌에서 랭킹을 선두 50등까지 조회한다")
     @GetMapping("/rankings")
-    public List<RankResponseV2> showRanksByBestScore(@RequestParam("by") Criteria criteria) {
-        return bestScoreRankingService.rankLeadingBestScores();
+    public List<RankResponseV2> showLeadingRanksBy(@RequestParam("by") Criteria criteria) {
+        return bestScoreRankingService.rankLeaders();
     }
 
-    @Operation(summary = "전체 시즌 자신의 최고점수 랭크 조회", description = "전체 시즌에서 자신의 최고점수 랭킹을 조회한다")
+    @Operation(summary = "전체 시즌 - 자신의 랭크 조회", description = "전체 시즌에서 자신의 랭킹을 조회한다")
     @GetMapping("/rankings/me")
-    public RankResponseV2 showRankByBestScoreOf(@Authenticated Member member, @RequestParam("by") Criteria criteria) {
-        return bestScoreRankingService.rankBestScoreOf(member.getId());
+    public RankResponseV2 showRankOf(@Authenticated Member member, @RequestParam("by") Criteria criteria) {
+        return bestScoreRankingService.rank(member.getId());
     }
 
-    @Operation(summary = "최고점수 랭크 조회", description = "특정 시즌에서 최고점수 랭킹을 50등까지 조회한다")
+    @Operation(summary = "선두 랭크 조회", description = "특정 시즌에서 랭킹을 선두 50등까지 조회한다")
     @GetMapping("/rankings/{seasonId}")
-    public List<RankResponseV2> showRanksByBestScore(
+    public List<RankResponseV2> showLeadingRanksBy(
             @PathVariable Long seasonId,
             @RequestParam("by") Criteria criteria
     ) {
-        return bestScoreRankingService.rankLeadingBestScoresBy(seasonId);
+        return bestScoreRankingService.rankLeadersBy(seasonId);
     }
 
-    @Operation(summary = "자신의 최고점수 랭크 조회", description = "특정 시즌에서 자신의 최고점수 랭킹을 조회한다")
+    @Operation(summary = "자신의 랭크 조회", description = "특정 시즌에서 자신의 랭킹을 조회한다")
     @GetMapping("/rankings/{seasonId}/me")
-    public RankResponseV2 showRankByBestScoreOf(
+    public RankResponseV2 showRankOf(
             @Authenticated Member member,
             @PathVariable Long seasonId,
             @RequestParam("by") Criteria criteria
     ) {
-        return bestScoreRankingService.rankBestScoreOf(member.getId(), seasonId);
+        return bestScoreRankingService.rank(member.getId(), seasonId);
     }
 
     @Operation(summary = "모든 시즌 조회", description = "지금까지 있었던 모든 시즌들을 조회한다")

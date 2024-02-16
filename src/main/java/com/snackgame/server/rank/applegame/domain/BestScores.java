@@ -53,7 +53,7 @@ public interface BestScores extends JpaRepository<BestScore, Long> {
             value = "WITH best AS (select rank() over (order by score desc) as `rank`, score, owner_id "
                     + "                                 from best_score best "
                     + "                                 where score >= ("
-                    + "                                     select score from best_score where owner_id = :ownerId"
+                    + "                                     select score from best_score where owner_id = :ownerId order by score desc limit 1"
                     + "                                 )) "
                     + "                    select best.rank, best.score, "
                     + "                           m.id as owner_id, m.name as owner_name, mg.id as owner_group_id, mg.name as owner_group_name "
@@ -80,10 +80,12 @@ public interface BestScores extends JpaRepository<BestScore, Long> {
     )
     Optional<BestScoreWithRankAndOwner> findRankOf(Long ownerId, Long seasonId);
 
-    default BestScore getByOwnerId(Long ownerId) {
-        return findByOwnerId(ownerId)
-                .orElseGet(() -> save(new BestScore(ownerId)));
-    }
+    List<BestScore> findAllByOwnerId(Long ownerId);
 
-    Optional<BestScore> findByOwnerId(Long ownerId);
+    Optional<BestScore> findByOwnerIdAndSeasonId(Long ownerId, Long seasonId);
+
+    default BestScore getByOwnerIdAndSeasonId(Long ownerId, Long seasonId) {
+        return findByOwnerIdAndSeasonId(ownerId, seasonId)
+                .orElse(BestScore.EMPTY);
+    }
 }

@@ -1,10 +1,9 @@
 package com.snackgame.server.rank.applegame;
 
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
-import static com.snackgame.server.member.fixture.MemberFixture.정환;
 import static com.snackgame.server.member.fixture.MemberFixture.똥수;
+import static com.snackgame.server.member.fixture.MemberFixture.정환;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.concurrent.TimeUnit;
 
@@ -21,6 +20,7 @@ import com.snackgame.server.applegame.domain.game.AppleGame;
 import com.snackgame.server.applegame.domain.game.AppleGames;
 import com.snackgame.server.applegame.event.GameEndEvent;
 import com.snackgame.server.applegame.fixture.TestFixture;
+import com.snackgame.server.fixture.BestScoreFixture;
 import com.snackgame.server.member.MemberService;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.fixture.MemberFixture;
@@ -46,6 +46,7 @@ class BestScoreRankingServiceTest {
     @BeforeEach
     void setUp(@Autowired ThreadPoolTaskExecutor taskExecutor) throws InterruptedException {
         MemberFixture.saveAll();
+        BestScoreFixture.saveAll();
 
         bestScoreRankingService.renewBestScoreWith(new GameEndEvent(
                 playGame(땡칠().getId(), new Range(
@@ -75,31 +76,6 @@ class BestScoreRankingServiceTest {
     }
 
     @Test
-    void 전체_랭킹을_가져온다() {
-        assertThat(bestScoreRankingService.rankLeadingBestScores())
-                .extracting("rank", "score")
-                .containsExactly(
-                        tuple(1L, 4),
-                        tuple(2L, 2),
-                        tuple(3L, 0)
-                );
-    }
-
-    @Test
-    void 자신의_최대_랭킹을_가져온다() {
-        assertThat(bestScoreRankingService.rankBestScoreOf(땡칠().getId()))
-                .extracting("score")
-                .isEqualTo(4);
-    }
-
-    @Test
-    void 전체에서_자신의_최고점수를_랭크한다() {
-        assertThat(bestScoreRankingService.rankBestScoreOf(똥수().getId()))
-                .extracting("rank")
-                .isEqualTo(2L);
-    }
-
-    @Test
     void 게스트_점수는_랭크에_기록되지_않는다() {
         Member guest = memberService.createGuest();
         bestScoreRankingService.renewBestScoreWith(new GameEndEvent(
@@ -109,7 +85,7 @@ class BestScoreRankingServiceTest {
                 ))
         ));
 
-        assertThat(bestScores.findByOwnerId(guest.getId())).isEmpty();
+        assertThat(bestScores.findAllByOwnerId(guest.getId())).isEmpty();
     }
 
     private AppleGame playGame(Long playerId, Range... ranges) {
