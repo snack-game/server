@@ -20,19 +20,19 @@ public class MemberFixture {
         return new Member(2L, new Name("땡칠"), 우테코());
     }
 
-    public static SocialMember 땡칠2() {
+    public static SocialMember 정환() {
         return SocialMember.from(
-                new Member(3L, new Name("땡칠2"), null),
+                new Member(3L, new Name("정환"), null),
                 "GOOGLE", "user123412341234"
         );
     }
 
-    public static Member 시연() {
-        return new Member(4L, new Name("시연"), 숭실대학교());
+    public static Member 유진() {
+        return new Member(4L, new Name("유진"), 숭실대학교());
     }
 
-    public static Member 주호() {
-        return new Member(5L, new Name("주호"), 숭실대학교());
+    public static Member 정언() {
+        return new Member(5L, new Name("정언"), 숭실대학교());
     }
 
     public static void saveAll() {
@@ -40,9 +40,9 @@ public class MemberFixture {
         FixtureSaver.save(
                 똥수(),
                 땡칠(),
-                땡칠2(),
-                시연(),
-                주호()
+                정환(),
+                유진(),
+                정언()
         );
     }
 }

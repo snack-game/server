@@ -1,7 +1,7 @@
 package com.snackgame.server.rank.applegame;
 
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
-import static com.snackgame.server.member.fixture.MemberFixture.땡칠2;
+import static com.snackgame.server.member.fixture.MemberFixture.정환;
 import static com.snackgame.server.member.fixture.MemberFixture.똥수;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -66,7 +66,7 @@ class BestScoreRankingServiceTest {
                 ))
         ));
         bestScoreRankingService.renewBestScoreWith(new GameEndEvent(
-                playGame(땡칠2().getId())
+                playGame(정환().getId())
         ));
         // 최고 점수 기록 함수는 각각의 쓰레드와 트랜잭션으로 실행될 수 있다.
         // 따라서 트랜잭션이 끝나기를 기다린 후에 그 결과를 평가해야 한다.

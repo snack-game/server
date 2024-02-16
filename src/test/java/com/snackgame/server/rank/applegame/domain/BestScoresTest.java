@@ -1,16 +1,12 @@
 package com.snackgame.server.rank.applegame.domain;
 
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
-import static com.snackgame.server.member.fixture.MemberFixture.땡칠2;
 import static com.snackgame.server.member.fixture.MemberFixture.똥수;
-import static com.snackgame.server.member.fixture.MemberFixture.시연;
-import static com.snackgame.server.member.fixture.MemberFixture.주호;
+import static com.snackgame.server.member.fixture.MemberFixture.유진;
+import static com.snackgame.server.member.fixture.MemberFixture.정언;
+import static com.snackgame.server.member.fixture.MemberFixture.정환;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-
-import java.util.List;
-
-import javax.persistence.EntityManagerFactory;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -18,7 +14,7 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.snackgame.server.member.fixture.MemberFixture;
+import com.snackgame.server.fixture.BestScoreFixture;
 import com.snackgame.server.support.general.DatabaseCleaningDataJpaTest;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -31,14 +27,7 @@ class BestScoresTest {
 
     @BeforeEach
     void setUp() {
-        MemberFixture.saveAll();
-        bestScores.saveAll(List.of(
-                new BestScore(10, 똥수().getId(), 1L),
-                new BestScore(10, 땡칠().getId(), 2L),
-                new BestScore(8, 땡칠2().getId(), 3L),
-                new BestScore(8, 주호().getId(), 4L),
-                new BestScore(6, 시연().getId(), 5L)
-        ));
+        BestScoreFixture.saveAll();
     }
 
     @Test
@@ -48,9 +37,9 @@ class BestScoresTest {
                 .containsExactly(
                         똥수().getNameAsString(),
                         땡칠().getNameAsString(),
-                        땡칠2().getNameAsString(),
-                        주호().getNameAsString(),
-                        시연().getNameAsString()
+                        정환().getNameAsString(),
+                        정언().getNameAsString(),
+                        유진().getNameAsString()
                 );
     }
 

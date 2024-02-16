@@ -4,8 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import com.snackgame.server.applegame.domain.game.AppleGame;
 
@@ -24,18 +22,17 @@ public class BestScore {
     private int score = 0;
     private Long ownerId = null;
     private Long sessionId = null;
-    @ManyToOne
-    @JoinColumn(name = "season_id")
-    private Season season;
+    private Long seasonId;
 
     public BestScore(Long ownerId) {
         this.ownerId = ownerId;
     }
 
-    public BestScore(int score, Long ownerId, Long sessionId) {
+    public BestScore(int score, Long ownerId, Long sessionId, Long seasonId) {
         this.score = score;
         this.ownerId = ownerId;
         this.sessionId = sessionId;
+        this.seasonId = seasonId;
     }
 
     public void renewWith(AppleGame appleGame) {
