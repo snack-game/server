@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(uniqueConstraints = @UniqueConstraint(
-        name = "unique_best_score_in_a_season",
         columnNames = {"season_id", "owner_id"}
 ))
 @Entity
@@ -29,9 +28,9 @@ public class BestScore {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int score = 0;
-    @Column(name = "owner_id", nullable = false)
+    @Column(nullable = false)
     private Long ownerId;
-    @Column(name = "season_id", nullable = false)
+    @Column(nullable = false)
     private Long seasonId;
     private Long sessionId = null;
 
