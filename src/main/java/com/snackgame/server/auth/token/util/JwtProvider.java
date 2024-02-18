@@ -5,6 +5,8 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
 
+import javax.crypto.SecretKey;
+
 import com.snackgame.server.auth.exception.TokenExpiredException;
 import com.snackgame.server.auth.exception.TokenInvalidException;
 import com.snackgame.server.auth.exception.TokenUnresolvableException;
@@ -18,7 +20,7 @@ import io.jsonwebtoken.security.Keys;
 public class JwtProvider {
 
     private final String canonicalName;
-    private final KeyLocator secretKey;
+    private final SecretKey key;
     private final Duration expiry;
 
     public JwtProvider(
@@ -27,9 +29,7 @@ public class JwtProvider {
             Duration expiry
     ) {
         this.canonicalName = canonicalName;
-        this.secretKey = new KeyLocator(Keys.hmacShaKeyFor(
-                Base64.getEncoder().encode(secretKey.getBytes())
-        ));
+        this.key = Keys.hmacShaKeyFor(Base64.getEncoder().encode(secretKey.getBytes()));
         this.expiry = expiry;
     }
 
@@ -41,12 +41,12 @@ public class JwtProvider {
                 .subject(payload)
                 .issuedAt(now)
                 .expiration(expiration)
-                .signWith(secretKey.getKey())
+                .signWith(key)
                 .compact();
     }
 
     public String getSubjectFrom(String token) {
-        JwtParser jwtParser = Jwts.parser().keyLocator(secretKey).build();
+        JwtParser jwtParser = Jwts.parser().verifyWith(key).build();
 
         return jwtParser.parseSignedClaims(token)
                 .getPayload()
@@ -56,7 +56,7 @@ public class JwtProvider {
     public void validate(String token) {
         try {
             validateHas(token);
-            String subject = Jwts.parser().keyLocator(secretKey).build()
+            String subject = Jwts.parser().verifyWith(key).build()
                     .parseSignedClaims(token)
                     .getPayload()
                     .getSubject();
