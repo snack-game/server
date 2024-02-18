@@ -27,8 +27,9 @@ public class AppleGameBestScoreTransfer implements BestScoreTransfer {
         BestScore victimBestScore = bestScores.getByOwnerIdAndSeasonId(victimMemberId, season.getId());
         BestScore currentBestScore = bestScores.getByOwnerIdAndSeasonId(currentMemberId, season.getId());
 
-        if (victimBestScore != BestScore.EMPTY && currentBestScore.beats(victimBestScore)) {
+        if (victimBestScore != BestScore.EMPTY && victimBestScore.beats(currentBestScore)) {
             victimBestScore.transferTo(currentBestScore.getOwnerId());
+            bestScores.delete(currentBestScore);
         }
     }
 }
