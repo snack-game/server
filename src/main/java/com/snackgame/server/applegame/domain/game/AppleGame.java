@@ -37,7 +37,7 @@ public class AppleGame extends BaseEntity {
     private Long ownerId;
     @Lob
     private Board board;
-    private int score = 0;
+    private double score = 0;
     private boolean isFinished = false;
 
     public AppleGame(Board board, Long ownerId) {

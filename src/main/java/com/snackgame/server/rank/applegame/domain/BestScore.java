@@ -28,7 +28,7 @@ public class BestScore {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int score = 0;
+    private double score = 0;
     @Column(name = "owner_id", nullable = false)
     private Long ownerId;
     @Column(name = "season_id", nullable = false)

@@ -10,10 +10,16 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.snackgame.server.applegame.domain.Coordinate;
+import com.snackgame.server.applegame.domain.Range;
+import com.snackgame.server.applegame.domain.game.AppleGame;
+import com.snackgame.server.applegame.event.GameEndEvent;
+import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.member.domain.Guest;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.domain.MemberRepository;
 import com.snackgame.server.member.domain.Name;
+import com.snackgame.server.member.domain.Status;
 import com.snackgame.server.member.exception.DuplicateNameException;
 import com.snackgame.server.member.exception.MemberNotFoundException;
 import com.snackgame.server.support.general.ServiceTest;
@@ -62,7 +68,7 @@ class MemberServiceTest {
 
     @Test
     void 임시사용자_이름이_중복이면_다시_만든다() {
-        Guest existing = memberRepository.save(new Guest(new Name("게스트#abc")));
+        Guest existing = memberRepository.save(new Guest(new Name("게스트#abc"), new Status()));
 
         Member guest = memberService.createGuest();
 
@@ -140,5 +146,22 @@ class MemberServiceTest {
 
         assertThat(memberService.findNamesStartWith("땡칠"))
                 .contains(fullName, shortName);
+    }
+
+    @Test
+    void 점수를_얻으면_그만큼의_경험치를_얻는다() {
+        Member 정환 = memberService.createWith("정환");
+        var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 정환.getId());
+        var range = new Range(
+                new Coordinate(0, 1),
+                new Coordinate(1, 3)
+        );
+        game.removeApplesIn(range);
+
+        memberService.changeStatusOf(new GameEndEvent(game));
+
+        var found = memberRepository.getById(정환.getId());
+        assertThat(found.getStatus().getLevel()).isEqualTo(0);
+
     }
 }

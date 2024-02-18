@@ -21,6 +21,7 @@ public class SnackgameSocialMemberSaver implements SocialMemberSaver<SocialMembe
         SocialMember member = members.findByProviderAndProvidedId(attributes.getProvider(), attributes.getId())
                 .orElseGet(() -> new SocialMember(
                         distinctNaming.from(new Name(attributes.getName())),
+                        new Status(),
                         attributes.getProvider(),
                         attributes.getId()
                 ));

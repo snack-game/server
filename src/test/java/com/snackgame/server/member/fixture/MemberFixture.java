@@ -7,32 +7,33 @@ import static com.snackgame.server.member.fixture.GroupFixture.홍천고등학�
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.domain.Name;
 import com.snackgame.server.member.domain.SocialMember;
+import com.snackgame.server.member.domain.Status;
 import com.snackgame.server.support.fixture.FixtureSaver;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class MemberFixture {
 
     public static Member 똥수() {
-        return new Member(1L, new Name("똥수"), 홍천고등학교());
+        return new Member(1L, new Name("똥수"), new Status(), 홍천고등학교());
     }
 
     public static Member 땡칠() {
-        return new Member(2L, new Name("땡칠"), 우테코());
+        return new Member(2L, new Name("땡칠"), new Status(), 우테코());
     }
 
     public static SocialMember 정환() {
         return SocialMember.from(
-                new Member(3L, new Name("정환"), null),
+                new Member(3L, new Name("정환"), new Status(), null),
                 "GOOGLE", "user123412341234"
         );
     }
 
     public static Member 유진() {
-        return new Member(4L, new Name("유진"), 숭실대학교());
+        return new Member(4L, new Name("유진"), new Status(), 숭실대학교());
     }
 
     public static Member 정언() {
-        return new Member(5L, new Name("정언"), 숭실대학교());
+        return new Member(5L, new Name("정언"), new Status(), 숭실대학교());
     }
 
     public static void saveAll() {

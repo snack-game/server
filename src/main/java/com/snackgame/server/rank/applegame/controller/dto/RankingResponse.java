@@ -13,7 +13,7 @@ public class RankingResponse {
 
     private final int ranking;
     private final Long ownerId;
-    private final int score;
+    private final double score;
 
     public static RankingResponse of(int ranking, AppleGame appleGame) {
         return new RankingResponse(
