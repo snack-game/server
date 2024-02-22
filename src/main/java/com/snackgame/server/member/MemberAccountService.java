@@ -15,13 +15,14 @@ import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.domain.MemberRepository;
 import com.snackgame.server.member.domain.Name;
 import com.snackgame.server.member.domain.SocialMember;
+import com.snackgame.server.member.domain.Status;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class MemberService {
+public class MemberAccountService {
 
     private final MemberRepository members;
     private final GroupService groupService;
@@ -38,7 +39,7 @@ public class MemberService {
         Name newName = new Name(name);
         distinctNaming.validate(newName);
 
-        Member newMember = new Member(newName);
+        Member newMember = new Member(newName, new Status());
         if (Objects.nonNull(groupName)) {
             newMember.changeGroupTo(groupService.createIfNotExists(groupName));
         }
@@ -47,7 +48,7 @@ public class MemberService {
 
     @Transactional
     public Member createGuest() {
-        Guest guest = new Guest(distinctNaming.ofGuest());
+        Guest guest = new Guest(distinctNaming.ofGuest(), new Status());
         return members.save(guest);
     }
 

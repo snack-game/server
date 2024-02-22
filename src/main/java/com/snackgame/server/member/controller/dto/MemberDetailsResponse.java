@@ -14,6 +14,7 @@ public class MemberDetailsResponse {
     private final Long id;
     @Schema(example = "닉네임")
     private final String name;
+    private final StatusResponse status;
     @Schema(example = "SOCIAL", allowableValues = {"SELF", "GUEST", "SOCIAL"})
     private final String type;
     private final GroupResponse group;
@@ -22,6 +23,7 @@ public class MemberDetailsResponse {
         return new MemberDetailsResponse(
                 member.getId(),
                 member.getNameAsString(),
+                StatusResponse.of(member.getStatus()),
                 member.getAccountType().name(),
                 GroupResponse.of(member.getGroup())
         );

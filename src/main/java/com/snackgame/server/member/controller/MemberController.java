@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.snackgame.server.auth.oauth.support.JustAuthenticated;
 import com.snackgame.server.auth.token.support.Authenticated;
 import com.snackgame.server.auth.token.util.JwtProvider;
-import com.snackgame.server.member.MemberService;
+import com.snackgame.server.member.MemberAccountService;
 import com.snackgame.server.member.controller.dto.GroupRequest;
 import com.snackgame.server.member.controller.dto.MemberDetailsResponse;
 import com.snackgame.server.member.controller.dto.MemberDetailsWithTokenResponse;
@@ -30,13 +30,13 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class MemberController {
 
-    private final MemberService memberService;
+    private final MemberAccountService memberAccountService;
     private final JwtProvider accessTokenProvider;
 
     @Operation(summary = "일반 사용자 생성", description = "이름, 그룹으로 사용자를 생성한다")
     @PostMapping("/members")
     public MemberDetailsWithTokenResponse addMember(@Valid @RequestBody MemberRequest memberRequest) {
-        Member added = memberService.createWith(memberRequest.getName(), memberRequest.getGroup());
+        Member added = memberAccountService.createWith(memberRequest.getName(), memberRequest.getGroup());
         String accessToken = accessTokenProvider.createTokenWith(added.getId().toString());
         return MemberDetailsWithTokenResponse.of(added, accessToken);
     }
@@ -44,7 +44,7 @@ public class MemberController {
     @Operation(summary = "모든 이름 검색", description = "인자로 시작하는 모든 사용자 이름을 가져온다")
     @GetMapping("/members/names")
     public List<String> showNamesStartWith(@RequestParam("startWith") String prefix) {
-        return memberService.findNamesStartWith(prefix);
+        return memberAccountService.findNamesStartWith(prefix);
     }
 
     @Operation(summary = "나의 정보", description = "현재 사용자의 정보를 받아온다")
@@ -56,13 +56,13 @@ public class MemberController {
     @Operation(summary = "나의 그룹 지정", description = "현재 사용자의 그룹을 지정한다")
     @PutMapping("/members/me/group")
     public void changeGroup(@Authenticated Member member, @RequestBody GroupRequest groupRequest) {
-        memberService.changeGroupNameOf(member.getId(), groupRequest.getGroup());
+        memberAccountService.changeGroupNameOf(member.getId(), groupRequest.getGroup());
     }
 
     @Operation(summary = "나의 이름 변경", description = "현재 사용자의 이름을 변경한다")
     @PutMapping("/members/me/name")
     public void changeName(@Authenticated Member member, @RequestBody NameRequest nameRequest) {
-        memberService.changeNameOf(member.getId(), nameRequest.getName());
+        memberAccountService.changeNameOf(member.getId(), nameRequest.getName());
     }
 
     @Operation(
@@ -75,7 +75,7 @@ public class MemberController {
             @Authenticated Member victim,
             @JustAuthenticated SocialMember socialMember
     ) {
-        Member integrated = memberService.integrate(victim, socialMember);
+        Member integrated = memberAccountService.integrate(victim, socialMember);
         String token = accessTokenProvider.createTokenWith(integrated.getId().toString());
         return MemberDetailsWithTokenResponse.of(integrated, token);
     }

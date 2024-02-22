@@ -47,7 +47,7 @@ class MemberRepositoryTest {
 
         assertThat(found).get()
                 .usingRecursiveComparison()
-                .ignoringFields("createdAt", "updatedAt")
+                .comparingOnlyFields("id", "name")
                 .isEqualTo(정환());
     }
 

@@ -16,21 +16,21 @@ public class SocialMember extends Member {
     private String provider;
     private String providedId;
 
-    public SocialMember(Name name, String provider, String providedId) {
-        super(name);
+    public SocialMember(Name name, Status status, String provider, String providedId) {
+        super(name, status);
         this.provider = provider;
         this.providedId = providedId;
     }
 
-    private SocialMember(Long id, Name name, Group group, String provider, String providedId) {
-        super(id, name, group);
+    private SocialMember(Long id, Name name, Status status, Group group, String provider, String providedId) {
+        super(id, name, status, group);
         this.provider = provider;
         this.providedId = providedId;
     }
 
     public static SocialMember from(Member member, String provider, String providedId) {
         return new SocialMember(
-                member.getId(), member.getName(), member.getGroup(),
+                member.getId(), member.getName(), member.getStatus(), member.getGroup(),
                 provider,
                 providedId
         );

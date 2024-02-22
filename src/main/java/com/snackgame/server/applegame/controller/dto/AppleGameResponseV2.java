@@ -12,7 +12,7 @@ import lombok.Getter;
 public class AppleGameResponseV2 {
 
     private final Long sessionId;
-    private final Integer score;
+    private final int score;
     private final List<List<AppleResponse>> apples;
 
     public static AppleGameResponseV2 of(AppleGame appleGame) {
