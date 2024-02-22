@@ -14,7 +14,7 @@ import com.snackgame.server.auth.token.TokenService;
 import com.snackgame.server.auth.token.dto.TokensDto;
 import com.snackgame.server.auth.token.support.TokenToCookies;
 import com.snackgame.server.auth.token.support.TokensFromCookie;
-import com.snackgame.server.member.MemberService;
+import com.snackgame.server.member.MemberAccountService;
 import com.snackgame.server.member.controller.dto.MemberDetailsWithTokenResponse;
 import com.snackgame.server.member.controller.dto.NameRequest;
 import com.snackgame.server.member.controller.dto.TokenResponse;
@@ -33,12 +33,12 @@ public class AuthController {
 
     private final TokenToCookies tokenToCookies;
     private final TokenService tokenService;
-    private final MemberService memberService;
+    private final MemberAccountService memberAccountService;
 
     @Operation(summary = "게스트 토큰 발급", description = "임시 사용자를 생성하고, 토큰을 발급한다")
     @PostMapping("/tokens/guest")
     public ResponseEntity<MemberDetailsWithTokenResponse> issueToken() {
-        Member guest = memberService.createGuest();
+        Member guest = memberAccountService.createGuest();
         TokensDto tokens = tokenService.issueFor(guest.getId());
 
         return ResponseEntity.ok()
@@ -49,7 +49,7 @@ public class AuthController {
     @Operation(summary = "일반 사용자 토큰 발급", description = "사용자의 이름으로 토큰을 발급한다")
     @PostMapping("/tokens")
     public ResponseEntity<MemberDetailsWithTokenResponse> issueToken(@RequestBody NameRequest nameRequest) {
-        Member member = memberService.getBy(nameRequest.getName());
+        Member member = memberAccountService.getBy(nameRequest.getName());
         TokensDto tokens = tokenService.issueFor(member.getId());
 
         return ResponseEntity.ok()

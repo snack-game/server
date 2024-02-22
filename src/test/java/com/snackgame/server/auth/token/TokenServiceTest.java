@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.snackgame.server.auth.token.domain.RefreshToken;
 import com.snackgame.server.auth.token.domain.RefreshTokenRepository;
-import com.snackgame.server.member.MemberService;
+import com.snackgame.server.member.MemberAccountService;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.support.general.ServiceTest;
 
@@ -19,7 +19,7 @@ import com.snackgame.server.support.general.ServiceTest;
 class TokenServiceTest {
 
     @Autowired
-    private MemberService memberService;
+    private MemberAccountService memberAccountService;
     @Autowired
     private TokenService tokenService;
     @Autowired
@@ -27,7 +27,7 @@ class TokenServiceTest {
 
     @Test
     void 리프레시_토큰_저장_검증() {
-        Member created = memberService.createGuest();
+        Member created = memberAccountService.createGuest();
 
         String refreshToken = tokenService.issueFor(created.getId()).getRefreshToken();
 
@@ -36,7 +36,7 @@ class TokenServiceTest {
 
     @Test
     void 리프레시_토큰_삭제_검증() {
-        Member created = memberService.createGuest();
+        Member created = memberAccountService.createGuest();
         String refreshToken = tokenService.issueFor(created.getId()).getRefreshToken();
 
         tokenService.delete(refreshToken);

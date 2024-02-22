@@ -21,7 +21,7 @@ import com.snackgame.server.applegame.domain.game.AppleGames;
 import com.snackgame.server.applegame.event.GameEndEvent;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.fixture.BestScoreFixture;
-import com.snackgame.server.member.MemberService;
+import com.snackgame.server.member.MemberAccountService;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.fixture.MemberFixture;
 import com.snackgame.server.rank.applegame.domain.BestScores;
@@ -38,7 +38,7 @@ class BestScoreRankingServiceTest {
     private BestScoreRankingService bestScoreRankingService;
 
     @Autowired
-    private MemberService memberService;
+    private MemberAccountService memberAccountService;
 
     @Autowired
     private BestScores bestScores;
@@ -77,7 +77,7 @@ class BestScoreRankingServiceTest {
 
     @Test
     void 게스트_점수는_랭크에_기록되지_않는다() {
-        Member guest = memberService.createGuest();
+        Member guest = memberAccountService.createGuest();
         bestScoreRankingService.renewBestScoreWith(new GameEndEvent(
                 playGame(guest.getId(), new Range(
                         new Coordinate(0, 0),

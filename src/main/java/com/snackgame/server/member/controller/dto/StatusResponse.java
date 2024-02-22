@@ -16,6 +16,6 @@ public class StatusResponse {
     public static StatusResponse of(Status status) {
         return new StatusResponse(
                 status.getLevel(),
-                status.getExp());
+                status.getExp().doubleValue());
     }
 }

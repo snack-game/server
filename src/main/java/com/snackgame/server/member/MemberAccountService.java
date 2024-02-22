@@ -4,12 +4,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.snackgame.server.applegame.domain.game.AppleGame;
-import com.snackgame.server.applegame.event.GameEndEvent;
 import com.snackgame.server.member.domain.AccountTransfer;
 import com.snackgame.server.member.domain.DistinctNaming;
 import com.snackgame.server.member.domain.Group;
@@ -19,18 +16,16 @@ import com.snackgame.server.member.domain.MemberRepository;
 import com.snackgame.server.member.domain.Name;
 import com.snackgame.server.member.domain.SocialMember;
 import com.snackgame.server.member.domain.Status;
-import com.snackgame.server.member.domain.StatusService;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class MemberService {
+public class MemberAccountService {
 
     private final MemberRepository members;
     private final GroupService groupService;
-    private final StatusService statusService;
     private final DistinctNaming distinctNaming;
     private final AccountTransfer accountTransfer;
 
@@ -77,16 +72,6 @@ public class MemberService {
         Member member = members.getById(memberId);
         Group group = groupService.createIfNotExists(groupName);
         member.changeGroupTo(group);
-    }
-
-    @EventListener
-    @Transactional
-    public void changeStatusOf(GameEndEvent event) {
-        AppleGame appleGame = event.getAppleGame();
-        Member owner = members.getById(appleGame.getOwnerId());
-        double score = appleGame.getScore();
-        Status newStatus = statusService.updateStatus(owner.getStatus(), score);
-        owner.changeStatusTo(newStatus);
     }
 
     public Member getBy(Long id) {

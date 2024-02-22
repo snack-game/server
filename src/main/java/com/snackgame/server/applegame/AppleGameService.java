@@ -12,6 +12,8 @@ import com.snackgame.server.applegame.domain.game.AppleGame;
 import com.snackgame.server.applegame.domain.game.AppleGames;
 import com.snackgame.server.applegame.domain.game.Board;
 import com.snackgame.server.applegame.event.GameEndEvent;
+import com.snackgame.server.member.domain.Member;
+import com.snackgame.server.member.domain.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +24,7 @@ public class AppleGameService {
 
     private final AppleGames appleGames;
     private final ApplicationEventPublisher eventPublisher;
+    private final MemberRepository memberRepository;
 
     public AppleGame startGameFor(Long memberId) {
         AppleGame game = AppleGame.ofRandomized(memberId);
@@ -49,6 +52,8 @@ public class AppleGameService {
     public void finish(Long memberId, Long sessionId) {
         AppleGame game = appleGames.getBy(memberId, sessionId);
         game.finish();
+        Member member = memberRepository.getById(memberId);
+        member.getStatus().addExp(game.getScore());// 안전 <-> 변경 용이성
         eventPublisher.publishEvent(new GameEndEvent(game));
     }
 }
