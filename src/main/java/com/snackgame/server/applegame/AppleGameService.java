@@ -53,7 +53,7 @@ public class AppleGameService {
         AppleGame game = appleGames.getBy(memberId, sessionId);
         game.finish();
         Member member = memberRepository.getById(memberId);
-        member.getStatus().addExp(game.getScore());// 안전 <-> 변경 용이성
+        member.getStatus().addExp(game.getScore());
         eventPublisher.publishEvent(new GameEndEvent(game));
     }
 }
