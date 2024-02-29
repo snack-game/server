@@ -94,6 +94,7 @@ jobs:
           done
 
       - name: 리버스 프록시 설정 변경
+        working-directory: ${{ env.JAR_DIRECTORY }}
         shell: bash {0}
         run: |
           echo "proxy_pass http://localhost:$GREEN_PORT;" > port.inc;
