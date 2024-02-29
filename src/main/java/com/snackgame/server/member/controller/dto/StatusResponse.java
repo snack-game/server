@@ -10,12 +10,14 @@ import lombok.RequiredArgsConstructor;
 public class StatusResponse {
 
     private final Long level;
-
     private final Double exp;
+    private final Double maxExp;
 
     public static StatusResponse of(Status status) {
         return new StatusResponse(
                 status.getLevel(),
-                status.getExp().doubleValue());
+                status.getExp().doubleValue(),
+                status.expRequiredForLevel().doubleValue()
+        );
     }
 }

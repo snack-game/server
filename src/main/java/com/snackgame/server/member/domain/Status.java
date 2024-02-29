@@ -16,7 +16,7 @@ public class Status {
     private static final double MULTIPLIER = 1.2;
 
     @Column(name = "level")
-    private long level = 0;
+    private Long level = 0L;
 
     @Column(name = "exp")
     private BigDecimal exp = ZERO;
@@ -24,16 +24,20 @@ public class Status {
     public Status() {
     }
 
+    public Status(Long level) {
+        this.level = level;
+    }
+
     public void addExp(double amount) {
         BigDecimal remainingExp = exp.add(BigDecimal.valueOf(amount));
-        while (remainingExp.compareTo(expRequiredFor(level)) >= 0) {
-            remainingExp = remainingExp.subtract(expRequiredFor(level));
+        while (remainingExp.compareTo(expRequiredForLevel()) >= 0) {
+            remainingExp = remainingExp.subtract(expRequiredForLevel());
             addLevel();
         }
         this.exp = remainingExp;
     }
 
-    private BigDecimal expRequiredFor(Long level) {
+    public BigDecimal expRequiredForLevel() {
         BigDecimal weight = BigDecimal.valueOf(MULTIPLIER).pow(level.intValue());
         return BigDecimal.valueOf(200).multiply(weight);
     }
@@ -41,5 +45,4 @@ public class Status {
     private void addLevel() {
         this.level += 1;
     }
-
 }
