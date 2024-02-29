@@ -3,13 +3,14 @@ package com.snackgame.server.config;
 import java.util.List;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.snackgame.server.auth.token.support.JwtMemberArgumentResolver;
 import com.snackgame.server.auth.oauth.support.SocialMemberSavingArgumentResolver;
+import com.snackgame.server.auth.token.support.JwtMemberArgumentResolver;
 import com.snackgame.server.auth.token.support.TokensResolver;
 
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addRedirectViewController("/", "https://" + HOST_NAME);
+        registry.addStatusController("/", HttpStatus.OK);
     }
 
     @Override
