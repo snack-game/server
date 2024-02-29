@@ -2,27 +2,30 @@ name: Production CD
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ "main" ]
 permissions:
   contents: read
 
 env:
   JAR_NAME: snackgame-server.jar
-  JAR_DIRECTORY: /home/ubuntu/services/snackgame
+  JAR_DIRECTORY: /home/ubuntu/snackgame
 
 jobs:
   deploy:
     runs-on: production
     steps:
-      - uses: actions/checkout@v3
-
-      - name: checkout secrets
-        uses: actions/checkout@v3
+      - name: Get token from Submodule Reader
+        uses: actions/create-github-app-token@v1
+        id: app_token
         with:
-          repository: snack-game/secrets
-          ssh-key: ${{ secrets.SECRETS_REPO_PRIVATE_KEY }}
-          path: src/main/resources/secrets
+          app-id: ${{ secrets.SUBMODULE_APP_ID }}
+          private-key: ${{ secrets.SUBMODULE_APP_PEM }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ steps.app_token.outputs.token }}
 
       - name: Create bootjar
         run: |
@@ -93,7 +96,7 @@ jobs:
       - name: 리버스 프록시 설정 변경
         shell: bash {0}
         run: |
-          echo "proxy_pass http://localhost:$GREEN_PORT;" | sudo tee /etc/nginx/conf.d/snackgame-port.inc;
+          echo "proxy_pass http://localhost:$GREEN_PORT;" > port.inc;
           sudo nginx -s reload;
 
       - name: 블루 어플리케이션 종료
