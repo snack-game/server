@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.12'
 	id 'io.spring.dependency-management' version '1.1.0'
+	id 'org.jetbrains.kotlin.jvm' version '1.9.22'
 }
 
 sourceCompatibility = '11'
@@ -21,6 +22,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
 	implementation 'io.jsonwebtoken:jjwt:0.12.3'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.7.0'
@@ -36,9 +38,20 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.rest-assured:rest-assured'
+	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 	systemProperty("spring.profiles.active", "test")
+}
+compileKotlin {
+	kotlinOptions {
+		jvmTarget = "17"
+	}
+}
+compileTestKotlin {
+	kotlinOptions {
+		jvmTarget = "17"
+	}
 }
