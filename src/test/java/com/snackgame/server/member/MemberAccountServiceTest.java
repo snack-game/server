@@ -63,7 +63,7 @@ class MemberAccountServiceTest {
 
     @Test
     void 임시사용자_이름이_중복이면_다시_만든다() {
-        Guest existing = memberRepository.save(new Guest(new Name("게스트#abc"), new Status()));
+        Guest existing = memberRepository.save(new Guest(new Name("게스트#abc")));
 
         Member guest = memberAccountService.createGuest();
 

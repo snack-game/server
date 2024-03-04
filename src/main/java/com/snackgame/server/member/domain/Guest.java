@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Guest extends Member {
 
-    public Guest(Name name, Status status) {
-        super(name, status);
+    public Guest(Name name) {
+        super(name);
     }
 
     @Override

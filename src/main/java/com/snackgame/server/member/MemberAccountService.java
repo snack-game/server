@@ -39,7 +39,7 @@ public class MemberAccountService {
         Name newName = new Name(name);
         distinctNaming.validate(newName);
 
-        Member newMember = new Member(newName, new Status());
+        Member newMember = new Member(newName);
         if (Objects.nonNull(groupName)) {
             newMember.changeGroupTo(groupService.createIfNotExists(groupName));
         }
@@ -48,7 +48,7 @@ public class MemberAccountService {
 
     @Transactional
     public Member createGuest() {
-        Guest guest = new Guest(distinctNaming.ofGuest(), new Status());
+        Guest guest = new Guest(distinctNaming.ofGuest());
         return members.save(guest);
     }
 

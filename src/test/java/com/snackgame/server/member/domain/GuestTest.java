@@ -15,18 +15,18 @@ class GuestTest {
 
     @Test
     void 게스트는_이름을_변경할_수_없다() {
-        assertThatThrownBy(() -> new Guest(new Name("게스트"), new Status()).changeNameTo(new Name("이름")))
+        assertThatThrownBy(() -> new Guest(new Name("게스트")).changeNameTo(new Name("이름")))
                 .isInstanceOf(GuestRestrictedException.class);
     }
 
     @Test
     void 게스트는_그룹을_변경할_수_없다() {
-        assertThatThrownBy(() -> new Guest(new Name("게스트"), new Status()).changeGroupTo(new Group("그룹")))
+        assertThatThrownBy(() -> new Guest(new Name("게스트")).changeGroupTo(new Group("그룹")))
                 .isInstanceOf(GuestRestrictedException.class);
     }
 
     @Test
     void 게스트의_계정_타입은_GUEST이다() {
-        assertThat(new Guest(new Name("게스트"), new Status()).getAccountType()).isEqualTo(AccountType.GUEST);
+        assertThat(new Guest(new Name("게스트")).getAccountType()).isEqualTo(AccountType.GUEST);
     }
 }

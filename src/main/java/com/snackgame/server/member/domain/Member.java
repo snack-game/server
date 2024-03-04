@@ -16,10 +16,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity
+@Getter
 @Inheritance
 @DiscriminatorColumn(name = "type")
-@Getter
+@Entity
 public class Member extends BaseEntity {
 
     @Id
@@ -30,19 +30,17 @@ public class Member extends BaseEntity {
     @ManyToOne
     private Group group;
     @Embedded
-    private Status status;
+    private final Status status = new Status();
 
     private boolean isValid = true;
 
-    public Member(Name name, Status status) {
+    public Member(Name name) {
         this.name = name;
-        this.status = status;
     }
 
-    public Member(Long id, Name name, Status status, Group group) {
+    public Member(Long id, Name name, Group group) {
         this.id = id;
         this.name = name;
-        this.status = status;
         this.group = group;
     }
 
