@@ -30,6 +30,8 @@ public class Member extends BaseEntity {
     @ManyToOne
     private Group group;
     @Embedded
+    private ProfileImage profileImage = ProfileImage.EMPTY;
+    @Embedded
     private final Status status = new Status();
 
     private boolean isValid = true;
@@ -52,8 +54,8 @@ public class Member extends BaseEntity {
         this.group = group;
     }
 
-    public void changeStatusTo(Status status) {
-        this.status = status;
+    public void changeProfileImageTo(ProfileImage profileImage) {
+        this.profileImage = profileImage;
     }
 
     public void invalidate() {
