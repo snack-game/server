@@ -25,6 +25,7 @@ public class S3Config {
                 .build();
     }
 
+    @Profile("!production")
     @Bean
     public AmazonS3 amazonS3(
             @Value("${cloud.aws.credentials.access-key}")
