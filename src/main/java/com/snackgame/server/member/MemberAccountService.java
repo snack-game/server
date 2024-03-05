@@ -1,12 +1,15 @@
 package com.snackgame.server.member;
 
+import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.snackgame.server.common.file.ResourceResolver;
 import com.snackgame.server.member.domain.AccountTransfer;
 import com.snackgame.server.member.domain.DistinctNaming;
 import com.snackgame.server.member.domain.Group;
@@ -14,8 +17,8 @@ import com.snackgame.server.member.domain.Guest;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.domain.MemberRepository;
 import com.snackgame.server.member.domain.Name;
+import com.snackgame.server.member.domain.ProfileImage;
 import com.snackgame.server.member.domain.SocialMember;
-import com.snackgame.server.member.domain.Status;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +32,8 @@ public class MemberAccountService {
     private final DistinctNaming distinctNaming;
     private final AccountTransfer accountTransfer;
 
+    private final ResourceResolver resourceResolver;
+
     @Transactional
     public Member createWith(String name) {
         return createWith(name, null);
@@ -39,7 +44,7 @@ public class MemberAccountService {
         Name newName = new Name(name);
         distinctNaming.validate(newName);
 
-        Member newMember = new Member(newName, new Status());
+        Member newMember = new Member(newName);
         if (Objects.nonNull(groupName)) {
             newMember.changeGroupTo(groupService.createIfNotExists(groupName));
         }
@@ -48,7 +53,7 @@ public class MemberAccountService {
 
     @Transactional
     public Member createGuest() {
-        Guest guest = new Guest(distinctNaming.ofGuest(), new Status());
+        Guest guest = new Guest(distinctNaming.ofGuest());
         return members.save(guest);
     }
 
@@ -72,6 +77,13 @@ public class MemberAccountService {
         Member member = members.getById(memberId);
         Group group = groupService.createIfNotExists(groupName);
         member.changeGroupTo(group);
+    }
+
+    @Transactional
+    public void changeProfileImageOf(Long memberId, Resource resource) {
+        Member member = members.getById(memberId);
+        URL resolved = resourceResolver.resolve(resource);
+        member.changeProfileImageTo(new ProfileImage(resolved.toString()));
     }
 
     public Member getBy(Long id) {

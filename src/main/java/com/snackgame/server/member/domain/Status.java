@@ -15,10 +15,10 @@ public class Status {
 
     private static final double MULTIPLIER = 1.2;
 
-    @Column(name = "level")
+    @Column(name = "level", nullable = false)
     private Long level = 0L;
 
-    @Column(name = "exp")
+    @Column(name = "exp", nullable = false)
     private BigDecimal exp = ZERO;
 
     public Status() {

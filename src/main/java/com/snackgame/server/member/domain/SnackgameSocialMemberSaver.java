@@ -21,11 +21,11 @@ public class SnackgameSocialMemberSaver implements SocialMemberSaver<SocialMembe
         SocialMember member = members.findByProviderAndProvidedId(attributes.getProvider(), attributes.getId())
                 .orElseGet(() -> new SocialMember(
                         distinctNaming.from(new Name(attributes.getName())),
-                        new Status(),
                         attributes.getProvider(),
                         attributes.getId()
                 ));
-        member.setAdditional(attributes.getEmail(), attributes.getNickname(), attributes.getPictureUrl());
+        member.changeProfileImageTo(new ProfileImage(attributes.getPictureUrl()));
+        member.setAdditional(attributes.getEmail(), attributes.getNickname());
         return members.save(member);
     }
 }

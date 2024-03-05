@@ -14,18 +14,20 @@ public class MemberDetailsResponse {
     private final Long id;
     @Schema(example = "닉네임")
     private final String name;
+    private final GroupResponse group;
+    private final String profileImage;
     private final StatusResponse status;
     @Schema(example = "SOCIAL", allowableValues = {"SELF", "GUEST", "SOCIAL"})
     private final String type;
-    private final GroupResponse group;
 
     public static MemberDetailsResponse of(Member member) {
         return new MemberDetailsResponse(
                 member.getId(),
                 member.getNameAsString(),
+                GroupResponse.of(member.getGroup()),
+                member.getProfileImage().getUrl(),
                 StatusResponse.of(member.getStatus()),
-                member.getAccountType().name(),
-                GroupResponse.of(member.getGroup())
+                member.getAccountType().name()
         );
     }
 }
