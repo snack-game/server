@@ -7,6 +7,7 @@ import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 
+@Profile("production")
 @Component
 open class ExceptionalEventListener(
     @Value("\${spring.profiles.active}")
