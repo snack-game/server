@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.snackgame.server.auth.token.support.Authenticated;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.rank.applegame.BestScoreRankingService;
+import com.snackgame.server.rank.applegame.LegacyBestScoreRankingService;
 import com.snackgame.server.rank.applegame.controller.dto.RankResponseV2;
 import com.snackgame.server.rank.applegame.controller.dto.RankingResponse;
 import com.snackgame.server.rank.applegame.domain.Season;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class AppleGameRankingController {
 
     private final BestScoreRankingService bestScoreRankingService;
+    private final LegacyBestScoreRankingService legacyBestScoreRankingService;
     private final SeasonRepository seasonRepository;
 
     @Operation(summary = "전체 시즌 - 선두 랭크 조회", description = "전체 시즌에서 랭킹을 선두 50등까지 조회한다")
@@ -71,13 +73,13 @@ public class AppleGameRankingController {
     @Operation(summary = "전체 게임 점수 랭킹 조회", description = "게임 점수 기준으로 전체 랭킹을 50등까지 조회한다.")
     @GetMapping("/rankings/all")
     public List<RankingResponse> showRankings() {
-        return bestScoreRankingService.getEntireRankings();
+        return legacyBestScoreRankingService.getEntireRankings();
     }
 
     @Deprecated
     @Operation(summary = "자신의 랭킹 조회", description = "게임 점수 기준으로 전체에서 자신의 랭킹을 조회한다.")
     @GetMapping("/rankings/all/me")
     public RankingResponse showBestRankingOf(@Authenticated Member member) {
-        return bestScoreRankingService.getBestRankingOf(member.getId());
+        return legacyBestScoreRankingService.getBestRankingOf(member.getId());
     }
 }
