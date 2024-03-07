@@ -5,6 +5,7 @@ spring:
     import:
       - classpath:secrets/oauth-secrets.yml
       - classpath:secrets/aws-secrets.yml
+      - classpath:secrets/notification-secrets.yml
   mvc:
     throw-exception-if-no-handler-found: true
   web:

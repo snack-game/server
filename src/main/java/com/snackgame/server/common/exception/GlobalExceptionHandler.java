@@ -3,6 +3,7 @@ package com.snackgame.server.common.exception;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -17,17 +18,26 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.snackgame.server.auth.exception.AuthException;
 import com.snackgame.server.common.exception.dto.ExceptionResponse;
+import com.snackgame.server.common.exception.event.ExceptionalEvent;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@RestControllerAdvice
 @Slf4j
+@RequiredArgsConstructor
+@RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private final ApplicationEventPublisher eventPublisher;
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionResponse handleUnhandled(Exception exception) {
         log.error(exception.getMessage(), exception);
+        eventPublisher.publishEvent(new ExceptionalEvent(
+                exception.getClass().getSimpleName(),
+                exception.getMessage()
+        ));
 
         return ExceptionResponse.withDefaultMessage();
     }
