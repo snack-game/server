@@ -12,6 +12,7 @@ import static com.snackgame.server.fixture.BestScoreFixture.시즌1_정환_20점
 import static com.snackgame.server.fixture.SeasonFixture.시즌1;
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
 import static io.restassured.http.ContentType.JSON;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -96,6 +97,25 @@ class AppleGameRankingControllerTest {
                     .statusCode(HttpStatus.OK.value())
                     .body("rank", is(1))
                     .body("owner.id", is(시즌1_땡칠_20점().getOwnerId().intValue()));
+        }
+
+        @Test
+        void 랭크_조회시_레벨도_조회한다() {
+            var authentication = RestAssured.given()
+                    .contentType(JSON)
+                    .body(new NameRequest(땡칠().getNameAsString()))
+                    .when().post("/tokens")
+                    .then().extract().detailedCookies();
+
+            RestAssured.given()
+                    .cookies(authentication)
+                    .queryParam("by", "BEST_SCORE")
+                    .when().get("/rankings/me")
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .body("rank", is(1))
+                    .body("owner.id", is(땡칠().getId().intValue()))
+                    .body(containsString("level"));
         }
     }
 
