@@ -6,6 +6,7 @@ import static com.snackgame.server.member.fixture.GroupFixture.홍천고등학�
 
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.domain.Name;
+import com.snackgame.server.member.domain.ProfileImage;
 import com.snackgame.server.member.domain.SocialMember;
 import com.snackgame.server.support.fixture.FixtureSaver;
 

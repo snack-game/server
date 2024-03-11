@@ -42,6 +42,11 @@ public class Member extends BaseEntity {
         this.name = name;
     }
 
+    public Member(Name name, ProfileImage profileImage) {
+        this.name = name;
+        this.profileImage = profileImage;
+    }
+
     public Member(Long id, Name name, Group group) {
         this.id = id;
         this.name = name;
