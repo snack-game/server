@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class ProfileImage {
 
     private static final List<String> ALLOWED_SCHEMES = List.of("http", "https");
+    private static final int MAXIMUM_URL_LENGTH = 255;
 
     public static final ProfileImage EMPTY = new ProfileImage(
             "https://snackgame.s3.ap-northeast-2.amazonaws.com/static/logo.png");
@@ -24,7 +25,14 @@ public class ProfileImage {
 
     public ProfileImage(String url) {
         validate(url);
+        validateLengthOf(url);
         this.url = url;
+    }
+
+    private void validateLengthOf(String url) {
+        if (url.length() > MAXIMUM_URL_LENGTH) {
+            throw new InvalidProfileImageException();
+        }
     }
 
     private void validate(String url) {
