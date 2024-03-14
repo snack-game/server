@@ -11,6 +11,8 @@ spring:
   web:
     resources:
       add-mappings: false
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
 springdoc:
   api-docs:
     path: /docs
@@ -19,3 +21,6 @@ springdoc:
   cache:
     disabled: true
   override-with-generic-response: false
+
+server:
+  shutdown: graceful
