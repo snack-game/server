@@ -3,6 +3,7 @@ package com.snackgame.server.history.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.snackgame.server.auth.token.support.Authenticated;
@@ -21,15 +22,21 @@ public class GameHistoryController {
 
     private final GameHistoryDao gameHistoryDao;
 
-    @GetMapping("history/date/me")
-    @Operation(summary = "자신의 게임 전적 조회", description = "최근 7일 동안의 최고 점수를 조회한다.")
-    public List<GameHistoryResponse> showScoresByDate(@Authenticated Member member) {
-        return gameHistoryDao.selectByDate(member.getId());
+    @GetMapping("histories/me")
+    @Operation(summary = "자신의 게임 전적 조회",
+            description = "파라미터로 `DATE`를 넣어주면 최근 7일 동안의 최고 점수를 조회한다."
+                          + "파라미터로 `SESSION`을 넣어주면 최근 25게임의 점수들을 조회한다.")
+
+    public List<GameHistoryResponse> showScoresBySessions(@Authenticated Member member,
+            @RequestParam("by") Criteria criteria) {
+        if (criteria == Criteria.DATE) {
+            return gameHistoryDao.selectByDate(member.getId());
+        }
+        return gameHistoryDao.selectBySession(member.getId(), GAME_RECORD_SIZE);
     }
 
-    @GetMapping("history/session/me")
-    @Operation(summary = "자신의 게임 전적 조회", description = "최근 25게임의 점수들을 조회한다.")
-    public List<GameHistoryResponse> showScoresBySessions(@Authenticated Member member) {
-        return gameHistoryDao.selectBySession(member.getId(), GAME_RECORD_SIZE);
+    private enum Criteria {
+        DATE,
+        SESSION
     }
 }

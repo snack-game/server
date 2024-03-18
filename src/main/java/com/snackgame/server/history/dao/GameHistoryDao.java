@@ -1,7 +1,5 @@
 package com.snackgame.server.history.dao;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,9 +10,6 @@ import com.snackgame.server.history.controller.dto.GameHistoryResponse;
 
 @Component
 public class GameHistoryDao {
-
-    // 이전 날짜 계산
-    private static final LocalDate PREVIOUS_DATE = LocalDate.now().minus(7, ChronoUnit.DAYS);
 
     private static final RowMapper<GameHistoryResponse> GAME_HISTORY_DTO_ROW_MAPPER = ((rs, rowNum) -> new GameHistoryResponse(
             rs.getLong("owner_id"),
