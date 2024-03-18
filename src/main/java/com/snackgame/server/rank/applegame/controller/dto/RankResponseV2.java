@@ -1,8 +1,10 @@
 package com.snackgame.server.rank.applegame.controller.dto;
 
 import com.snackgame.server.member.controller.dto.GroupResponse;
+import com.snackgame.server.member.controller.dto.StatusResponse;
 import com.snackgame.server.rank.applegame.domain.BestScoreWithRankAndOwner;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +13,9 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class RankResponseV2 {
 
+    @Schema(example = "9")
     private final long rank;
+    @Schema(example = "110")
     private final int score;
     private final RankOwnerResponse owner;
 
@@ -22,7 +26,12 @@ public class RankResponseV2 {
                 new RankOwnerResponse(
                         bestScore.getOwnerId(),
                         bestScore.getOwnerName(),
-                        bestScore.getOwnerLevel(),
+                        bestScore.getOwnerProfileImage(),
+                        new StatusResponse(
+                                bestScore.getOwnerLevel(),
+                                null,
+                                null
+                        ),
                         new GroupResponse(
                                 bestScore.getOwnerGroupId(),
                                 bestScore.getOwnerGroupName()
