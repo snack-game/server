@@ -12,8 +12,10 @@ import static com.snackgame.server.fixture.BestScoreFixture.시즌1_정환_20점
 import static com.snackgame.server.fixture.SeasonFixture.시즌1;
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
 import static io.restassured.http.ContentType.JSON;
-import static org.hamcrest.Matchers.containsString;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
+
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -24,9 +26,12 @@ import org.springframework.http.HttpStatus;
 
 import com.snackgame.server.fixture.BestScoreFixture;
 import com.snackgame.server.member.controller.dto.NameRequest;
+import com.snackgame.server.rank.applegame.controller.dto.RankOwnerResponse;
+import com.snackgame.server.rank.applegame.controller.dto.RankResponseV2;
 import com.snackgame.server.support.restassured.RestAssuredTest;
 
 import io.restassured.RestAssured;
+import io.restassured.common.mapper.TypeRef;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -69,6 +74,26 @@ class AppleGameRankingControllerTest {
         }
 
         @Test
+        void 랭크는_멤버_속성도_포함한다() {
+            List<RankResponseV2> rankResponses = RestAssured.given()
+                    .queryParam("by", "BEST_SCORE")
+                    .when().get("/rankings")
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract().as(new TypeRef<>() {
+                    });
+
+            assertThat(rankResponses).first()
+                    .usingRecursiveComparison()
+                    .ignoringFields("owner.status.exp", "owner.status.maxExp")
+                    .isEqualTo(new RankResponseV2(
+                            1,
+                            시즌1_땡칠_20점().getScore(),
+                            RankOwnerResponse.of(땡칠())
+                    ));
+        }
+
+        @Test
         void 공동_1등_세명_다음은_4등이다() {
             RestAssured.given()
                     .queryParam("by", "BEST_SCORE")
@@ -97,25 +122,6 @@ class AppleGameRankingControllerTest {
                     .statusCode(HttpStatus.OK.value())
                     .body("rank", is(1))
                     .body("owner.id", is(시즌1_땡칠_20점().getOwnerId().intValue()));
-        }
-
-        @Test
-        void 랭크_조회시_레벨도_조회한다() {
-            var authentication = RestAssured.given()
-                    .contentType(JSON)
-                    .body(new NameRequest(땡칠().getNameAsString()))
-                    .when().post("/tokens")
-                    .then().extract().detailedCookies();
-
-            RestAssured.given()
-                    .cookies(authentication)
-                    .queryParam("by", "BEST_SCORE")
-                    .when().get("/rankings/me")
-                    .then()
-                    .statusCode(HttpStatus.OK.value())
-                    .body("rank", is(1))
-                    .body("owner.id", is(땡칠().getId().intValue()))
-                    .body(containsString("level"));
         }
     }
 

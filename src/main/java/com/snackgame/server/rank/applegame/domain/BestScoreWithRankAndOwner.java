@@ -17,6 +17,9 @@ public interface BestScoreWithRankAndOwner {
     @Value("#{target.owner_level}")
     Long getOwnerLevel();
 
+    @Value("#{target.owner_profile_image}")
+    String getOwnerProfileImage();
+
     @Value("#{target.owner_group_id}")
     Long getOwnerGroupId();
 
