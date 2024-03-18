@@ -105,6 +105,6 @@ jobs:
         run: |
           PROCESS_ID="$(lsof -i:$BLUE_PORT -t)"
           if [ -n "$PROCESS_ID" ]; then
-            sudo kill -9 $PROCESS_ID
+            sudo kill -15 $PROCESS_ID
             echo "구동중인 애플리케이션을 종료했습니다. (pid : $PROCESS_ID)\n"
           fi
