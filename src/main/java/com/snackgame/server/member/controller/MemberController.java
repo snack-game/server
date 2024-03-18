@@ -25,7 +25,6 @@ import com.snackgame.server.auth.token.support.TokenToCookies;
 import com.snackgame.server.member.MemberAccountService;
 import com.snackgame.server.member.controller.dto.GroupRequest;
 import com.snackgame.server.member.controller.dto.MemberDetailsResponse;
-import com.snackgame.server.member.controller.dto.MemberDetailsWithTokenResponse;
 import com.snackgame.server.member.controller.dto.MemberRequest;
 import com.snackgame.server.member.controller.dto.NameRequest;
 import com.snackgame.server.member.domain.Member;
@@ -44,9 +43,9 @@ public class MemberController {
 
     @Operation(summary = "일반 사용자 생성", description = "이름, 그룹으로 사용자를 생성한다")
     @PostMapping("/members")
-    public MemberDetailsWithTokenResponse addMember(@Valid @RequestBody MemberRequest memberRequest) {
+    public MemberDetailsResponse addMember(@Valid @RequestBody MemberRequest memberRequest) {
         Member added = memberAccountService.createWith(memberRequest.getName(), memberRequest.getGroup());
-        return MemberDetailsWithTokenResponse.of(added, "DEPRECATED");
+        return MemberDetailsResponse.of(added);
     }
 
     @Operation(summary = "모든 이름 검색", description = "인자로 시작하는 모든 사용자 이름을 가져온다")
@@ -63,26 +62,38 @@ public class MemberController {
 
     @Operation(summary = "나의 이름 변경", description = "현재 사용자의 이름을 변경한다")
     @PutMapping("/members/me/name")
-    public void changeName(@Authenticated Member member, @RequestBody NameRequest nameRequest) {
+    public MemberDetailsResponse changeName(
+            @Authenticated Member member,
+            @RequestBody NameRequest nameRequest
+    ) {
         memberAccountService.changeNameOf(member.getId(), nameRequest.getName());
+        return MemberDetailsResponse.of(member);
     }
 
     @Operation(summary = "나의 그룹 지정", description = "현재 사용자의 그룹을 지정한다")
     @PutMapping("/members/me/group")
-    public void changeGroup(@Authenticated Member member, @RequestBody GroupRequest groupRequest) {
+    public MemberDetailsResponse changeGroup(
+            @Authenticated Member member,
+            @RequestBody GroupRequest groupRequest
+    ) {
         memberAccountService.changeGroupNameOf(member.getId(), groupRequest.getGroup());
+        return MemberDetailsResponse.of(member);
     }
 
     @Operation(summary = "나의 프로필 이미지 변경", description = "현재 사용자의 프로필 이미지를 변경한다")
     @PutMapping(value = "/members/me/profile-image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public void changeProfileImage(@Authenticated Member member, @RequestPart MultipartFile profileImage) {
+    public MemberDetailsResponse changeProfileImage(
+            @Authenticated Member member,
+            @RequestPart MultipartFile profileImage
+    ) {
         memberAccountService.changeProfileImageOf(member.getId(), profileImage.getResource());
+        return MemberDetailsResponse.of(member);
     }
 
     @Operation(summary = "현재 계정을 소셜 계정으로 통합",
             description = "현재 사용자를 직전에 로그인한 소셜 계정으로 통합한다")
     @PostMapping("/members/me/integrate")
-    public ResponseEntity<MemberDetailsWithTokenResponse> integrate(
+    public ResponseEntity<MemberDetailsResponse> integrate(
             @Authenticated Member victim,
             @JustAuthenticated SocialMember socialMember
     ) {
@@ -91,6 +102,6 @@ public class MemberController {
 
         return ResponseEntity.ok()
                 .header(SET_COOKIE, tokenToCookies.from(tokens))
-                .body(MemberDetailsWithTokenResponse.of(integrated, "DEPRECATED"));
+                .body(MemberDetailsResponse.of(integrated));
     }
 }
