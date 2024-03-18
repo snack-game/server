@@ -29,7 +29,6 @@ class AuthControllerTest {
                 .when().post("/tokens/guest")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("accessToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
                 .cookie("accessToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
                 .cookie("refreshToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
                 .extract().detailedCookies();
@@ -60,7 +59,6 @@ class AuthControllerTest {
                 .when().patch("/tokens/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("accessToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
                 .cookie("accessToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
                 .cookie("refreshToken", startsWith("eyJhbGciOiJIUzI1NiJ9"))
                 .cookie("refreshToken", not(cookies.getValue("refreshToken")));

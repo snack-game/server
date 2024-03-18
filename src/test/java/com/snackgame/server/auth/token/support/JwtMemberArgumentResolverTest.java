@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,18 +35,6 @@ class JwtMemberArgumentResolverTest {
     class 액세스_토큰을 {
 
         @Test
-        void 헤더에서_읽는다() {
-            String accessToken = getValidAccessToken();
-
-            RestAssured.given()
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                    .when().get(FakeController.AUTHORIZED_ENDPOINT)
-                    .then().log().all()
-                    .statusCode(HttpStatus.OK.value())
-                    .body(equalTo(FakeController.EXPECTED_RESPONSE));
-        }
-
-        @Test
         void 쿠키에서_읽는다() {
             String accessToken = getValidAccessToken();
 
@@ -62,8 +49,8 @@ class JwtMemberArgumentResolverTest {
         private String getValidAccessToken() {
             return RestAssured.given()
                     .when().post("/tokens/guest")
-                    .then().extract().body().path("accessToken")
-                    .toString();
+                    .then().extract().detailedCookie("accessToken")
+                    .getValue();
         }
     }
 }

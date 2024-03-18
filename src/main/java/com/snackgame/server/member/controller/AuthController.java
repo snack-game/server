@@ -15,7 +15,7 @@ import com.snackgame.server.auth.token.dto.TokensDto;
 import com.snackgame.server.auth.token.support.TokenToCookies;
 import com.snackgame.server.auth.token.support.TokensFromCookie;
 import com.snackgame.server.member.MemberAccountService;
-import com.snackgame.server.member.controller.dto.MemberDetailsWithTokenResponse;
+import com.snackgame.server.member.controller.dto.MemberDetailsResponse;
 import com.snackgame.server.member.controller.dto.NameRequest;
 import com.snackgame.server.member.controller.dto.TokenResponse;
 import com.snackgame.server.member.domain.Member;
@@ -37,24 +37,24 @@ public class AuthController {
 
     @Operation(summary = "게스트 토큰 발급", description = "임시 사용자를 생성하고, 토큰을 발급한다")
     @PostMapping("/tokens/guest")
-    public ResponseEntity<MemberDetailsWithTokenResponse> issueToken() {
+    public ResponseEntity<MemberDetailsResponse> issueToken() {
         Member guest = memberAccountService.createGuest();
         TokensDto tokens = tokenService.issueFor(guest.getId());
 
         return ResponseEntity.ok()
                 .header(SET_COOKIE, tokenToCookies.from(tokens))
-                .body(MemberDetailsWithTokenResponse.of(guest, tokens.getAccessToken()));
+                .body(MemberDetailsResponse.of(guest));
     }
 
     @Operation(summary = "일반 사용자 토큰 발급", description = "사용자의 이름으로 토큰을 발급한다")
     @PostMapping("/tokens")
-    public ResponseEntity<MemberDetailsWithTokenResponse> issueToken(@RequestBody NameRequest nameRequest) {
+    public ResponseEntity<MemberDetailsResponse> issueToken(@RequestBody NameRequest nameRequest) {
         Member member = memberAccountService.getBy(nameRequest.getName());
         TokensDto tokens = tokenService.issueFor(member.getId());
 
         return ResponseEntity.ok()
                 .header(SET_COOKIE, tokenToCookies.from(tokens))
-                .body(MemberDetailsWithTokenResponse.of(member, tokens.getAccessToken()));
+                .body(MemberDetailsResponse.of(member));
     }
 
     @Operation(
@@ -63,12 +63,12 @@ public class AuthController {
                           + "로그인 시 사용했던 <b>SESSION ID를 포함</b>해야 한다."
     )
     @PostMapping("/tokens/social")
-    public ResponseEntity<MemberDetailsWithTokenResponse> issueToken(@JustAuthenticated SocialMember socialMember) {
+    public ResponseEntity<MemberDetailsResponse> issueToken(@JustAuthenticated SocialMember socialMember) {
         TokensDto tokens = tokenService.issueFor(socialMember.getId());
 
         return ResponseEntity.ok()
                 .header(SET_COOKIE, tokenToCookies.from(tokens))
-                .body(MemberDetailsWithTokenResponse.of(socialMember, tokens.getAccessToken()));
+                .body(MemberDetailsResponse.of(socialMember));
     }
 
     @Operation(

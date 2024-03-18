@@ -15,6 +15,7 @@ public class MemberDetailsResponse {
     @Schema(example = "닉네임")
     private final String name;
     private final GroupResponse group;
+    @Schema(example = "https://snackgame.s3.ap-northeast-2.amazonaws.com/unhashed/7d9b26272791438b8dc6893a4cbd6f50-77423374")
     private final String profileImage;
     private final StatusResponse status;
     @Schema(example = "SOCIAL", allowableValues = {"SELF", "GUEST", "SOCIAL"})
