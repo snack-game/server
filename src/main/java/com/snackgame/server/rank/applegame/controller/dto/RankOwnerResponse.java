@@ -12,12 +12,14 @@ public class RankOwnerResponse {
 
     private final Long id;
     private final String name;
+    private final Long level;
     private final GroupResponse group;
 
     public static RankOwnerResponse of(Member member) {
         return new RankOwnerResponse(
                 member.getId(),
                 member.getNameAsString(),
+                member.getStatus().getLevel(),
                 GroupResponse.of(member.getGroup())
         );
     }

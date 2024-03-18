@@ -22,6 +22,7 @@ public class RankResponseV2 {
                 new RankOwnerResponse(
                         bestScore.getOwnerId(),
                         bestScore.getOwnerName(),
+                        bestScore.getOwnerLevel(),
                         new GroupResponse(
                                 bestScore.getOwnerGroupId(),
                                 bestScore.getOwnerGroupName()
