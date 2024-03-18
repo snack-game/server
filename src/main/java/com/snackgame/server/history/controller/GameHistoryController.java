@@ -22,9 +22,9 @@ public class GameHistoryController {
 
     private final GameHistoryDao gameHistoryDao;
 
-    @GetMapping("histories/me")
+    @GetMapping("/histories/me")
     @Operation(summary = "자신의 게임 전적 조회",
-            description = "파라미터로 `DATE`를 넣어주면 최근 7일 동안의 최고 점수를 조회한다."
+            description = "파라미터로 `DATE`를 넣어주면 최근 7일 동안의 최고 점수를 조회한다.\n\n"
                           + "파라미터로 `SESSION`을 넣어주면 최근 25게임의 점수들을 조회한다.")
 
     public List<GameHistoryResponse> showScoresBySessions(@Authenticated Member member,
