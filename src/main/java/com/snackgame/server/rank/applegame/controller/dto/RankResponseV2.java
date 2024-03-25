@@ -18,6 +18,8 @@ public class RankResponseV2 {
     @Schema(example = "110")
     private final int score;
     private final RankOwnerResponse owner;
+    @Schema(example = "1")
+    private final long seasonId;
 
     public static RankResponseV2 of(BestScoreWithRankAndOwner bestScore) {
         return new RankResponseV2(
@@ -36,7 +38,8 @@ public class RankResponseV2 {
                                 bestScore.getOwnerGroupId(),
                                 bestScore.getOwnerGroupName()
                         )
-                )
+                ),
+                bestScore.getSeasonId()
         );
     }
 }

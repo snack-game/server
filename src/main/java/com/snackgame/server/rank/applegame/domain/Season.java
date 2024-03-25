@@ -35,4 +35,11 @@ public class Season {
         this.startedAt = startedAt;
         this.endedAt = endedAt;
     }
+
+    @Override
+    public String toString() {
+        return "Season{" +
+               "name='" + name + '\'' +
+               '}';
+    }
 }
