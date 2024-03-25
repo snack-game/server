@@ -8,6 +8,9 @@ public interface BestScoreWithRankAndOwner {
 
     int getScore();
 
+    @Value("#{target.season_id}")
+    long getSeasonId();
+
     @Value("#{target.owner_id}")
     Long getOwnerId();
 

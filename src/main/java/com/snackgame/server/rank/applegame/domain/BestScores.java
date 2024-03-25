@@ -11,11 +11,11 @@ import com.snackgame.server.applegame.exception.NoRankingYetException;
 public interface BestScores extends JpaRepository<BestScore, Long> {
 
     @Query(
-            value = "WITH best AS (select score, owner_id "
+            value = "WITH best AS (select score, owner_id, season_id "
                     + "             from best_score best"
                     + "             order by score desc "
                     + "             limit :size) "
-                    + "select rank() over (order by best.score desc) as `rank`, best.score, "
+                    + "select rank() over (order by best.score desc) as `rank`, best.score, best.season_id, "
                     + "       m.id as owner_id, m.name as owner_name, mg.id as owner_group_id, mg.name as owner_group_name,"
                     + "       m.level as owner_level, m.profile_image as owner_profile_image "
                     + "from best "
@@ -26,12 +26,12 @@ public interface BestScores extends JpaRepository<BestScore, Long> {
     List<BestScoreWithRankAndOwner> rankLeaders(int size);
 
     @Query(
-            value = "WITH best AS (select score, owner_id"
+            value = "WITH best AS (select score, owner_id, season_id "
                     + "             from best_score best"
                     + "             where season_id = :seasonId"
                     + "             order by score desc "
                     + "             limit :size) "
-                    + "select rank() over (order by best.score desc) as `rank`, best.score, "
+                    + "select rank() over (order by best.score desc) as `rank`, best.score, best.season_id,  "
                     + "       m.id as owner_id, m.name as owner_name, mg.id as owner_group_id, mg.name as owner_group_name,"
                     + "       m.level as owner_level, m.profile_image as owner_profile_image "
                     + "from best "
@@ -52,12 +52,12 @@ public interface BestScores extends JpaRepository<BestScore, Long> {
     }
 
     @Query(
-            value = "WITH best AS (select rank() over (order by score desc) as `rank`, score, owner_id "
+            value = "WITH best AS (select rank() over (order by score desc) as `rank`, score, owner_id, season_id "
                     + "                                 from best_score best "
                     + "                                 where score >= ("
                     + "                                     select score from best_score where owner_id = :ownerId order by score desc limit 1"
                     + "                                 )) "
-                    + "                    select best.rank, best.score, "
+                    + "                    select best.rank, best.score, best.season_id, "
                     + "                           m.id as owner_id, m.name as owner_name, mg.id as owner_group_id, mg.name as owner_group_name,"
                     + "                           m.level as owner_level, m.profile_image as owner_profile_image "
                     + "                    from best "
@@ -68,12 +68,12 @@ public interface BestScores extends JpaRepository<BestScore, Long> {
     )
     Optional<BestScoreWithRankAndOwner> findRankOf(Long ownerId);
 
-    @Query(value = "WITH best AS (select rank() over (order by score desc) as `rank`, score, owner_id "
+    @Query(value = "WITH best AS (select rank() over (order by score desc) as `rank`, score, owner_id, season_id "
                    + "                                 from best_score best "
-                   + "                                 where score >= ("
+                   + "                                 where season_id = :seasonId and score >= ("
                    + "                                      select score from best_score where owner_id = :ownerId and season_id = :seasonId"
                    + "                                  )) "
-                   + "                    select best.rank, best.score, "
+                   + "                    select best.rank, best.score, best.season_id, "
                    + "                           m.id as owner_id, m.name as owner_name, mg.id as owner_group_id, mg.name as owner_group_name,"
                    + "                           m.level as owner_level, m.profile_image as owner_profile_image "
                    + "                    from best "
