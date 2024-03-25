@@ -9,6 +9,7 @@ import static com.snackgame.server.fixture.BestScoreFixture.시즌1_땡칠_20점
 import static com.snackgame.server.fixture.BestScoreFixture.시즌1_유진_20점;
 import static com.snackgame.server.fixture.BestScoreFixture.시즌1_정언_8점;
 import static com.snackgame.server.fixture.BestScoreFixture.시즌1_정환_20점;
+import static com.snackgame.server.fixture.SeasonFixture.베타시즌;
 import static com.snackgame.server.fixture.SeasonFixture.시즌1;
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
 import static io.restassured.http.ContentType.JSON;
@@ -16,18 +17,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 
 import com.snackgame.server.fixture.BestScoreFixture;
 import com.snackgame.server.member.controller.dto.NameRequest;
 import com.snackgame.server.rank.applegame.controller.dto.RankOwnerResponse;
 import com.snackgame.server.rank.applegame.controller.dto.RankResponseV2;
+import com.snackgame.server.rank.applegame.domain.Season;
 import com.snackgame.server.support.restassured.RestAssuredTest;
 
 import io.restassured.RestAssured;
@@ -89,7 +96,8 @@ class AppleGameRankingControllerTest {
                     .isEqualTo(new RankResponseV2(
                             1,
                             시즌1_땡칠_20점().getScore(),
-                            RankOwnerResponse.of(땡칠())
+                            RankOwnerResponse.of(땡칠()),
+                            시즌1().getId()
                     ));
         }
 
@@ -125,6 +133,7 @@ class AppleGameRankingControllerTest {
         }
     }
 
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     @Nested
     class 특정_시즌_최고점수_기준 {
 
@@ -154,22 +163,36 @@ class AppleGameRankingControllerTest {
                     .body("[3].rank", is(4));
         }
 
-        @Test
-        void 자신의_랭크를_조회한다() {
+        private Stream<Arguments> 자신의_랭크를_조회한다() {
+            return Stream.of(
+                    Arguments.of(1, 10, 베타시즌()),
+                    Arguments.of(1, 20, 시즌1())
+            );
+        }
+
+        @ParameterizedTest(name = "{0}등, {1}점, {2}")
+        @MethodSource
+        void 자신의_랭크를_조회한다(long expectedRank, int expectedScore, Season season) {
             var authentication = RestAssured.given()
                     .contentType(JSON)
                     .body(new NameRequest(땡칠().getNameAsString()))
                     .when().post("/tokens")
                     .then().extract().detailedCookies();
 
-            RestAssured.given()
+            var response = RestAssured.given()
                     .cookies(authentication)
                     .queryParam("by", "BEST_SCORE")
-                    .when().get("/rankings/{seasonId}/me", 시즌1().getId())
+                    .when().get("/rankings/{seasonId}/me", season.getId())
                     .then()
                     .statusCode(HttpStatus.OK.value())
-                    .body("rank", is(1))
-                    .body("owner.id", is(시즌1_땡칠_20점().getOwnerId().intValue()));
+                    .extract().as(RankResponseV2.class);
+
+            assertThat(response)
+                    .usingRecursiveComparison()
+                    .ignoringFields("owner.status.exp", "owner.status.maxExp")
+                    .isEqualTo(
+                            new RankResponseV2(expectedRank, expectedScore, RankOwnerResponse.of(땡칠()), season.getId())
+                    );
         }
     }
 }
