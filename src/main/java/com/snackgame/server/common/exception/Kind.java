@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 public enum Kind {
 
     INTERNAL_SERVER_ERROR(true, HttpStatus.INTERNAL_SERVER_ERROR),
-    BAD_REQUEST(true, HttpStatus.BAD_REQUEST);
+    BAD_REQUEST(false, HttpStatus.BAD_REQUEST);
 
     private final boolean needsMessageToBeHidden;
     private final HttpStatus httpStatus;
