@@ -53,13 +53,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<ExceptionResponse> handleBusinessException(BusinessException exception) {
-        log.debug(exception.getMessage(), exception);
-
         Kind kind = exception.getKind();
         var responseEntity = ResponseEntity.status(kind.getHttpStatus());
         if (kind.needsMessageToBeHidden()) {
+            log.error(exception.getMessage(), exception);
+            eventPublisher.publishEvent(new ExceptionalEvent(
+                    exception.getClass().getSimpleName(),
+                    exception.getMessage()
+            ));
             return responseEntity.body(ExceptionResponse.withDefaultMessage());
         }
+        log.debug(exception.getMessage(), exception);
         return responseEntity.body(new ExceptionResponse(exception.getMessage()));
     }
 
