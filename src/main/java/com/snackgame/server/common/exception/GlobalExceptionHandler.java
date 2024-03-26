@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -51,11 +52,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionResponse handleBusinessException(BusinessException exception) {
+    public ResponseEntity<ExceptionResponse> handleBusinessException(BusinessException exception) {
         log.debug(exception.getMessage(), exception);
 
-        return ExceptionResponse.from(exception);
+        Kind kind = exception.getKind();
+        var responseEntity = ResponseEntity.status(kind.getHttpStatus());
+        if (kind.needsMessageToBeHidden()) {
+            return responseEntity.body(ExceptionResponse.withDefaultMessage());
+        }
+        return responseEntity.body(new ExceptionResponse(exception.getMessage()));
     }
 
     @ExceptionHandler
