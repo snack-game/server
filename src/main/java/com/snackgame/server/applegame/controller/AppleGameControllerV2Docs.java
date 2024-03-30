@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.snackgame.server.applegame.controller.dto.AppleGameResponseV2;
+import com.snackgame.server.applegame.controller.dto.GameResultResponse;
 import com.snackgame.server.applegame.controller.dto.RangeRequest;
 import com.snackgame.server.member.domain.Member;
 
@@ -14,7 +15,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "🍎 사과 게임")
 public interface AppleGameControllerV2Docs {
 
     @Operation(summary = "게임 세션 시작", description = "1번 게임(사과게임) 세션을 시작한다")
@@ -43,9 +46,9 @@ public interface AppleGameControllerV2Docs {
             @RequestBody List<RangeRequest> ranges
     );
 
-    @Operation(summary = "게임판 초기화", description = "지정한 세션의 게임판을 초기화한다. 황금사과와는 별도의 기능이다.")
+    @Operation(summary = "게임 재시작", description = "게임을 재시작한다. 게임판과 시간이 초기화된다.")
     AppleGameResponseV2 restart(Member member, @PathVariable Long sessionId);
 
-    @Operation(summary = "게임 세션 종료", description = "현재 세션의 종료를 알린다")
-    void finish(Member member, @PathVariable Long sessionId);
+    @Operation(summary = "게임 세션 종료", description = "게임 세션을 종료한다. 응답에는 기록된 점수와 전체 게임에서의 백분위가 포함된다")
+    GameResultResponse finish(Member member, @PathVariable Long sessionId);
 }
