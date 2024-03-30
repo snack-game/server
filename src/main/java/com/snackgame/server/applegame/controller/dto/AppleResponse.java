@@ -13,7 +13,7 @@ import lombok.Getter;
 public class AppleResponse {
 
     private final int number;
-    private final boolean isGolden;
+    private final boolean golden;
 
     public static List<List<AppleResponse>> of(List<List<Apple>> apples) {
         return apples.stream()

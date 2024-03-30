@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.snackgame.server.applegame.exception.NoSuchSessionException;
+import com.snackgame.server.applegame.exception.SessionNotFinishedException;
 
 @Repository
 public interface AppleGames extends JpaRepository<AppleGame, Long> {
@@ -24,6 +25,20 @@ public interface AppleGames extends JpaRepository<AppleGame, Long> {
     default AppleGame getBy(Long ownerId, Long sessionId) {
         return findByOwnerIdAndSessionId(ownerId, sessionId)
                 .orElseThrow(NoSuchSessionException::new);
+    }
+
+    @Query(value = "with scores as ("
+                   + "select percent_rank() over (order by score desc) as percentile, session_id, score "
+                   + "from apple_game where is_finished = true"
+                   + ") "
+                   + "select percentile "
+                   + "    from scores where session_id = :sessionId", nativeQuery = true)
+    Optional<Double> findPercentileOf(long sessionId);
+
+    default Percentile ratePercentileOf(long sessionId) {
+        return findPercentileOf(sessionId)
+                .map(Percentile::new)
+                .orElseThrow(SessionNotFinishedException::new);
     }
 
     Optional<AppleGame> findByOwnerIdAndSessionId(Long ownerId, Long sessionId);

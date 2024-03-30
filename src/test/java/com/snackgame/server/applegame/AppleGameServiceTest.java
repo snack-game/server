@@ -121,6 +121,29 @@ class AppleGameServiceTest {
     }
 
     @Test
+    void 게임을_끝낼_때_점수와_백분율을_알_수_있다() {
+        var game = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 정환().getId()));
+        appleGameService.placeMoves(정환().getId(), game.getSessionId(), List.of(new RangeRequest(
+                new CoordinateRequest(0, 1),
+                new CoordinateRequest(1, 3)
+        )));
+        appleGameService.finish(정환().getId(), game.getSessionId());
+
+        var otherGame = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId()));
+        appleGameService.finish(땡칠().getId(), otherGame.getSessionId());
+
+        var gameWithMidRangedScore = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId()));
+        appleGameService.placeMoves(땡칠().getId(), gameWithMidRangedScore.getSessionId(), List.of(new RangeRequest(
+                new CoordinateRequest(0, 0),
+                new CoordinateRequest(1, 0)
+        )));
+        var result = appleGameService.finish(땡칠().getId(), gameWithMidRangedScore.getSessionId());
+
+        assertThat(result.getScore()).isEqualTo(2);
+        assertThat(result.getPercentile()).isEqualTo(50);
+    }
+
+    @Test
     void 게임이_끝날때_게임_점수만큼_경험치를_부여한다() {
         var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 정환().getId());
         appleGames.save(game);

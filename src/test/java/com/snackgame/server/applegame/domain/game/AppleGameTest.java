@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import com.snackgame.server.applegame.domain.Coordinate;
 import com.snackgame.server.applegame.domain.Range;
+import com.snackgame.server.applegame.exception.AppleNotRemovableException;
 import com.snackgame.server.applegame.exception.GameSessionExpiredException;
 import com.snackgame.server.applegame.fixture.TestFixture;
 
@@ -31,7 +32,7 @@ class AppleGameTest {
     }
 
     @Test
-    void 초기화한다() {
+    void 재시작한다() {
         var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId());
         var range = new Range(
                 new Coordinate(0, 1),
@@ -59,6 +60,20 @@ class AppleGameTest {
         game.removeApplesIn(range);
 
         assertThat(game.getScore()).isEqualTo(4);
+    }
+
+    @Test
+    void 이미_제거된_위치의_사과들을_제거하면_예외가_발생한다() {
+        var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId());
+        game.removeApplesIn(new Range(
+                new Coordinate(0, 1),
+                new Coordinate(1, 3)
+        ));
+
+        assertThatThrownBy(() -> game.removeApplesIn(new Range(
+                new Coordinate(0, 1),
+                new Coordinate(1, 3)
+        ))).isInstanceOf(AppleNotRemovableException.class);
     }
 
     @Test

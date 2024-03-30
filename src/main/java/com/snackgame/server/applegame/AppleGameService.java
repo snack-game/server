@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.snackgame.server.applegame.controller.dto.GameResultResponse;
 import com.snackgame.server.applegame.controller.dto.RangeRequest;
 import com.snackgame.server.applegame.domain.game.AppleGame;
 import com.snackgame.server.applegame.domain.game.AppleGames;
@@ -49,11 +50,17 @@ public class AppleGameService {
         return game;
     }
 
-    public void finish(Long memberId, Long sessionId) {
+    public GameResultResponse finish(Long memberId, Long sessionId) {
         AppleGame game = appleGames.getBy(memberId, sessionId);
         game.finish();
+        eventPublisher.publishEvent(new GameEndEvent(game));
+
         Member member = memberRepository.getById(memberId);
         member.getStatus().addExp(game.getScore());
-        eventPublisher.publishEvent(new GameEndEvent(game));
+
+        return new GameResultResponse(
+                game.getScore(),
+                appleGames.ratePercentileOf(sessionId).percentage()
+        );
     }
 }

@@ -28,10 +28,6 @@ public class ExceptionResponse {
         return new ExceptionResponse(DEFAULT_MESSAGE);
     }
 
-    public static ExceptionResponse from(Exception exception) {
-        return new ExceptionResponse(exception.getMessage());
-    }
-
     public String getAction() {
         return action;
     }
