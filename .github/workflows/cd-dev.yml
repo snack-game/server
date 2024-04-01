@@ -1,9 +1,9 @@
-name: Production Server Deploy
+name: Development Server Deploy
 
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: [ "dev" ]
 permissions:
   contents: read
 
@@ -13,9 +13,9 @@ env:
 
 jobs:
   deploy:
-    runs-on: production
+    runs-on: dev
     environment:
-      name: production
+      name: dev
     steps:
       - name: Get token from Submodule Reader
         uses: actions/create-github-app-token@v1
@@ -31,10 +31,10 @@ jobs:
           submodules: true
           token: ${{ steps.app_token.outputs.token }}
 
-      - name: Build jar
+      - name: Create bootjar
         run: |
           chmod +x ./gradlew
-          ./gradlew build
+          ./gradlew bootjar
 
       - name: Copy jar
         shell: bash {0}
@@ -65,7 +65,7 @@ jobs:
         working-directory: ${{ env.JAR_DIRECTORY }}
         run: |
           nohup java -javaagent:dd-java-agent.jar \
-          -Dspring.profiles.active=production \
+          -Dspring.profiles.active=development \
           -DACCESS_TOKEN_SECRET_KEY=${{ secrets.ACCESS_TOKEN_SECRET_KEY }} \
           -DACCESS_TOKEN_EXPIRY_DAYS=${{ secrets.ACCESS_TOKEN_EXPIRY_DAYS }} \
           -DREFRESH_TOKEN_SECRET_KEY=${{ secrets.REFRESH_TOKEN_SECRET_KEY }} \
