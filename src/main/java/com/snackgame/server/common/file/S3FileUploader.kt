@@ -40,6 +40,6 @@ class S3FileUploader(
 
     private fun uniquePathOf(resource: Resource): String {
         val randomUUID = UUID.randomUUID().toString()
-        return "unhashed/${randomUUID.replace("-", "")}-${resource.hashCode()}"
+        return "unhashed/${randomUUID.replace("-", "")}-${resource.filename?.hashCode()}"
     }
 }
