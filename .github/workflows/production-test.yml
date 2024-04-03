@@ -1,4 +1,4 @@
-name: build and test
+name: 운영 브랜치 PR을 테스트한다
 
 on:
   workflow_dispatch:
