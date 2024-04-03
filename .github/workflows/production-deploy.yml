@@ -1,4 +1,4 @@
-name: Production Server Deploy
+name: 변경사항을 운영 서버에 배포한다
 
 on:
   workflow_dispatch:
@@ -31,10 +31,13 @@ jobs:
           submodules: true
           token: ${{ steps.app_token.outputs.token }}
 
-      - name: Build jar
-        run: |
-          chmod +x ./gradlew
-          ./gradlew build
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Build
+        uses: gradle/gradle-build-action@v3
+        with:
+          arguments: build
 
       - name: Copy jar
         shell: bash {0}
@@ -42,21 +45,29 @@ jobs:
           mkdir $JAR_DIRECTORY
           cp ./build/libs/$JAR_NAME $JAR_DIRECTORY/$JAR_NAME
 
+      - name: 현재 사용중인 어플리케이션 포트 확인
+        shell: bash {0}
+        run: |
+          PORT_A_PID=$(lsof -ti:${{ vars.APPLICATION_PORT_A }})
+          PORT_B_PID=$(lsof -ti:${{ vars.APPLICATION_PORT_B }})
+          if [ -n $PORT_A_PID -a -n $PORT_B_PID ]; then
+            echo "::error title=배포 실패::$PORT_A_PID, $PORT_B_PID 두 포트가 모두 사용중입니다";
+            exit 1;
+          fi
+          
+          if [ -n $PORT_A_PID ]; then
+            echo "BLUE_PORT=${{ vars.APPLICATION_PORT_A }}" >> "$GITHUB_ENV"
+            echo "GREEN_PORT=${{ vars.APPLICATION_PORT_B }}" >> "$GITHUB_ENV"
+          fi
+          if [ -n $PORT_B_PID ]; then
+            echo "BLUE_PORT=${{ vars.APPLICATION_PORT_B }}" >> "$GITHUB_ENV"
+            echo "GREEN_PORT=${{ vars.APPLICATION_PORT_A }}" >> "$GITHUB_ENV"
+          fi
+
       - name: Download Datadog Java Agent
         working-directory: ${{ env.JAR_DIRECTORY }}
         run: |
           wget -O dd-java-agent.jar 'https://dtdg.co/latest-java-tracer'
-
-      - name: 현재 사용중인 어플리케이션 포트 확인
-        shell: bash {0}
-        run: |
-          if [ -n "$(lsof -ti:${{ vars.APPLICATION_PORT_A }})" ]; then
-            echo "BLUE_PORT=${{ vars.APPLICATION_PORT_A }}" >> "$GITHUB_ENV"
-            echo "GREEN_PORT=${{ vars.APPLICATION_PORT_B }}" >> "$GITHUB_ENV"
-          else
-            echo "BLUE_PORT=${{ vars.APPLICATION_PORT_B }}" >> "$GITHUB_ENV"
-            echo "GREEN_PORT=${{ vars.APPLICATION_PORT_A }}" >> "$GITHUB_ENV"
-          fi
 
       - name: 그린 어플리케이션 실행
         env:
@@ -64,23 +75,24 @@ jobs:
         shell: bash
         working-directory: ${{ env.JAR_DIRECTORY }}
         run: |
-          nohup java -javaagent:dd-java-agent.jar \
-          -Dspring.profiles.active=production \
+          nohup java \
+          -Dserver.port=$GREEN_PORT \
+          -Dspring.profiles.active=${{ vars.ENVIRONMENT_NAME }} \
           -DACCESS_TOKEN_SECRET_KEY=${{ secrets.ACCESS_TOKEN_SECRET_KEY }} \
           -DACCESS_TOKEN_EXPIRY_DAYS=${{ secrets.ACCESS_TOKEN_EXPIRY_DAYS }} \
           -DREFRESH_TOKEN_SECRET_KEY=${{ secrets.REFRESH_TOKEN_SECRET_KEY }} \
           -DREFRESH_TOKEN_EXPIRY_DAYS=${{ secrets.REFRESH_TOKEN_EXPIRY_DAYS }} \
-          -Dserver.port=$GREEN_PORT \
-          -DPRODUCTION_DB_URL=${{ secrets.PRODUCTION_DB_URL }} \
-          -DPRODUCTION_DB_USERNAME=${{ secrets.PRODUCTION_DB_USERNAME }} \
-          -DPRODUCTION_DB_PASSWORD=${{ secrets.PRODUCTION_DB_PASSWORD }} \
+          -DPRODUCTION_DB_URL=${{ secrets.DB_URL }} \
+          -DPRODUCTION_DB_USERNAME=${{ secrets.DB_USERNAME }} \
+          -DPRODUCTION_DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+          -javaagent:dd-java-agent.jar \
           -Ddd.profiling.enabled=true \
           -XX:FlightRecorderOptions=stackdepth=256 \
           -Ddd.logs.injection=true \
           -Ddd.appsec.enabled=true \
           -Ddd.iast.enabled=true \
           -Ddd.service=snackgame \
-          -Ddd.env=production \
+          -Ddd.env=${{ vars.ENVIRONMENT_NAME }} \
           -jar $JAR_NAME > ~/snackgame-server.log &
 
       - name: 그린 어플리케이션이 접속 가능할 때까지 기다린다
@@ -89,7 +101,7 @@ jobs:
           PROCESS_ID="$(lsof -i:$GREEN_PORT -t)"
           while [ "$(curl -o /dev/null -s -w %{http_code} localhost:$GREEN_PORT/rankings?by=BEST_SCORE)" != 200 ]
           do
-            if [ -n "$PROCESS_ID" ]; then
+            if [ -e /proc/$PROCESS_ID ]; then
               echo "::error title=배포 실패::블루 어플리케이션으로 롤백합니다.";
               exit 1;
             fi
