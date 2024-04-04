@@ -3,6 +3,7 @@ package com.snackgame.server.applegame.domain.game;
 import static java.time.LocalDateTime.now;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -39,16 +40,19 @@ public class AppleGame extends BaseEntity {
     private Board board;
     private int score = 0;
     private boolean isFinished = false;
+    private LocalDateTime finishedAt;
 
     public AppleGame(Board board, Long ownerId) {
         this.board = board;
         this.ownerId = ownerId;
+        this.finishedAt = willFinishAt();
     }
 
-    public AppleGame(Board board, Long ownerId, LocalDateTime createdAt) {
+    public AppleGame(Board board, Long ownerId, LocalDateTime createdAt, LocalDateTime finishedAt) {
         this.board = board;
         this.ownerId = ownerId;
         this.createdAt = createdAt;
+        this.finishedAt = finishedAt;
     }
 
     public static AppleGame ofRandomized(Long ownerId) {
@@ -60,6 +64,7 @@ public class AppleGame extends BaseEntity {
         this.board = board.reset();
         this.score = 0;
         this.createdAt = now();
+        this.finishedAt = willFinishAt();
     }
 
     public void removeApplesIn(Range range) {
@@ -73,6 +78,7 @@ public class AppleGame extends BaseEntity {
 
     public void finish() {
         validateOngoing();
+        this.finishedAt = now();
         this.isFinished = true;
     }
 
@@ -83,7 +89,11 @@ public class AppleGame extends BaseEntity {
     }
 
     public boolean isFinished() {
-        return isFinished || now().isAfter(createdAt.plus(SESSION_TIME).plus(SPARE_TIME));
+        return isFinished || now().isAfter(this.finishedAt);
+    }
+
+    private LocalDateTime willFinishAt(){
+        return now().plus(SESSION_TIME).plus(SPARE_TIME);
     }
 
     public List<List<Apple>> getApples() {

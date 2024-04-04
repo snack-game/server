@@ -124,7 +124,7 @@ class AppleGameTest {
 
     @Test
     void 만든지_2분_그리고_여유시간이_지나면_초기화할_수_없다() {
-        var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now().minusSeconds(125));
+        var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now().minusSeconds(125), LocalDateTime.now());
 
         assertThatThrownBy(() -> game.restart())
                 .isInstanceOf(GameSessionExpiredException.class)
@@ -133,7 +133,7 @@ class AppleGameTest {
 
     @Test
     void 만든지_2분_그리고_여유시간이_지나면_사과를_제거할_수_없다() {
-        var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now().minusSeconds(125));
+        var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now().minusSeconds(125), LocalDateTime.now());
         var range = new Range(
                 new Coordinate(0, 1),
                 new Coordinate(1, 3)
