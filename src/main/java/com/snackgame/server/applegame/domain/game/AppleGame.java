@@ -3,7 +3,6 @@ package com.snackgame.server.applegame.domain.game;
 import static java.time.LocalDateTime.now;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,8 +28,8 @@ public class AppleGame extends BaseEntity {
 
     public static final int DEFAULT_HEIGHT = 10;
     public static final int DEFAULT_WIDTH = 12;
-    private static final Duration SESSION_TIME = Duration.ofSeconds(120);
     private static final Duration SPARE_TIME = Duration.ofSeconds(5);
+    private static final Duration SESSION_TIME = Duration.ofSeconds(120).plus(SPARE_TIME);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,10 +47,9 @@ public class AppleGame extends BaseEntity {
         this.finishedAt = willFinishAt();
     }
 
-    public AppleGame(Board board, Long ownerId, LocalDateTime createdAt, LocalDateTime finishedAt) {
+    public AppleGame(Board board, Long ownerId, LocalDateTime finishedAt) {
         this.board = board;
         this.ownerId = ownerId;
-        this.createdAt = createdAt;
         this.finishedAt = finishedAt;
     }
 
@@ -92,8 +90,8 @@ public class AppleGame extends BaseEntity {
         return isFinished || now().isAfter(this.finishedAt);
     }
 
-    private LocalDateTime willFinishAt(){
-        return now().plus(SESSION_TIME).plus(SPARE_TIME);
+    private LocalDateTime willFinishAt() {
+        return now().plus(SESSION_TIME);
     }
 
     public List<List<Apple>> getApples() {
