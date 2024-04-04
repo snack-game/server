@@ -58,6 +58,7 @@ public class AppleGame extends BaseEntity {
         this.finishedAt = finishedAt;
         this.score = score;
     }
+
     public static AppleGame ofRandomized(Long ownerId) {
         return new AppleGame(new Board(DEFAULT_HEIGHT, DEFAULT_WIDTH), ownerId);
     }
@@ -81,7 +82,7 @@ public class AppleGame extends BaseEntity {
 
     public void finish() {
         validateOngoing();
-        this.finishedAt = now();
+        this.finishedAt = now().minus(SPARE_TIME);
     }
 
     private void validateOngoing() {

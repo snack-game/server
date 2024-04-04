@@ -1,10 +1,12 @@
 package com.snackgame.server.history.dao;
 
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -13,11 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.snackgame.server.applegame.domain.Coordinate;
-import com.snackgame.server.applegame.domain.Range;
 import com.snackgame.server.applegame.domain.game.AppleGame;
 import com.snackgame.server.applegame.domain.game.AppleGames;
 import com.snackgame.server.applegame.fixture.TestFixture;
+import com.snackgame.server.history.controller.dto.GameHistoryResponse;
 import com.snackgame.server.member.fixture.MemberFixture;
 import com.snackgame.server.support.general.ServiceTest;
 
@@ -31,9 +32,14 @@ class GameHistoryDaoTest {
     private GameHistoryDao gameHistoryDao;
     private AppleGame first;
     private AppleGame second;
+    private AppleGame secondBest;
     private AppleGame third;
     private AppleGame fourth;
     private AppleGame fifth;
+    private AppleGame sixth;
+    private AppleGame sixthBest;
+    private AppleGame seventh;
+    private AppleGame eighth;
 
     @BeforeEach
     void setUp(@Autowired JdbcTemplate jdbcTemplate) {
@@ -41,34 +47,65 @@ class GameHistoryDaoTest {
 
         this.gameHistoryDao = new GameHistoryDao(jdbcTemplate);
 
-        this.first = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now().plusDays(2));
-        first.removeApplesIn(new Range(
-                new Coordinate(0, 1),
-                new Coordinate(1, 3)
-        ));
-        appleGames.save(first);
-        this.second = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now().plusDays(2));
-        second.removeApplesIn(new Range(
-                new Coordinate(0, 0),
-                new Coordinate(1, 0)
-        ));
-        appleGames.save(second);
-        this.third = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now().plusDays(2));
-        third.removeApplesIn(new Range(
-                new Coordinate(0, 0),
-                new Coordinate(1, 0)
-        ));
-        appleGames.save(third);
-        this.fourth = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now().plusDays(2));
-        appleGames.save(fourth);
-        this.fifth = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now().plusDays(3));
-        appleGames.save(fifth);
+        this.first = appleGames.save(new AppleGame(
+                TestFixture.TWO_BY_FOUR(),
+                땡칠().getId(),
+                LocalDateTime.now().minusDays(7),
+                100));
 
-        first.finish();
-        second.finish();
-        third.finish();
-        fourth.finish();
-        fifth.finish();
+        this.second = appleGames.save(new AppleGame(
+                TestFixture.TWO_BY_FOUR(),
+                땡칠().getId(),
+                LocalDateTime.now().minusDays(6),
+                200));
+
+        this.secondBest = appleGames.save(new AppleGame(
+                TestFixture.TWO_BY_FOUR(),
+                땡칠().getId(),
+                LocalDateTime.now().minusDays(6),
+                250));
+
+        this.third = appleGames.save(new AppleGame(
+                TestFixture.TWO_BY_FOUR(),
+                땡칠().getId(),
+                LocalDateTime.now().minusDays(5),
+                300));
+
+        this.fourth = appleGames.save(new AppleGame(
+                TestFixture.TWO_BY_FOUR(),
+                땡칠().getId(),
+                LocalDateTime.now().minusDays(4),
+                400));
+
+        this.fifth = appleGames.save(new AppleGame(
+                TestFixture.TWO_BY_FOUR(),
+                땡칠().getId(),
+                LocalDateTime.now().minusDays(3),
+                500));
+
+        this.sixth = appleGames.save(new AppleGame(
+                TestFixture.TWO_BY_FOUR(),
+                땡칠().getId(),
+                LocalDateTime.now().minusDays(2),
+                600));
+
+        this.sixthBest = appleGames.save(new AppleGame(
+                TestFixture.TWO_BY_FOUR(),
+                땡칠().getId(),
+                LocalDateTime.now().minusDays(2),
+                650));
+
+        this.seventh = appleGames.save(new AppleGame(
+                TestFixture.TWO_BY_FOUR(),
+                땡칠().getId(),
+                LocalDateTime.now().minusDays(1),
+                700));
+
+        this.eighth = appleGames.save(new AppleGame(
+                TestFixture.TWO_BY_FOUR(),
+                땡칠().getId(),
+                LocalDateTime.now(),
+                800));
 
         appleGames.flush();
 
@@ -77,15 +114,30 @@ class GameHistoryDaoTest {
     @Test
     @Transactional
     void 최근_25게임의_전적을_조회한다() {
-        Assertions.assertThat(gameHistoryDao.selectBySession(땡칠().getId(), 25))
-                .size().isEqualTo(5);
+        assertThat(gameHistoryDao.selectBySession(땡칠().getId(), 25)).size().isEqualTo(10);
     }
 
     @Test
     @Transactional
-    void 최근_7일간의_게임_전적을_조회한다() {
-        Assertions.assertThat(gameHistoryDao.selectByDate(땡칠().getId()))
-                .hasSize(1);
+    void 최근_7일내의_전적들은_7개_이어야한다() {
+        assertThat(gameHistoryDao.selectByDate(땡칠().getId())).hasSize(7);
     }
 
+    @Test
+    @Transactional
+    void 최근_7일내의_전적들은_날짜_내림차순이어야한다() {
+        List<Long> sessionIds = gameHistoryDao.selectByDate(땡칠().getId()).stream().
+                map(GameHistoryResponse::getSession_id).
+                collect(Collectors.toList());
+        assertThat(sessionIds).doesNotContain(first.getSessionId());
+    }
+
+    @Test
+    @Transactional
+    void 최근_7일내의_전적들은_최고점수만_가져야한다() {
+        List<Long> sessionIds = gameHistoryDao.selectByDate(땡칠().getId()).stream().
+                map(GameHistoryResponse::getSession_id).
+                collect(Collectors.toList());
+        assertThat(sessionIds).contains(secondBest.getSessionId(), sixthBest.getSessionId());
+    }
 }
