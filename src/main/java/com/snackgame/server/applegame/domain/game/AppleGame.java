@@ -38,7 +38,6 @@ public class AppleGame extends BaseEntity {
     @Lob
     private Board board;
     private int score = 0;
-    private boolean isFinished = false;
     private LocalDateTime finishedAt;
 
     public AppleGame(Board board, Long ownerId) {
@@ -77,7 +76,6 @@ public class AppleGame extends BaseEntity {
     public void finish() {
         validateOngoing();
         this.finishedAt = now();
-        this.isFinished = true;
     }
 
     private void validateOngoing() {
@@ -87,7 +85,7 @@ public class AppleGame extends BaseEntity {
     }
 
     public boolean isFinished() {
-        return isFinished || now().isAfter(this.finishedAt);
+        return now().isAfter(this.finishedAt);
     }
 
     private LocalDateTime willFinishAt() {

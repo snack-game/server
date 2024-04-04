@@ -29,7 +29,7 @@ public interface AppleGames extends JpaRepository<AppleGame, Long> {
 
     @Query(value = "with scores as ("
                    + "select percent_rank() over (order by score desc) as percentile, session_id, score "
-                   + "from apple_game where is_finished = true"
+                   + "from apple_game where finished_at is not null "
                    + ") "
                    + "select percentile "
                    + "    from scores where session_id = :sessionId", nativeQuery = true)
