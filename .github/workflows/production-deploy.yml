@@ -50,16 +50,16 @@ jobs:
         run: |
           PORT_A_PID=$(lsof -ti:${{ vars.APPLICATION_PORT_A }})
           PORT_B_PID=$(lsof -ti:${{ vars.APPLICATION_PORT_B }})
-          if [ -n $PORT_A_PID -a -n $PORT_B_PID ]; then
+          if [ -n "$PORT_A_PID" ]  && [ -n "$PORT_B_PID" ]; then
             echo "::error title=배포 실패::$PORT_A_PID, $PORT_B_PID 두 포트가 모두 사용중입니다";
             exit 1;
           fi
           
-          if [ -n $PORT_A_PID ]; then
+          if [ -n "$PORT_A_PID" ]; then
             echo "BLUE_PORT=${{ vars.APPLICATION_PORT_A }}" >> "$GITHUB_ENV"
             echo "GREEN_PORT=${{ vars.APPLICATION_PORT_B }}" >> "$GITHUB_ENV"
           fi
-          if [ -n $PORT_B_PID ]; then
+          if [ -n "$PORT_B_PID" ]; then
             echo "BLUE_PORT=${{ vars.APPLICATION_PORT_B }}" >> "$GITHUB_ENV"
             echo "GREEN_PORT=${{ vars.APPLICATION_PORT_A }}" >> "$GITHUB_ENV"
           fi
@@ -101,7 +101,7 @@ jobs:
           PROCESS_ID="$(lsof -i:$GREEN_PORT -t)"
           while [ "$(curl -o /dev/null -s -w %{http_code} localhost:$GREEN_PORT/rankings?by=BEST_SCORE)" != 200 ]
           do
-            if [ -e /proc/$PROCESS_ID ]; then
+            if [ ! -e /proc/$PROCESS_ID ]; then
               echo "::error title=배포 실패::블루 어플리케이션으로 롤백합니다.";
               exit 1;
             fi
