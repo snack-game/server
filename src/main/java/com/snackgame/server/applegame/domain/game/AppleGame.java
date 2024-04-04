@@ -52,6 +52,12 @@ public class AppleGame extends BaseEntity {
         this.finishedAt = finishedAt;
     }
 
+    public AppleGame(Board board, Long ownerId, LocalDateTime finishedAt, int score) {
+        this.board = board;
+        this.ownerId = ownerId;
+        this.finishedAt = finishedAt;
+        this.score = score;
+    }
     public static AppleGame ofRandomized(Long ownerId) {
         return new AppleGame(new Board(DEFAULT_HEIGHT, DEFAULT_WIDTH), ownerId);
     }
