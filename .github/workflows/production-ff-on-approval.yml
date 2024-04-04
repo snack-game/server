@@ -5,7 +5,7 @@ on:
     types: [ submitted ]
 
 jobs:
-  meet-conditions:
+  checks-passed:
     permissions:
       checks: read
       contents: read
@@ -20,10 +20,12 @@ jobs:
       - name: Check if all checks are passed
         uses: wechuli/allcheckspassed@v1
 
-  rebase:
-    needs: meet-conditions
+  fast-forward-merging:
+    needs: checks-passed
     permissions:
       contents: write
+      pull-requests: write
+      issues: write
     runs-on: ubuntu-latest
     steps:
       - name: Get token from Submodule Reader
@@ -34,16 +36,15 @@ jobs:
           private-key: ${{ secrets.SUBMODULE_APP_PEM }}
           owner: ${{ github.repository_owner }}
 
-      - name: Checkout to main
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: 'main'
           submodules: true
           token: ${{ steps.app_token.outputs.token }}
+          fetch-depth: 0
 
-      - name: Rebase Branch
-        uses: martincostello/rebaser@v2.0.0
-
-      - name: Push Rebased
-        if : ${{ steps.rebase.outputs.result == 'success' }}
-        run: git push
+      - name: Fast Forward PR
+        uses: sequoia-pgp/fast-forward@v1
+        with:
+          merge: true
+          comment: always
