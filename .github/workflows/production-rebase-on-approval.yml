@@ -1,0 +1,49 @@
+name: 승인된 변경사항을 운영 브랜치에 반영한다
+
+on:
+  pull_request_review:
+    types: [ submitted ]
+
+jobs:
+  meet-conditions:
+    permissions:
+      checks: read
+      contents: read
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref == 'dev' && github.event.review.state == 'APPROVED'}}
+    steps:
+      - name: Check Admin Permission
+        uses: actions-cool/check-user-permission@v2.2.1
+        with:
+          require: 'admin'
+
+      - name: Check if all checks are passed
+        uses: wechuli/allcheckspassed@v1
+
+  rebase:
+    needs: meet-conditions
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get token from Submodule Reader
+        uses: actions/create-github-app-token@v1
+        id: app_token
+        with:
+          app-id: ${{ secrets.SUBMODULE_APP_ID }}
+          private-key: ${{ secrets.SUBMODULE_APP_PEM }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Checkout to main
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+          submodules: true
+          token: ${{ steps.app_token.outputs.token }}
+
+      - name: Rebase Branch
+        uses: martincostello/rebaser@v2.0.0
+
+      - name: Push Rebased
+        if : ${{ steps.rebase.outputs.result == 'success' }}
+        run: git push
