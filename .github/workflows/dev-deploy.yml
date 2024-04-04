@@ -81,9 +81,9 @@ jobs:
           -DACCESS_TOKEN_EXPIRY_DAYS=${{ secrets.ACCESS_TOKEN_EXPIRY_DAYS }} \
           -DREFRESH_TOKEN_SECRET_KEY=${{ secrets.REFRESH_TOKEN_SECRET_KEY }} \
           -DREFRESH_TOKEN_EXPIRY_DAYS=${{ secrets.REFRESH_TOKEN_EXPIRY_DAYS }} \
-          -DPRODUCTION_DB_URL=${{ secrets.DB_URL }} \
-          -DPRODUCTION_DB_USERNAME=${{ secrets.DB_USERNAME }} \
-          -DPRODUCTION_DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+          -DDB_URL=${{ secrets.DB_URL }} \
+          -DDB_USERNAME=${{ secrets.DB_USERNAME }} \
+          -DDB_PASSWORD=${{ secrets.DB_PASSWORD }} \
           -javaagent:dd-java-agent.jar \
           -Ddd.profiling.enabled=true \
           -XX:FlightRecorderOptions=stackdepth=256 \
