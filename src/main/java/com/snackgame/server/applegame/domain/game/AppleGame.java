@@ -28,8 +28,8 @@ public class AppleGame extends BaseEntity {
 
     public static final int DEFAULT_HEIGHT = 10;
     public static final int DEFAULT_WIDTH = 12;
-    private static final Duration SESSION_TIME = Duration.ofSeconds(120);
     private static final Duration SPARE_TIME = Duration.ofSeconds(5);
+    private static final Duration SESSION_TIME = Duration.ofSeconds(120).plus(SPARE_TIME);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,16 +39,18 @@ public class AppleGame extends BaseEntity {
     private Board board;
     private int score = 0;
     private boolean isFinished = false;
+    private LocalDateTime finishedAt;
 
     public AppleGame(Board board, Long ownerId) {
         this.board = board;
         this.ownerId = ownerId;
+        this.finishedAt = willFinishAt();
     }
 
-    public AppleGame(Board board, Long ownerId, LocalDateTime createdAt) {
+    public AppleGame(Board board, Long ownerId, LocalDateTime finishedAt) {
         this.board = board;
         this.ownerId = ownerId;
-        this.createdAt = createdAt;
+        this.finishedAt = finishedAt;
     }
 
     public static AppleGame ofRandomized(Long ownerId) {
@@ -60,6 +62,7 @@ public class AppleGame extends BaseEntity {
         this.board = board.reset();
         this.score = 0;
         this.createdAt = now();
+        this.finishedAt = willFinishAt();
     }
 
     public void removeApplesIn(Range range) {
@@ -73,6 +76,7 @@ public class AppleGame extends BaseEntity {
 
     public void finish() {
         validateOngoing();
+        this.finishedAt = now();
         this.isFinished = true;
     }
 
@@ -83,7 +87,11 @@ public class AppleGame extends BaseEntity {
     }
 
     public boolean isFinished() {
-        return isFinished || now().isAfter(createdAt.plus(SESSION_TIME).plus(SPARE_TIME));
+        return isFinished || now().isAfter(this.finishedAt);
+    }
+
+    private LocalDateTime willFinishAt() {
+        return now().plus(SESSION_TIME);
     }
 
     public List<List<Apple>> getApples() {

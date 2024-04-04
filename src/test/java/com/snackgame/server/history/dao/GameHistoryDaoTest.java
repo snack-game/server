@@ -41,24 +41,28 @@ class GameHistoryDaoTest {
 
         this.gameHistoryDao = new GameHistoryDao(jdbcTemplate);
 
-        this.first = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now()));
+        this.first = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now().plusDays(2));
         first.removeApplesIn(new Range(
                 new Coordinate(0, 1),
                 new Coordinate(1, 3)
         ));
-        this.second = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now()));
+        appleGames.save(first);
+        this.second = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now().plusDays(2));
         second.removeApplesIn(new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         ));
-        this.third = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now()));
+        appleGames.save(second);
+        this.third = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now().plusDays(2));
         third.removeApplesIn(new Range(
                 new Coordinate(0, 0),
                 new Coordinate(1, 0)
         ));
-        this.fourth = appleGames.save(new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now()));
-        this.fifth = appleGames.save(
-                new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.of(2024, 2, 5, 12, 13)));
+        appleGames.save(third);
+        this.fourth = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now().plusDays(2));
+        appleGames.save(fourth);
+        this.fifth = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now().plusDays(3));
+        appleGames.save(fifth);
 
         first.finish();
         second.finish();
