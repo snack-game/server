@@ -20,7 +20,7 @@ import io.swagger.v3.oas.models.Paths;
 
 @Configuration
 @EnableWebSecurity
-@Profile({"local", "production"})
+@Profile({"local", "production", "dev"})
 public class OAuthConfig {
 
     public OAuthConfig(Paths authCustomPaths) {
