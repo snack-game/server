@@ -43,7 +43,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .exposedHeaders("Location")
                 .allowedOriginPatterns(
                         "https://" + HOST_NAME,
-                        "https://api." + HOST_NAME,
                         "https://dev." + HOST_NAME,
                         "https://dev-api." + HOST_NAME,
                         "https://*snack-game.vercel.app",

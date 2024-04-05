@@ -20,3 +20,7 @@ server:
     session:
       cookie:
         same-site: none
+
+springdoc:
+  api-docs:
+    enabled: false
