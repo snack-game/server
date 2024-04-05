@@ -92,11 +92,11 @@ public class AppleGame extends BaseEntity {
     }
 
     public boolean isFinished() {
-        return now().isAfter(this.finishedAt);
+        return now().isAfter(finishedAt);
     }
 
     private LocalDateTime willFinishAt() {
-        return now().plus(SESSION_TIME);
+        return createdAt.plus(SESSION_TIME);
     }
 
     public List<List<Apple>> getApples() {

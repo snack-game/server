@@ -32,6 +32,13 @@ class AppleGameTest {
     }
 
     @Test
+    void 게임_종료시각은_만든지_2분_그리고_여유시간이_지난_후이다() {
+        var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId());
+
+        assertThat(game.getFinishedAt()).isEqualTo(game.getCreatedAt().plusMinutes(2).plusSeconds(5));
+    }
+
+    @Test
     void 재시작한다() {
         var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId());
         var range = new Range(
@@ -123,7 +130,7 @@ class AppleGameTest {
     }
 
     @Test
-    void 만든지_2분_그리고_여유시간이_지나면_초기화할_수_없다() {
+    void 이미_끝난_게임을_초기화할_수_없다() {
         var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now());
 
         assertThatThrownBy(() -> game.restart())
@@ -132,7 +139,7 @@ class AppleGameTest {
     }
 
     @Test
-    void 만든지_2분_그리고_여유시간이_지나면_사과를_제거할_수_없다() {
+    void 이미_끝난_게임의_사과를_제거할_수_없다() {
         var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 땡칠().getId(), LocalDateTime.now());
         var range = new Range(
                 new Coordinate(0, 1),
