@@ -43,7 +43,7 @@ public class SessionRankingDao {
         String sql = "SELECT ranking, a.session_id "
                      + "FROM apple_game a "
                      + "LEFT JOIN (" + RANKING_VIEW + ") whole_ranks ON a.session_id = whole_ranks.session_id "
-                     + "WHERE owner_id = ? and finished_at is not null "
+                     + "WHERE owner_id = ? and TIMESTAMPDIFF(SECOND, now() ,finished_at) <=0 "
                      + "ORDER BY score DESC "
                      + "limit 1";
 
