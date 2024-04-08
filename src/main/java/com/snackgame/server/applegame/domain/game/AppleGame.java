@@ -82,7 +82,7 @@ public class AppleGame extends BaseEntity {
 
     public void finish() {
         validateOngoing();
-        this.finishedAt = now().minus(SPARE_TIME);
+        this.finishedAt = now();
     }
 
     private void validateOngoing() {
@@ -92,7 +92,8 @@ public class AppleGame extends BaseEntity {
     }
 
     public boolean isFinished() {
-        return now().isAfter(finishedAt);
+        LocalDateTime now = now();
+        return now.isEqual(finishedAt) || now.isAfter(finishedAt);
     }
 
     private LocalDateTime willFinishAt() {
