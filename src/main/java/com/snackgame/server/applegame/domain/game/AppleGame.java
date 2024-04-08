@@ -38,7 +38,6 @@ public class AppleGame extends BaseEntity {
     @Lob
     private Board board;
     private int score = 0;
-    private boolean isFinished = false;
     private LocalDateTime finishedAt;
 
     public AppleGame(Board board, Long ownerId) {
@@ -51,6 +50,13 @@ public class AppleGame extends BaseEntity {
         this.board = board;
         this.ownerId = ownerId;
         this.finishedAt = finishedAt;
+    }
+
+    public AppleGame(Board board, Long ownerId, LocalDateTime finishedAt, int score) {
+        this.board = board;
+        this.ownerId = ownerId;
+        this.finishedAt = finishedAt;
+        this.score = score;
     }
 
     public static AppleGame ofRandomized(Long ownerId) {
@@ -77,7 +83,6 @@ public class AppleGame extends BaseEntity {
     public void finish() {
         validateOngoing();
         this.finishedAt = now();
-        this.isFinished = true;
     }
 
     private void validateOngoing() {
@@ -87,11 +92,12 @@ public class AppleGame extends BaseEntity {
     }
 
     public boolean isFinished() {
-        return isFinished || now().isAfter(this.finishedAt);
+        LocalDateTime now = now();
+        return now.isEqual(finishedAt) || now.isAfter(finishedAt);
     }
 
     private LocalDateTime willFinishAt() {
-        return now().plus(SESSION_TIME);
+        return createdAt.plus(SESSION_TIME);
     }
 
     public List<List<Apple>> getApples() {
