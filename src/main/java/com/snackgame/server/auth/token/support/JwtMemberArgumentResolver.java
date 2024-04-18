@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -17,7 +16,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.snackgame.server.auth.exception.TokenAuthenticationException;
-import com.snackgame.server.auth.token.util.BearerTokenExtractor;
 import com.snackgame.server.auth.token.util.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
@@ -25,8 +23,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver {
-
-    private final BearerTokenExtractor bearerTokenExtractor = new BearerTokenExtractor();
     private final JwtProvider accessTokenProvider;
     private final MemberResolver<?> memberResolver;
 
@@ -46,15 +42,10 @@ public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver 
     ) {
 
         Optional<Cookie> foundCookie = getCookieFromRequest(webRequest);
-        if (foundCookie.isPresent()) {
-            String cookieToken = foundCookie.get().getValue();
+        String cookieToken = foundCookie.get().getValue();
 
-            return resolveMember(cookieToken);
-        }
-        String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
-        String headerToken = bearerTokenExtractor.extract(authorization);
+        return resolveMember(cookieToken);
 
-        return resolveMember(headerToken);
     }
 
     private Optional<Cookie> getCookieFromRequest(NativeWebRequest webRequest) {

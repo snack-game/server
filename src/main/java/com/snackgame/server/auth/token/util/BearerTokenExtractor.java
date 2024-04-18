@@ -3,7 +3,7 @@ package com.snackgame.server.auth.token.util;
 import java.util.Objects;
 
 import com.snackgame.server.auth.exception.TokenUnresolvableException;
-
+@Deprecated
 public class BearerTokenExtractor {
 
     private static final String BEARER_TYPE = "Bearer";
