@@ -5,8 +5,6 @@ import java.util.Arrays;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -23,10 +21,9 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver {
+
     private final JwtProvider accessTokenProvider;
     private final MemberResolver<?> memberResolver;
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -40,11 +37,9 @@ public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver 
             NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory
     ) {
+        Cookie accessTokenCookie = getCookieFromRequest(webRequest);
 
-        Cookie foundCookie = getCookieFromRequest(webRequest);
-        String cookieToken = foundCookie.getValue();
-
-        return resolveMember(cookieToken);
+        return resolveMember(accessTokenCookie.getValue());
     }
 
     private Cookie getCookieFromRequest(NativeWebRequest webRequest) {
@@ -53,9 +48,9 @@ public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver 
             throw new TokenUnresolvableException();
         }
         return Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals("accessToken"))
+                .filter(cookie -> cookie.getName().equals(accessTokenProvider.getCanonicalName()))
                 .findFirst()
-                .orElseThrow(() -> new TokenUnresolvableException());
+                .orElseThrow(TokenUnresolvableException::new);
     }
 
     private Object resolveMember(String token) {
