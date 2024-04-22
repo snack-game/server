@@ -1,7 +1,6 @@
 package com.snackgame.server.auth.token.support;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +15,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.snackgame.server.auth.exception.TokenAuthenticationException;
+import com.snackgame.server.auth.exception.TokenUnresolvableException;
 import com.snackgame.server.auth.token.util.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
@@ -41,22 +41,21 @@ public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver 
             WebDataBinderFactory binderFactory
     ) {
 
-        Optional<Cookie> foundCookie = getCookieFromRequest(webRequest);
-        String cookieToken = foundCookie.get().getValue();
+        Cookie foundCookie = getCookieFromRequest(webRequest);
+        String cookieToken = foundCookie.getValue();
 
         return resolveMember(cookieToken);
-
     }
 
-    private Optional<Cookie> getCookieFromRequest(NativeWebRequest webRequest) {
+    private Cookie getCookieFromRequest(NativeWebRequest webRequest) {
         HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
-        if (request.getCookies() != null) {
-            return Arrays.stream(request.getCookies())
-                    .filter(cookie -> cookie.getName().equals("accessToken"))
-                    .findFirst();
+        if (request.getCookies() == null) {
+            throw new TokenUnresolvableException();
         }
-        log.error("요청에 쿠키가 존재하지 않습니다.");
-        return Optional.empty();
+        return Arrays.stream(request.getCookies())
+                .filter(cookie -> cookie.getName().equals("accessToken"))
+                .findFirst()
+                .orElseThrow(() -> new TokenUnresolvableException());
     }
 
     private Object resolveMember(String token) {
