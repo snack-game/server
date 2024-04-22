@@ -1,15 +1,11 @@
 package com.snackgame.server.auth.token.support;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -17,7 +13,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.snackgame.server.auth.exception.TokenAuthenticationException;
-import com.snackgame.server.auth.token.util.BearerTokenExtractor;
+import com.snackgame.server.auth.exception.TokenUnresolvableException;
 import com.snackgame.server.auth.token.util.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
@@ -26,11 +22,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final BearerTokenExtractor bearerTokenExtractor = new BearerTokenExtractor();
     private final JwtProvider accessTokenProvider;
     private final MemberResolver<?> memberResolver;
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -44,28 +37,20 @@ public class JwtMemberArgumentResolver implements HandlerMethodArgumentResolver 
             NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory
     ) {
+        Cookie accessTokenCookie = getCookieFromRequest(webRequest);
 
-        Optional<Cookie> foundCookie = getCookieFromRequest(webRequest);
-        if (foundCookie.isPresent()) {
-            String cookieToken = foundCookie.get().getValue();
-
-            return resolveMember(cookieToken);
-        }
-        String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
-        String headerToken = bearerTokenExtractor.extract(authorization);
-
-        return resolveMember(headerToken);
+        return resolveMember(accessTokenCookie.getValue());
     }
 
-    private Optional<Cookie> getCookieFromRequest(NativeWebRequest webRequest) {
+    private Cookie getCookieFromRequest(NativeWebRequest webRequest) {
         HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
-        if (request.getCookies() != null) {
-            return Arrays.stream(request.getCookies())
-                    .filter(cookie -> cookie.getName().equals("accessToken"))
-                    .findFirst();
+        if (request.getCookies() == null) {
+            throw new TokenUnresolvableException();
         }
-        log.error("요청에 쿠키가 존재하지 않습니다.");
-        return Optional.empty();
+        return Arrays.stream(request.getCookies())
+                .filter(cookie -> cookie.getName().equals(accessTokenProvider.getCanonicalName()))
+                .findFirst()
+                .orElseThrow(TokenUnresolvableException::new);
     }
 
     private Object resolveMember(String token) {
