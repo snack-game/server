@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GameHistoryResponse {
 
-    private final long session_id;
+    private final long sessionId;
 
     private final long memberId;
 
