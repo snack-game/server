@@ -52,7 +52,7 @@ class GameHistoryDaoTest {
     }
 
     @Test
-    void 최근_7일내의_전적들은_날짜_내림차순이어야한다() {
+    void 최근_7일내의_전적들은_최신날짜부터_조회한다() {
         List<Integer> scores = gameHistoryDao.selectByDate(땡칠().getId()).stream().
                 map(GameHistoryResponse::getScore).
                 collect(Collectors.toList());
