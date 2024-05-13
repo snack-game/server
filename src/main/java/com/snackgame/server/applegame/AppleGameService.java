@@ -44,6 +44,11 @@ public class AppleGameService {
         return Optional.empty();
     }
 
+    public void increaseScore(long memberId, long sessionId, int score) {
+        AppleGame game = appleGames.getBy(memberId, sessionId);
+        game.increase(score);
+    }
+
     public AppleGame restart(Long memberId, Long sessionId) {
         AppleGame game = appleGames.getBy(memberId, sessionId);
         game.restart();
