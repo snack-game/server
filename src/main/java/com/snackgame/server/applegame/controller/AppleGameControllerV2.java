@@ -51,6 +51,15 @@ public class AppleGameControllerV2 implements AppleGameControllerV2Docs {
                 .orElseGet(() -> ResponseEntity.ok().build());
     }
 
+    @PostMapping("/sessions/{sessionId}/score")
+    public void increaseScore(
+            @Authenticated Member member,
+            @PathVariable Long sessionId,
+            int amount
+    ) {
+        appleGameService.increaseScore(member.getId(), sessionId, amount);
+    }
+
     @Override
     @DeleteMapping("/sessions/{sessionId}/board")
     public AppleGameResponseV2 restart(@Authenticated Member member, @PathVariable Long sessionId) {

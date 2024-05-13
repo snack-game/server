@@ -15,6 +15,7 @@ import com.snackgame.server.applegame.domain.Coordinate;
 import com.snackgame.server.applegame.domain.Range;
 import com.snackgame.server.applegame.exception.AppleNotRemovableException;
 import com.snackgame.server.applegame.exception.GameSessionExpiredException;
+import com.snackgame.server.applegame.exception.ScoreDecreasingException;
 import com.snackgame.server.applegame.fixture.TestFixture;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -158,5 +159,13 @@ class AppleGameTest {
         game.finish();
 
         assertThat(game.isFinished()).isTrue();
+    }
+
+    @Test
+    void 증가시킬_점수는_양수여야_한다() {
+        var game = AppleGame.ofRandomized(똥수().getId());
+
+        assertThatThrownBy(() -> game.increase(0))
+                .isInstanceOf(ScoreDecreasingException.class);
     }
 }

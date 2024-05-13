@@ -15,6 +15,7 @@ import javax.persistence.Lob;
 import com.snackgame.server.applegame.domain.Range;
 import com.snackgame.server.applegame.domain.apple.Apple;
 import com.snackgame.server.applegame.exception.GameSessionExpiredException;
+import com.snackgame.server.applegame.exception.ScoreDecreasingException;
 import com.snackgame.server.common.domain.BaseEntity;
 
 import lombok.AccessLevel;
@@ -102,5 +103,12 @@ public class AppleGame extends BaseEntity {
 
     public List<List<Apple>> getApples() {
         return board.getApples();
+    }
+
+    public void increase(int amount) {
+        if (amount <= 0) {
+            throw new ScoreDecreasingException();
+        }
+        this.score += amount;
     }
 }
