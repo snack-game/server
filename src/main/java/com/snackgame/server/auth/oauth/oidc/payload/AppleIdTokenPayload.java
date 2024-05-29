@@ -1,6 +1,5 @@
 package com.snackgame.server.auth.oauth.oidc.payload;
 
-
 import java.util.Map;
 
 public class AppleIdTokenPayload implements IdTokenPayload {
@@ -24,5 +23,15 @@ public class AppleIdTokenPayload implements IdTokenPayload {
     @Override
     public String getEmail() {
         return payload.get("email").toString();
+    }
+
+    @Override
+    public String getName() {
+        return payload.get("name").toString();
+    }
+
+    @Override
+    public String getPicture() {
+        return (String)payload.getOrDefault("picture", null);
     }
 }

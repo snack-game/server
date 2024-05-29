@@ -1,6 +1,5 @@
 package com.snackgame.server.auth.oauth.oidc.payload;
 
-
 public interface IdTokenPayload {
 
     String getProvider();
@@ -8,4 +7,8 @@ public interface IdTokenPayload {
     String getId();
 
     String getEmail();
+
+    String getName();
+
+    String getPicture();
 }

@@ -24,4 +24,14 @@ public class GoogleIdTokenPayload implements IdTokenPayload {
     public String getEmail() {
         return payload.get("email").toString();
     }
+
+    @Override
+    public String getName() {
+        return payload.get("name").toString();
+    }
+
+    @Override
+    public String getPicture() {
+        return (String)payload.getOrDefault("picture", null);
+    }
 }
