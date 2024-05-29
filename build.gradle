@@ -29,6 +29,7 @@ dependencies {
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.7.0'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.session:spring-session-jdbc'
+    implementation 'com.google.code.gson:gson:2.11.0'
 
     implementation 'org.springframework.boot:spring-boot-starter-cache'
 
