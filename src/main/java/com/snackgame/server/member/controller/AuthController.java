@@ -2,6 +2,8 @@ package com.snackgame.server.member.controller;
 
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,6 +19,7 @@ import com.snackgame.server.auth.token.support.TokensFromCookie;
 import com.snackgame.server.member.MemberAccountService;
 import com.snackgame.server.member.controller.dto.MemberDetailsResponse;
 import com.snackgame.server.member.controller.dto.NameRequest;
+import com.snackgame.server.member.controller.dto.OidcRequest;
 import com.snackgame.server.member.controller.dto.TokenResponse;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.domain.SocialMember;
@@ -69,6 +72,20 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(SET_COOKIE, tokenToCookies.from(tokens))
                 .body(MemberDetailsResponse.of(socialMember));
+    }
+
+    @Operation(summary = "소셜 사용자 로그인(OIDC)", description = "OIDC를 통해 발급한 Id Token를 사용해 소셜 로그인한다.\n\n"
+                                                           + "OAuth Scope는 `email`, `profile`, `openid`여야 하며, \n\n"
+                                                           + "서비스 인증정보는 쿠키에 저장된다."
+    )
+    @PostMapping("/tokens/social-oidc")
+    public ResponseEntity<MemberDetailsResponse> issueFor(@Valid @RequestBody OidcRequest oidcRequest) {
+        Member member = memberAccountService.getBy(oidcRequest);
+        TokensDto tokens = tokenService.issueFor(member.getId());
+
+        return ResponseEntity.ok()
+                .header(SET_COOKIE, tokenToCookies.from(tokens))
+                .body(MemberDetailsResponse.of(member));
     }
 
     @Operation(
