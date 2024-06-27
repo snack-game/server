@@ -63,7 +63,7 @@ class SessionStatus(private val timeLimit: Duration) {
         }
     }
 
-    private fun validateInProgress() {
+    fun validateInProgress() {
         if (current != IN_PROGRESS) {
             throw SessionNotInProgressException()
         }
