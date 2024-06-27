@@ -43,7 +43,7 @@ class SnackgameService(
     fun update(memberId: Long, sessionId: Long, request: SnackgameUpdateRequest): SnackgameResponse {
         val game = snackGameRepository.findByIdOrNull(sessionId) ?: throw NoSuchSessionException()
 
-        game.score = request.score
+        game.setScoreUnsafely(request.score)
 
         return SnackgameResponse.of(game)
     }

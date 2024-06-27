@@ -5,4 +5,10 @@ import java.time.Duration
 import javax.persistence.Entity
 
 @Entity
-class Snackgame(ownerId: Long) : Session(ownerId, Duration.ofMinutes(2))
+class Snackgame(ownerId: Long) : Session(ownerId, Duration.ofMinutes(2)) {
+
+    @Deprecated("스트릭 구현 시 제거 예정")
+    fun setScoreUnsafely(score: Int) {
+        this.score = score
+    }
+}

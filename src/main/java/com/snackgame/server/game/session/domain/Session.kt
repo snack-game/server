@@ -21,7 +21,7 @@ abstract class Session(
     private val sessionState = SessionState(timeLimit)
 
     var score: Int = score
-        set(value) {
+        protected set(value) {
             sessionState.validateInProgress()
             if (value <= field) {
                 throw ScoreCanOnlyBeIncreasedException()
