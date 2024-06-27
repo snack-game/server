@@ -3,7 +3,11 @@ package com.snackgame.server.member.service
 import com.snackgame.server.auth.oauth.oidc.IdTokenResolver
 import com.snackgame.server.auth.oauth.oidc.payload.IdTokenPayload
 import com.snackgame.server.member.controller.dto.OidcRequest
-import com.snackgame.server.member.domain.*
+import com.snackgame.server.member.domain.Member
+import com.snackgame.server.member.domain.MemberRepository
+import com.snackgame.server.member.domain.Name
+import com.snackgame.server.member.domain.ProfileImage
+import com.snackgame.server.member.domain.SocialMember
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -28,6 +32,7 @@ open class OidcMemberService(
                     payload.id
                 )
             }
+        socialMember.setAdditional(payload.email, payload.distinctName.string)
         return members.save(socialMember)
     }
 
