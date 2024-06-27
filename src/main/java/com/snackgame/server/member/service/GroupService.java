@@ -1,4 +1,4 @@
-package com.snackgame.server.member;
+package com.snackgame.server.member.service;
 
 import java.util.List;
 import java.util.stream.Collectors;

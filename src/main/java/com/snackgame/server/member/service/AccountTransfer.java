@@ -1,4 +1,4 @@
-package com.snackgame.server.member.domain;
+package com.snackgame.server.member.service;
 
 public interface AccountTransfer {
 

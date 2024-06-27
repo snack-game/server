@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.snackgame.server.auth.token.domain.RefreshToken;
 import com.snackgame.server.auth.token.domain.RefreshTokenRepository;
-import com.snackgame.server.member.MemberAccountService;
+import com.snackgame.server.member.service.MemberAccountService;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.support.general.ServiceTest;
 

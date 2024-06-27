@@ -21,7 +21,7 @@ import com.snackgame.server.applegame.domain.game.AppleGames;
 import com.snackgame.server.applegame.event.GameEndEvent;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.fixture.BestScoreFixture;
-import com.snackgame.server.member.MemberAccountService;
+import com.snackgame.server.member.service.MemberAccountService;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.fixture.MemberFixture;
 import com.snackgame.server.rank.applegame.domain.BestScores;

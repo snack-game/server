@@ -1,4 +1,4 @@
-package com.snackgame.server.member;
+package com.snackgame.server.member.service;
 
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
 import static com.snackgame.server.member.fixture.MemberFixture.똥수;
@@ -14,7 +14,6 @@ import com.snackgame.server.member.domain.Guest;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.domain.MemberRepository;
 import com.snackgame.server.member.domain.Name;
-import com.snackgame.server.member.domain.Status;
 import com.snackgame.server.member.exception.DuplicateNameException;
 import com.snackgame.server.member.exception.MemberNotFoundException;
 import com.snackgame.server.support.general.ServiceTest;
@@ -58,12 +57,12 @@ class MemberAccountServiceTest {
         var created = memberRepository.findById(guest.getId()).get();
 
         assertThat(created.getId()).isNotNull();
-        assertThat(created.getNameAsString()).startsWith("게스트");
+        assertThat(created.getNameAsString()).startsWith("guest");
     }
 
     @Test
     void 임시사용자_이름이_중복이면_다시_만든다() {
-        Guest existing = memberRepository.save(new Guest(new Name("게스트#abc")));
+        Guest existing = memberRepository.save(new Guest(new Name("guest_abc")));
 
         Member guest = memberAccountService.createGuest();
 

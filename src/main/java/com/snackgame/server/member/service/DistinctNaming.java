@@ -1,17 +1,20 @@
-package com.snackgame.server.member.domain;
+package com.snackgame.server.member.service;
 
 import org.springframework.stereotype.Component;
 
+import com.snackgame.server.member.domain.MemberRepository;
+import com.snackgame.server.member.domain.Name;
 import com.snackgame.server.member.exception.DuplicateNameException;
 
 @Component
 public class DistinctNaming {
 
     private final MemberRepository members;
-    private final GuestNameRandomizer guestNameRandomizer = new GuestNameRandomizer();
+    private final NameRandomizer nameRandomizer;
 
-    public DistinctNaming(MemberRepository members) {
+    public DistinctNaming(MemberRepository members, NameRandomizer nameRandomizer) {
         this.members = members;
+        this.nameRandomizer = nameRandomizer;
     }
 
     public void validate(Name name) {
@@ -21,9 +24,9 @@ public class DistinctNaming {
     }
 
     public Name ofGuest() {
-        Name name = guestNameRandomizer.get();
+        Name name = nameRandomizer.getBy("guest");
         while (members.existsByName(name)) {
-            name = guestNameRandomizer.get();
+            name = nameRandomizer.getBy("guest");
         }
         return name;
     }

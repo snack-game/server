@@ -1,10 +1,12 @@
-package com.snackgame.server.member.domain;
+package com.snackgame.server.member.service;
 
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
 import com.snackgame.server.auth.token.support.MemberResolver;
+import com.snackgame.server.member.domain.Member;
+import com.snackgame.server.member.domain.MemberRepository;
 
 @Component
 public class SnackgameMemberResolver implements MemberResolver<Member> {

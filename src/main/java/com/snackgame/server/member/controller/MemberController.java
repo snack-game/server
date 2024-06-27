@@ -22,7 +22,7 @@ import com.snackgame.server.auth.token.TokenService;
 import com.snackgame.server.auth.token.dto.TokensDto;
 import com.snackgame.server.auth.token.support.Authenticated;
 import com.snackgame.server.auth.token.support.TokenToCookies;
-import com.snackgame.server.member.MemberAccountService;
+import com.snackgame.server.member.service.MemberAccountService;
 import com.snackgame.server.member.controller.dto.GroupRequest;
 import com.snackgame.server.member.controller.dto.MemberDetailsResponse;
 import com.snackgame.server.member.controller.dto.MemberRequest;

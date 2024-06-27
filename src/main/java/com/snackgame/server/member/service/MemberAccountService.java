@@ -1,4 +1,4 @@
-package com.snackgame.server.member;
+package com.snackgame.server.member.service;
 
 import java.net.URL;
 import java.util.List;
@@ -9,12 +9,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.snackgame.server.auth.oauth.oidc.IdTokenResolver;
-import com.snackgame.server.auth.oauth.oidc.payload.IdTokenPayload;
 import com.snackgame.server.common.file.ResourceResolver;
-import com.snackgame.server.member.controller.dto.OidcRequest;
-import com.snackgame.server.member.domain.AccountTransfer;
-import com.snackgame.server.member.domain.DistinctNaming;
 import com.snackgame.server.member.domain.Group;
 import com.snackgame.server.member.domain.Guest;
 import com.snackgame.server.member.domain.Member;
@@ -34,7 +29,6 @@ public class MemberAccountService {
     private final GroupService groupService;
     private final DistinctNaming distinctNaming;
     private final AccountTransfer accountTransfer;
-    private final IdTokenResolver idTokenResolver;
 
     private final ResourceResolver resourceResolver;
 
@@ -96,18 +90,6 @@ public class MemberAccountService {
 
     public Member getBy(String name) {
         return members.getByName(new Name(name));
-    }
-
-    public Member getBy(OidcRequest oidcRequest) {
-        IdTokenPayload payload = idTokenResolver.resolve(oidcRequest.getIdToken());
-        SocialMember socialMember = members.findByProviderAndProvidedId(payload.getProvider(), payload.getId())
-                .orElseGet(() -> new SocialMember(
-                        distinctNaming.from(new Name(payload.getName())),
-                        new ProfileImage(payload.getPicture()),
-                        payload.getProvider(),
-                        payload.getId()
-                ));
-        return members.save(socialMember);
     }
 
     public List<String> findNamesStartWith(String prefix) {
