@@ -14,7 +14,11 @@ import org.junit.jupiter.api.Test
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores::class)
 class SessionTest {
 
-    private class SomeSession : Session(0)
+    private class SomeSession : Session(0) {
+        fun updateScoreIndirectly(score: Int) {
+            this.score = score
+        }
+    }
 
 
     @Test
@@ -24,25 +28,25 @@ class SessionTest {
 
     @Test
     fun `점수는 기본 0부터 시작한다`() {
-        val someSession: Session = SomeSession()
+        val someSession = SomeSession()
 
         assertThat(someSession.score).isZero()
     }
 
     @Test
-    fun `점수를 증가시킬 수 있다`() {
-        val someSession: Session = SomeSession()
+    fun `점수를 간접적으로 증가시킬 수 있다`() {
+        val someSession = SomeSession()
 
-        someSession.score += 1
+        someSession.updateScoreIndirectly(someSession.score + 1)
 
         assertThat(someSession.score).isOne()
     }
 
     @Test
-    fun `(아직) 점수를 감소시킬 수는 없다`() {
+    fun `(아직) 점수를 간접적으로라도 감소시킬 수는 없다`() {
         val someExpiredSession = SomeSession()
 
-        assertThatThrownBy { someExpiredSession.score -= 1 }
+        assertThatThrownBy { someExpiredSession.updateScoreIndirectly(someExpiredSession.score - 1) }
             .isInstanceOf(ScoreCanOnlyBeIncreasedException::class.java)
     }
 
@@ -80,7 +84,7 @@ class SessionTest {
     fun `만료된 세션은 변경할 수 없다`() {
         val someExpiredSession = SomeSession().also { it.end() }
 
-        assertThatThrownBy { someExpiredSession.score += 1 }
+        assertThatThrownBy { someExpiredSession.updateScoreIndirectly(1) }
             .isInstanceOf(SessionNotInProgressException::class.java)
     }
 }
