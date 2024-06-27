@@ -1,5 +1,6 @@
 package com.snackgame.server.game.session.domain
 
+import com.snackgame.server.common.domain.BaseEntity
 import com.snackgame.server.game.session.exception.ScoreCanOnlyBeIncreasedException
 import java.time.Duration
 import javax.persistence.Embedded
@@ -15,7 +16,7 @@ abstract class Session(
     score: Int = 0,
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val sessionId: Long = 0
-) {
+) : BaseEntity() {
     @Embedded
     private val sessionStatus = SessionStatus(timeLimit)
 

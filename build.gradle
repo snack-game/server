@@ -43,6 +43,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.rest-assured:rest-assured'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    runtimeOnly 'org.jetbrains.kotlin:kotlin-reflect'
 }
 
 tasks.named('test') {

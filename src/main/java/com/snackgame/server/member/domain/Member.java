@@ -69,6 +69,10 @@ public class Member extends BaseEntity {
         this.isValid = false;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getNameAsString() {
         return name.getString();
     }

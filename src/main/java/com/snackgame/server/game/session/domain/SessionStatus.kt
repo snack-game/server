@@ -1,6 +1,8 @@
 package com.snackgame.server.game.session.domain
 
-import com.snackgame.server.game.session.domain.SessionStatusType.*
+import com.snackgame.server.game.session.domain.SessionStatusType.EXPIRED
+import com.snackgame.server.game.session.domain.SessionStatusType.IN_PROGRESS
+import com.snackgame.server.game.session.domain.SessionStatusType.PAUSED
 import com.snackgame.server.game.session.exception.SessionAlreadyInProgressException
 import com.snackgame.server.game.session.exception.SessionExpiredException
 import com.snackgame.server.game.session.exception.SessionNotInProgressException
@@ -8,9 +10,7 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
 import javax.persistence.Embeddable
-import javax.persistence.Entity
 
-@Entity
 @Embeddable
 class SessionStatus(private val timeLimit: Duration) {
 
