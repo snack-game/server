@@ -1,6 +1,6 @@
 package com.snackgame.server.game.session.domain
 
-import com.snackgame.server.game.session.domain.SessionStatusType.*
+import com.snackgame.server.game.session.domain.SessionStateType.*
 import com.snackgame.server.game.session.exception.ScoreCanOnlyBeIncreasedException
 import com.snackgame.server.game.session.exception.SessionNotInProgressException
 import org.assertj.core.api.Assertions.assertThat
@@ -54,7 +54,7 @@ class SessionTest {
 
             someSession.pause()
 
-            assertThat(someSession.currentStatus).isEqualTo(PAUSED)
+            assertThat(someSession.currentState).isEqualTo(PAUSED)
         }
 
         @Test
@@ -63,7 +63,7 @@ class SessionTest {
 
             somePausedSession.resume()
 
-            assertThat(somePausedSession.currentStatus).isEqualTo(IN_PROGRESS)
+            assertThat(somePausedSession.currentState).isEqualTo(IN_PROGRESS)
         }
 
         @Test
@@ -72,7 +72,7 @@ class SessionTest {
 
             someSession.end()
 
-            assertThat(someSession.currentStatus).isEqualTo(EXPIRED)
+            assertThat(someSession.currentState).isEqualTo(EXPIRED)
         }
     }
 

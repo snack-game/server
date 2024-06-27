@@ -1,5 +1,5 @@
 package com.snackgame.server.game.session.domain
 
-enum class SessionStatusType {
+enum class SessionStateType {
     IN_PROGRESS, PAUSED, EXPIRED
 }

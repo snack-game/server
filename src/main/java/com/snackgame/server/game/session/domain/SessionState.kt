@@ -1,8 +1,8 @@
 package com.snackgame.server.game.session.domain
 
-import com.snackgame.server.game.session.domain.SessionStatusType.EXPIRED
-import com.snackgame.server.game.session.domain.SessionStatusType.IN_PROGRESS
-import com.snackgame.server.game.session.domain.SessionStatusType.PAUSED
+import com.snackgame.server.game.session.domain.SessionStateType.EXPIRED
+import com.snackgame.server.game.session.domain.SessionStateType.IN_PROGRESS
+import com.snackgame.server.game.session.domain.SessionStateType.PAUSED
 import com.snackgame.server.game.session.exception.SessionAlreadyInProgressException
 import com.snackgame.server.game.session.exception.SessionExpiredException
 import com.snackgame.server.game.session.exception.SessionNotInProgressException
@@ -12,7 +12,7 @@ import java.time.LocalDateTime.now
 import javax.persistence.Embeddable
 
 @Embeddable
-class SessionStatus(private val timeLimit: Duration) {
+class SessionState(private val timeLimit: Duration) {
 
     var startedAt: LocalDateTime = now()
         private set
@@ -20,7 +20,7 @@ class SessionStatus(private val timeLimit: Duration) {
     var expiresAt: LocalDateTime = startedAt + timeLimit
         private set
 
-    val current: SessionStatusType
+    val current: SessionStateType
         get() {
             if (now().isAfter(expiresAt)) {
                 return EXPIRED

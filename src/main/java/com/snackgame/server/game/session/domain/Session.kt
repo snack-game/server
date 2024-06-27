@@ -12,28 +12,28 @@ import javax.persistence.MappedSuperclass
 @MappedSuperclass
 abstract class Session(
     val ownerId: Long,
-    timeLimit: Duration = SessionStatus.TTL,
+    timeLimit: Duration = SessionState.TTL,
     score: Int = 0,
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val sessionId: Long = 0
 ) : BaseEntity() {
     @Embedded
-    private val sessionStatus = SessionStatus(timeLimit)
+    private val sessionState = SessionState(timeLimit)
 
     var score: Int = score
         set(value) {
-            sessionStatus.validateInProgress()
+            sessionState.validateInProgress()
             if (value <= field) {
                 throw ScoreCanOnlyBeIncreasedException()
             }
             field = value
         }
 
-    val currentStatus: SessionStatusType
-        get() = sessionStatus.current
+    val currentState: SessionStateType
+        get() = sessionState.current
 
-    fun pause() = sessionStatus.pause()
-    fun resume() = sessionStatus.resume()
-    fun end() = sessionStatus.end()
+    fun pause() = sessionState.pause()
+    fun resume() = sessionState.resume()
+    fun end() = sessionState.end()
 }
 
