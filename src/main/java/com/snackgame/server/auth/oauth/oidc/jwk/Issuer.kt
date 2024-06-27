@@ -5,7 +5,6 @@ import com.snackgame.server.auth.oauth.oidc.payload.GoogleIdTokenPayload
 import com.snackgame.server.auth.oauth.oidc.payload.IdTokenPayload
 import com.snackgame.server.auth.oauth.oidc.payload.KakaoIdTokenPayload
 import java.net.URL
-import java.util.*
 
 enum class Issuer(
     private val jwkProvider: JwkProvider
@@ -20,11 +19,6 @@ enum class Issuer(
     }
 
     companion object {
-        @JvmStatic
-        fun of(idToken: IdToken): Optional<Issuer> {
-            return entries.stream()
-                .filter { it.jwkProvider.supports(idToken) }
-                .findFirst()
-        }
+        fun of(idToken: IdToken): Issuer? = entries.firstOrNull { it.jwkProvider.supports(idToken) }
     }
 }

@@ -2,7 +2,7 @@ package com.snackgame.server.applegame.domain.game;
 
 import org.springframework.stereotype.Component;
 
-import com.snackgame.server.member.domain.AccountTransfer;
+import com.snackgame.server.member.service.AccountTransfer;
 
 import lombok.RequiredArgsConstructor;
 

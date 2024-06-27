@@ -1,4 +1,4 @@
-package com.snackgame.server.member;
+package com.snackgame.server.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -16,13 +16,14 @@ import com.snackgame.server.auth.token.TokenService;
 import com.snackgame.server.auth.token.dto.TokensDto;
 import com.snackgame.server.auth.token.support.TokenToCookies;
 import com.snackgame.server.auth.token.support.TokensFromCookie;
-import com.snackgame.server.member.MemberAccountService;
 import com.snackgame.server.member.controller.dto.MemberDetailsResponse;
 import com.snackgame.server.member.controller.dto.NameRequest;
 import com.snackgame.server.member.controller.dto.OidcRequest;
 import com.snackgame.server.member.controller.dto.TokenResponse;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.domain.SocialMember;
+import com.snackgame.server.member.service.MemberAccountService;
+import com.snackgame.server.member.service.OidcMemberService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,6 +38,7 @@ public class AuthController {
     private final TokenToCookies tokenToCookies;
     private final TokenService tokenService;
     private final MemberAccountService memberAccountService;
+    private final OidcMemberService oidcMemberService;
 
     @Operation(summary = "게스트 토큰 발급", description = "임시 사용자를 생성하고, 토큰을 발급한다")
     @PostMapping("/tokens/guest")
@@ -80,7 +82,7 @@ public class AuthController {
     )
     @PostMapping("/tokens/social-oidc")
     public ResponseEntity<MemberDetailsResponse> issueFor(@Valid @RequestBody OidcRequest oidcRequest) {
-        Member member = memberAccountService.getBy(oidcRequest);
+        Member member = oidcMemberService.getBy(oidcRequest);
         TokensDto tokens = tokenService.issueFor(member.getId());
 
         return ResponseEntity.ok()

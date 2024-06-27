@@ -1,9 +1,13 @@
-package com.snackgame.server.member.domain;
+package com.snackgame.server.member.service;
 
 import org.springframework.stereotype.Component;
 
 import com.snackgame.server.auth.oauth.attributes.OAuthAttributes;
 import com.snackgame.server.auth.oauth.support.SocialMemberSaver;
+import com.snackgame.server.member.domain.MemberRepository;
+import com.snackgame.server.member.domain.Name;
+import com.snackgame.server.member.domain.ProfileImage;
+import com.snackgame.server.member.domain.SocialMember;
 
 @Component
 public class SnackgameSocialMemberSaver implements SocialMemberSaver<SocialMember> {
