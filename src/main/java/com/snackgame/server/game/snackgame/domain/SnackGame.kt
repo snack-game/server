@@ -5,4 +5,4 @@ import java.time.Duration
 import javax.persistence.Entity
 
 @Entity
-class SnackGame : Session(Duration.ofMinutes(2))
+class SnackGame(ownerId: Long) : Session(ownerId, Duration.ofMinutes(2))

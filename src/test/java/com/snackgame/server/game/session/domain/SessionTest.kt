@@ -14,7 +14,13 @@ import org.junit.jupiter.api.Test
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores::class)
 class SessionTest {
 
-    private class SomeSession : Session()
+    private class SomeSession : Session(0)
+
+
+    @Test
+    fun `세션 주인을 저장한다`() {
+        assertThat(Session::class.java).hasDeclaredFields("ownerId")
+    }
 
     @Test
     fun `점수는 기본 0부터 시작한다`() {

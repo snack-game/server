@@ -10,6 +10,7 @@ import javax.persistence.MappedSuperclass
 
 @MappedSuperclass
 abstract class Session(
+    val ownerId: Long,
     timeLimit: Duration = SessionStatus.TTL,
     score: Int = 0,
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
