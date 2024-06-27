@@ -14,7 +14,7 @@ abstract class Session(
     timeLimit: Duration = SessionStatus.TTL,
     score: Int = 0,
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0
+    val sessionId: Long = 0
 ) {
     @Embedded
     private val sessionStatus = SessionStatus(timeLimit)
