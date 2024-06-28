@@ -2,6 +2,7 @@ package com.snackgame.server.game.snackgame.controller
 
 import com.snackgame.server.auth.token.support.Authenticated
 import com.snackgame.server.game.snackgame.service.SnackgameService
+import com.snackgame.server.game.snackgame.service.dto.SnackgameEndResponse
 import com.snackgame.server.game.snackgame.service.dto.SnackgameResponse
 import com.snackgame.server.game.snackgame.service.dto.SnackgameUpdateRequest
 import com.snackgame.server.member.domain.Member
@@ -34,22 +35,6 @@ class SnackgameController(
         snackgameService.startSessionFor(member.id)
 
     @Operation(
-        summary = "스낵게임 세션 일시정지",
-        description = """
-해당 세션이 일시정지된다.
-
-일시정지된 세션은 별도로 종료하지 않아도 **7일** 후 자동으로 만료된다."""
-    )
-    @PostMapping("/{sessionId}/pause")
-    fun pause(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameResponse =
-        snackgameService.pause(member.id, sessionId)
-
-    @Operation(summary = "스낵게임 세션 종료", description = "세션을 종료한다")
-    @PostMapping("/{sessionId}/end")
-    fun end(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameResponse =
-        snackgameService.end(member.id, sessionId)
-
-    @Operation(
         summary = "[임시] 스낵게임 세션 수정",
         description = """
 세션을 수정한다.
@@ -62,4 +47,20 @@ class SnackgameController(
         @PathVariable sessionId: Long,
         @Valid @RequestBody request: SnackgameUpdateRequest,
     ): SnackgameResponse = snackgameService.update(member.id, sessionId, request)
+
+    @Operation(
+        summary = "스낵게임 세션 일시정지",
+        description = """
+해당 세션이 일시정지된다.
+
+일시정지된 세션은 별도로 종료하지 않아도 **7일** 후 자동으로 만료된다."""
+    )
+    @PostMapping("/{sessionId}/pause")
+    fun pause(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameResponse =
+        snackgameService.pause(member.id, sessionId)
+
+    @Operation(summary = "스낵게임 세션 종료", description = "세션을 종료한다")
+    @PostMapping("/{sessionId}/end")
+    fun end(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameEndResponse =
+        snackgameService.end(member.id, sessionId)
 }
