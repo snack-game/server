@@ -31,7 +31,7 @@ class SnackgameController(
     )
     @PostMapping
     fun startSessionFor(@Authenticated member: Member): SnackgameResponse =
-        snackgameService.start(member.id)
+        snackgameService.startSessionFor(member.id)
 
     @Operation(
         summary = "스낵게임 세션 일시정지",

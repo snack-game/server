@@ -15,7 +15,7 @@ class SnackgameService(
 ) {
 
     @Transactional
-    fun start(memberId: Long): SnackgameResponse {
+    fun startSessionFor(memberId: Long): SnackgameResponse {
         val game = snackGameRepository.save(Snackgame(memberId))
 
         return SnackgameResponse.of(game)
