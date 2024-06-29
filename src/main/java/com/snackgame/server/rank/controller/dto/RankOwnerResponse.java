@@ -1,4 +1,4 @@
-package com.snackgame.server.rank.applegame.controller.dto;
+package com.snackgame.server.rank.controller.dto;
 
 import com.snackgame.server.member.controller.dto.GroupResponse;
 import com.snackgame.server.member.controller.dto.StatusResponse;

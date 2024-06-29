@@ -2,7 +2,7 @@ package com.snackgame.server.fixture;
 
 import static java.time.LocalDateTime.parse;
 
-import com.snackgame.server.rank.applegame.domain.Season;
+import com.snackgame.server.rank.domain.Season;
 import com.snackgame.server.support.fixture.FixtureSaver;
 
 @SuppressWarnings("NonAsciiCharacters")

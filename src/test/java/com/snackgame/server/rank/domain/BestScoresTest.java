@@ -1,4 +1,4 @@
-package com.snackgame.server.rank.applegame.domain;
+package com.snackgame.server.rank.domain;
 
 import static com.snackgame.server.fixture.BestScoreFixture.베타시즌_땡칠_10점;
 import static com.snackgame.server.fixture.BestScoreFixture.베타시즌_똥수_10점;

@@ -1,4 +1,4 @@
-package com.snackgame.server.rank.applegame.dao;
+package com.snackgame.server.rank.dao;
 
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
 import static com.snackgame.server.member.fixture.MemberFixture.정환;
@@ -21,7 +21,7 @@ import com.snackgame.server.applegame.domain.game.AppleGame;
 import com.snackgame.server.applegame.domain.game.AppleGames;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.member.fixture.MemberFixture;
-import com.snackgame.server.rank.applegame.dao.dto.RankingDto;
+import com.snackgame.server.rank.dao.dto.RankingDto;
 import com.snackgame.server.support.general.DatabaseCleaningDataJpaTest;
 
 @SuppressWarnings("NonAsciiCharacters")

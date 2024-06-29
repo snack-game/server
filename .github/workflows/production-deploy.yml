@@ -99,7 +99,7 @@ jobs:
         shell: bash {0}
         run: |
           PROCESS_ID="$(lsof -i:$GREEN_PORT -t)"
-          while [ "$(curl -o /dev/null -s -w %{http_code} localhost:$GREEN_PORT/rankings?by=BEST_SCORE)" != 200 ]
+          while [ "$(curl -o /dev/null -s -w %{http_code} localhost:$GREEN_PORT/rankings/1?by=BEST_SCORE)" != 200 ]
           do
             if [ ! -e /proc/$PROCESS_ID ]; then
               echo "::error title=배포 실패::블루 어플리케이션으로 롤백합니다.";

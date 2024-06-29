@@ -1,4 +1,4 @@
-package com.snackgame.server.rank.applegame.controller;
+package com.snackgame.server.rank.controller;
 
 import static com.snackgame.server.fixture.BestScoreFixture.베타시즌_땡칠_10점;
 import static com.snackgame.server.fixture.BestScoreFixture.베타시즌_똥수_10점;
@@ -32,9 +32,9 @@ import org.springframework.http.HttpStatus;
 
 import com.snackgame.server.fixture.BestScoreFixture;
 import com.snackgame.server.member.controller.dto.NameRequest;
-import com.snackgame.server.rank.applegame.controller.dto.RankOwnerResponse;
-import com.snackgame.server.rank.applegame.controller.dto.RankResponseV2;
-import com.snackgame.server.rank.applegame.domain.Season;
+import com.snackgame.server.rank.controller.dto.RankOwnerResponse;
+import com.snackgame.server.rank.controller.dto.RankResponseV2;
+import com.snackgame.server.rank.domain.Season;
 import com.snackgame.server.support.restassured.RestAssuredTest;
 
 import io.restassured.RestAssured;
@@ -43,7 +43,7 @@ import io.restassured.common.mapper.TypeRef;
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @RestAssuredTest
-class AppleGameRankingControllerTest {
+class RankingControllerTest {
 
     @BeforeEach
     void setUp() {

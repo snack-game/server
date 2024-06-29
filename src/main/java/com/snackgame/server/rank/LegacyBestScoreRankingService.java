@@ -1,4 +1,4 @@
-package com.snackgame.server.rank.applegame;
+package com.snackgame.server.rank;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.snackgame.server.applegame.domain.game.AppleGames;
 import com.snackgame.server.applegame.exception.NoRankingYetException;
-import com.snackgame.server.rank.applegame.controller.dto.RankingResponse;
-import com.snackgame.server.rank.applegame.dao.SessionRankingDao;
-import com.snackgame.server.rank.applegame.dao.dto.RankingDto;
+import com.snackgame.server.rank.controller.dto.RankingResponse;
+import com.snackgame.server.rank.dao.SessionRankingDao;
+import com.snackgame.server.rank.dao.dto.RankingDto;
 
 import lombok.RequiredArgsConstructor;
 

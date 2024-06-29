@@ -1,4 +1,4 @@
-package com.snackgame.server.rank.applegame.controller.dto;
+package com.snackgame.server.rank.controller.dto;
 
 import com.snackgame.server.applegame.domain.game.AppleGame;
 

@@ -1,4 +1,4 @@
-package com.snackgame.server.rank.applegame;
+package com.snackgame.server.rank;
 
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
 import static com.snackgame.server.member.fixture.MemberFixture.똥수;
@@ -24,7 +24,7 @@ import com.snackgame.server.fixture.BestScoreFixture;
 import com.snackgame.server.member.service.MemberAccountService;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.fixture.MemberFixture;
-import com.snackgame.server.rank.applegame.domain.BestScores;
+import com.snackgame.server.rank.domain.BestScores;
 import com.snackgame.server.support.general.ServiceTest;
 
 @SuppressWarnings("NonAsciiCharacters")
