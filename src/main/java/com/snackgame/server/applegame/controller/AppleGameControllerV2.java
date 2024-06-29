@@ -22,6 +22,7 @@ import com.snackgame.server.member.domain.Member;
 
 import lombok.RequiredArgsConstructor;
 
+@Deprecated(forRemoval = true)
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v2")

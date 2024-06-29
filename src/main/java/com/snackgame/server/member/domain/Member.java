@@ -73,6 +73,10 @@ public class Member extends BaseEntity {
         return id;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
     public String getNameAsString() {
         return name.getString();
     }

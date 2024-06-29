@@ -1,6 +1,7 @@
 package com.snackgame.server.game.session.domain
 
 import com.snackgame.server.common.domain.BaseEntity
+import com.snackgame.server.game.metadata.Metadata
 import com.snackgame.server.game.session.exception.ScoreCanOnlyBeIncreasedException
 import java.time.Duration
 import javax.persistence.Embedded
@@ -31,6 +32,8 @@ abstract class Session(
 
     val currentState: SessionStateType
         get() = sessionState.current
+
+    abstract fun getMetadata(): Metadata
 
     fun pause() = sessionState.pause()
     fun resume() = sessionState.resume()
