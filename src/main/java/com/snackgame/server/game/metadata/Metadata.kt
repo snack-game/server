@@ -1,7 +1,7 @@
 package com.snackgame.server.game.metadata
 
 enum class Metadata(
-    val id: Long,
+    val gameId: Long,
     val localizedName: String
 ) {
 
