@@ -1,4 +1,4 @@
-package com.snackgame.server.rank.applegame.dao;
+package com.snackgame.server.rank.dao;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import com.snackgame.server.rank.applegame.dao.dto.RankingDto;
+import com.snackgame.server.rank.dao.dto.RankingDto;
 
 @Component
 @Deprecated

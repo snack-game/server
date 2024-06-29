@@ -1,4 +1,4 @@
-package com.snackgame.server.rank.applegame;
+package com.snackgame.server.rank;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,11 +12,11 @@ import com.snackgame.server.applegame.event.GameEndEvent;
 import com.snackgame.server.member.domain.AccountType;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.domain.MemberRepository;
-import com.snackgame.server.rank.applegame.controller.dto.RankResponseV2;
-import com.snackgame.server.rank.applegame.domain.BestScore;
-import com.snackgame.server.rank.applegame.domain.BestScores;
-import com.snackgame.server.rank.applegame.domain.Season;
-import com.snackgame.server.rank.applegame.domain.SeasonRepository;
+import com.snackgame.server.rank.controller.dto.RankResponseV2;
+import com.snackgame.server.rank.domain.BestScore;
+import com.snackgame.server.rank.domain.BestScores;
+import com.snackgame.server.rank.domain.Season;
+import com.snackgame.server.rank.domain.SeasonRepository;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,4 +1,4 @@
-package com.snackgame.server.rank.applegame.controller;
+package com.snackgame.server.rank.controller;
 
 import java.util.List;
 
@@ -9,50 +9,60 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.snackgame.server.auth.token.support.Authenticated;
 import com.snackgame.server.member.domain.Member;
-import com.snackgame.server.rank.applegame.BestScoreRankingService;
-import com.snackgame.server.rank.applegame.LegacyBestScoreRankingService;
-import com.snackgame.server.rank.applegame.controller.dto.RankResponseV2;
-import com.snackgame.server.rank.applegame.controller.dto.RankingResponse;
-import com.snackgame.server.rank.applegame.domain.Season;
-import com.snackgame.server.rank.applegame.domain.SeasonRepository;
+import com.snackgame.server.rank.BestScoreRankingService;
+import com.snackgame.server.rank.LegacyBestScoreRankingService;
+import com.snackgame.server.rank.controller.dto.RankResponseV2;
+import com.snackgame.server.rank.controller.dto.RankingResponse;
+import com.snackgame.server.rank.domain.Season;
+import com.snackgame.server.rank.domain.SeasonRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "⭐️ 랭킹")
 @RestController
 @RequiredArgsConstructor
-public class AppleGameRankingController {
+public class RankingController {
 
     private final BestScoreRankingService bestScoreRankingService;
     private final LegacyBestScoreRankingService legacyBestScoreRankingService;
     private final SeasonRepository seasonRepository;
 
     @Operation(summary = "전체 시즌 - 선두 랭크 조회", description = "전체 시즌에서 랭킹을 선두 50등까지 조회한다")
-    @GetMapping("/rankings")
-    public List<RankResponseV2> showLeadingRanksBy(@RequestParam("by") Criteria criteria) {
+    @GetMapping("/rankings/{gameId}")
+    public List<RankResponseV2> showLeadingRanksBy(
+            @PathVariable Long gameId,
+            @RequestParam("by") RankingController.Criteria criteria
+    ) {
         return bestScoreRankingService.rankLeaders();
     }
 
     @Operation(summary = "전체 시즌 - 자신의 랭크 조회", description = "전체 시즌에서 자신의 랭킹을 조회한다")
-    @GetMapping("/rankings/me")
-    public RankResponseV2 showRankOf(@Authenticated Member member, @RequestParam("by") Criteria criteria) {
+    @GetMapping("/rankings/{gameId}/me")
+    public RankResponseV2 showRankOf(
+            @Authenticated Member member,
+            @PathVariable Long gameId,
+            @RequestParam("by") RankingController.Criteria criteria) {
         return bestScoreRankingService.rank(member.getId());
     }
 
     @Operation(summary = "선두 랭크 조회", description = "특정 시즌에서 랭킹을 선두 50등까지 조회한다")
-    @GetMapping("/rankings/{seasonId}")
+    @GetMapping("/rankings/{seasonId}/{gameId}")
     public List<RankResponseV2> showLeadingRanksBy(
             @PathVariable Long seasonId,
+            @PathVariable Long gameId,
             @RequestParam("by") Criteria criteria
     ) {
         return bestScoreRankingService.rankLeadersBy(seasonId);
     }
 
     @Operation(summary = "자신의 랭크 조회", description = "특정 시즌에서 자신의 랭킹을 조회한다")
-    @GetMapping("/rankings/{seasonId}/me")
+    @GetMapping("/rankings/{seasonId}/{gameId}/me")
     public RankResponseV2 showRankOf(
             @Authenticated Member member,
             @PathVariable Long seasonId,
+            @PathVariable Long gameId,
             @RequestParam("by") Criteria criteria
     ) {
         return bestScoreRankingService.rank(member.getId(), seasonId);
@@ -64,7 +74,7 @@ public class AppleGameRankingController {
         return seasonRepository.findAll();
     }
 
-    private enum Criteria {
+    public enum Criteria {
         BEST_SCORE;
     }
 

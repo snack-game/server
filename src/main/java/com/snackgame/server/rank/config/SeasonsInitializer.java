@@ -1,4 +1,4 @@
-package com.snackgame.server.rank.applegame.config;
+package com.snackgame.server.rank.config;
 
 import static java.time.LocalDateTime.parse;
 
@@ -8,8 +8,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import com.snackgame.server.rank.applegame.domain.Season;
-import com.snackgame.server.rank.applegame.domain.SeasonRepository;
+import com.snackgame.server.rank.domain.Season;
+import com.snackgame.server.rank.domain.SeasonRepository;
 
 import lombok.RequiredArgsConstructor;
 

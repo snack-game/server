@@ -1,4 +1,4 @@
-package com.snackgame.server.rank.applegame.domain;
+package com.snackgame.server.rank.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,9 +29,9 @@ public class BestScore {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int score = 0;
-    @Column(name = "owner_id", nullable = false)
+    @Column(nullable = false)
     private Long ownerId;
-    @Column(name = "season_id", nullable = false)
+    @Column(nullable = false)
     private Long seasonId;
     private Long sessionId = null;
 

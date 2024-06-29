@@ -1,4 +1,4 @@
-package com.snackgame.server.rank.applegame.dao.dto;
+package com.snackgame.server.rank.dao.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.snackgame.server.rank.applegame.domain;
+package com.snackgame.server.rank.domain;
 
 import java.util.List;
 

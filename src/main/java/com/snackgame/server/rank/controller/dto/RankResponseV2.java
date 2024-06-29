@@ -1,8 +1,8 @@
-package com.snackgame.server.rank.applegame.controller.dto;
+package com.snackgame.server.rank.controller.dto;
 
 import com.snackgame.server.member.controller.dto.GroupResponse;
 import com.snackgame.server.member.controller.dto.StatusResponse;
-import com.snackgame.server.rank.applegame.domain.BestScoreWithRankAndOwner;
+import com.snackgame.server.rank.domain.BestScoreWithRankAndOwner;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;

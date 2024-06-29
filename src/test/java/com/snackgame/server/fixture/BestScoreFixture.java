@@ -9,7 +9,7 @@ import static com.snackgame.server.member.fixture.MemberFixture.정언;
 import static com.snackgame.server.member.fixture.MemberFixture.정환;
 
 import com.snackgame.server.member.fixture.MemberFixture;
-import com.snackgame.server.rank.applegame.domain.BestScore;
+import com.snackgame.server.rank.domain.BestScore;
 import com.snackgame.server.support.fixture.FixtureSaver;
 
 @SuppressWarnings("NonAsciiCharacters")
