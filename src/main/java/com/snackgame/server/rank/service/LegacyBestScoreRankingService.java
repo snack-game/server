@@ -1,4 +1,4 @@
-package com.snackgame.server.rank;
+package com.snackgame.server.rank.service;
 
 import java.util.List;
 import java.util.stream.Collectors;

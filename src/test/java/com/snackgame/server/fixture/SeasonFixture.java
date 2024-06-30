@@ -10,19 +10,19 @@ public class SeasonFixture {
 
     public static Season 베타시즌() {
         return new Season(
-                1L,
                 "베타 시즌",
                 parse("2023-09-01T00:00:00"),
-                parse("2024-02-18T23:59:59")
+                parse("2024-02-18T23:59:59"),
+                1L
         );
     }
 
     public static Season 시즌1() {
         return new Season(
-                2L,
                 "시즌 1",
                 parse("2024-02-19T00:00:00"),
-                null
+                null,
+                2L
         );
     }
 
