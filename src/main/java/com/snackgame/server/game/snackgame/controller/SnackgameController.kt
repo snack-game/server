@@ -59,6 +59,11 @@ class SnackgameController(
     fun pause(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameResponse =
         snackgameService.pause(member.id, sessionId)
 
+    @Operation(summary = "스낵게임 세션 재개", description = "해당 세션을 재개한다")
+    @PostMapping("/{sessionId}/resume")
+    fun resume(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameResponse =
+        snackgameService.resume(member.id, sessionId)
+
     @Operation(summary = "스낵게임 세션 종료", description = "세션을 종료한다")
     @PostMapping("/{sessionId}/end")
     fun end(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameEndResponse =

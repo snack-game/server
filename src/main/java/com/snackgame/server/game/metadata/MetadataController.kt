@@ -1,5 +1,6 @@
 package com.snackgame.server.game.metadata
 
+import com.snackgame.server.game.session.domain.SessionStateType
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.GetMapping
@@ -15,5 +16,11 @@ class MetadataController {
     @GetMapping
     fun enumerateMetadata(): List<MetadataResponse> {
         return Metadata.entries.map { MetadataResponse(it.gameId, it.localizedName) }
+    }
+
+    @Operation(summary = "세션 상태 나열")
+    @GetMapping("/session-states")
+    fun enumerateSessionStates(): List<SessionStateType> {
+        return SessionStateType.entries
     }
 }

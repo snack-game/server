@@ -47,6 +47,15 @@ class SnackgameService(
     }
 
     @Transactional
+    fun resume(memberId: Long, sessionId: Long): SnackgameResponse {
+        val game = snackGameRepository.getBy(sessionId)
+
+        game.resume()
+
+        return SnackgameResponse.of(game)
+    }
+
+    @Transactional
     fun end(memberId: Long, sessionId: Long): SnackgameEndResponse {
         val game = snackGameRepository.getBy(sessionId)
 
