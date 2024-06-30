@@ -3,7 +3,7 @@ package com.snackgame.server.game.session.domain
 import com.snackgame.server.game.session.domain.SessionStateType.EXPIRED
 import com.snackgame.server.game.session.domain.SessionStateType.IN_PROGRESS
 import com.snackgame.server.game.session.domain.SessionStateType.PAUSED
-import com.snackgame.server.game.session.exception.SessionAlreadyInProgressException
+import com.snackgame.server.game.session.exception.SessionNotPausedException
 import com.snackgame.server.game.session.exception.SessionExpiredException
 import com.snackgame.server.game.session.exception.SessionNotInProgressException
 import java.time.Duration
@@ -62,8 +62,8 @@ class SessionState(private val timeLimit: Duration) {
     }
 
     private fun validatePaused() {
-        if (current == IN_PROGRESS) {
-            throw SessionAlreadyInProgressException()
+        if (current != PAUSED) {
+            throw SessionNotPausedException()
         }
     }
 

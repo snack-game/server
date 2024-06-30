@@ -3,10 +3,11 @@
 package com.snackgame.server.game.session.domain
 
 import com.snackgame.server.game.session.domain.SessionStateType.EXPIRED
-import com.snackgame.server.game.session.exception.SessionAlreadyInProgressException
+import com.snackgame.server.game.session.exception.SessionNotPausedException
 import com.snackgame.server.game.session.exception.SessionNotInProgressException
 import org.assertj.core.api.AbstractLocalDateTimeAssert
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.within
 import org.assertj.core.api.SoftAssertions.assertSoftly
 import org.junit.jupiter.api.Test
 import java.time.Duration
@@ -40,11 +41,18 @@ class SessionStateTest {
     }
 
     @Test
-    fun `이미 진행중인 경우 재개할 수 없다`() {
-        val sessionState = SessionState(SESSION_TIME_LIMIT)
+    fun `일시중지된 경우에만 재개할 수 있다`() {
+        val sessionStateInProgress = SessionState(SESSION_TIME_LIMIT)
+        val expiredSessionState = SessionState(Duration.ZERO)
 
-        assertThatThrownBy { sessionState.resume() }
-            .isInstanceOf(SessionAlreadyInProgressException::class.java)
+        assertSoftly {
+            with(it) {
+                assertThatThrownBy { sessionStateInProgress.resume() }
+                    .isInstanceOf(SessionNotPausedException::class.java)
+                assertThatThrownBy { expiredSessionState.resume() }
+                    .isInstanceOf(SessionNotPausedException::class.java)
+            }
+        }
     }
 
     @Test
