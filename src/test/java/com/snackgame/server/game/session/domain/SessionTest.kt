@@ -1,6 +1,9 @@
 package com.snackgame.server.game.session.domain
 
-import com.snackgame.server.game.session.domain.SessionStateType.*
+import com.snackgame.server.game.metadata.Metadata
+import com.snackgame.server.game.session.domain.SessionStateType.EXPIRED
+import com.snackgame.server.game.session.domain.SessionStateType.IN_PROGRESS
+import com.snackgame.server.game.session.domain.SessionStateType.PAUSED
 import com.snackgame.server.game.session.exception.ScoreCanOnlyBeIncreasedException
 import com.snackgame.server.game.session.exception.SessionNotInProgressException
 import org.assertj.core.api.Assertions.assertThat
@@ -18,8 +21,9 @@ class SessionTest {
         fun updateScoreIndirectly(score: Int) {
             this.score = score
         }
-    }
 
+        override fun getMetadata(): Metadata = Metadata.APPLE_GAME
+    }
 
     @Test
     fun `세션 주인을 저장한다`() {

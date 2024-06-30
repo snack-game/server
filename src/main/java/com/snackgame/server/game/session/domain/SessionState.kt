@@ -52,7 +52,7 @@ class SessionState(private val timeLimit: Duration) {
         if (pausedAt != null) {
             resume()
         }
-        expiresAt = now()
+        expiresAt = now().minusNanos(1)
     }
 
     private fun validateNotExpired() {
