@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository
 @Repository
 interface SnackgameRepository : JpaRepository<Snackgame, Long> {
 
+    fun findByOwnerIdAndSessionId(ownerId: Long, sessionId: Long): Snackgame?
+
     @Query(
         value = """
             with scores as (

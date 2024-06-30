@@ -10,7 +10,6 @@ import com.snackgame.server.game.snackgame.service.dto.SnackgameResponse
 import com.snackgame.server.game.snackgame.service.dto.SnackgameUpdateRequest
 import com.snackgame.server.member.domain.MemberRepository
 import org.springframework.context.ApplicationEventPublisher
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -30,7 +29,7 @@ class SnackgameService(
 
     @Transactional
     fun update(memberId: Long, sessionId: Long, request: SnackgameUpdateRequest): SnackgameResponse {
-        val game = snackGameRepository.getBy(sessionId)
+        val game = snackGameRepository.getBy(memberId, sessionId)
 
         game.setScoreUnsafely(request.score)
 
@@ -39,7 +38,7 @@ class SnackgameService(
 
     @Transactional
     fun pause(memberId: Long, sessionId: Long): SnackgameResponse {
-        val game = snackGameRepository.getBy(sessionId)
+        val game = snackGameRepository.getBy(memberId, sessionId)
 
         game.pause()
 
@@ -48,7 +47,7 @@ class SnackgameService(
 
     @Transactional
     fun resume(memberId: Long, sessionId: Long): SnackgameResponse {
-        val game = snackGameRepository.getBy(sessionId)
+        val game = snackGameRepository.getBy(memberId, sessionId)
 
         game.resume()
 
@@ -57,7 +56,7 @@ class SnackgameService(
 
     @Transactional
     fun end(memberId: Long, sessionId: Long): SnackgameEndResponse {
-        val game = snackGameRepository.getBy(sessionId)
+        val game = snackGameRepository.getBy(memberId, sessionId)
 
         game.end()
 
@@ -70,8 +69,8 @@ class SnackgameService(
     }
 }
 
-private fun SnackgameRepository.getBy(sessionId: Long): Snackgame =
-    findByIdOrNull(sessionId) ?: throw NoSuchSessionException()
+private fun SnackgameRepository.getBy(ownerId: Long, sessionId: Long): Snackgame =
+    findByOwnerIdAndSessionId(ownerId, sessionId) ?: throw NoSuchSessionException()
 
 private fun SnackgameRepository.ratePercentileOf(sessionId: Long): Percentile {
     with(findPercentileOf(sessionId)) {
