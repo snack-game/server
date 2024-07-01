@@ -1,4 +1,4 @@
-package com.snackgame.server.notification
+package com.snackgame.server.messaging
 
 data class DiscordMessage(
     val content: String
