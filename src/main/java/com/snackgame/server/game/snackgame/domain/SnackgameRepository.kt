@@ -13,7 +13,7 @@ interface SnackgameRepository : JpaRepository<Snackgame, Long> {
         value = """
             with scores as (
                 select percent_rank() over (order by score desc) as percentile, session_id, score 
-                from apple_game where TIMESTAMPDIFF(SECOND, now(), finished_at) <=0
+                from snack_game where TIMESTAMPDIFF(SECOND, now(), finished_at) <=0
             )
             select percentile from scores where session_id = :sessionId""",
         nativeQuery = true
