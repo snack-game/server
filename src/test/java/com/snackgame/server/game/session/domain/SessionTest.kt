@@ -4,7 +4,7 @@ import com.snackgame.server.game.metadata.Metadata
 import com.snackgame.server.game.session.domain.SessionStateType.EXPIRED
 import com.snackgame.server.game.session.domain.SessionStateType.IN_PROGRESS
 import com.snackgame.server.game.session.domain.SessionStateType.PAUSED
-import com.snackgame.server.game.session.exception.ScoreCanOnlyBeIncreasedException
+import com.snackgame.server.game.session.exception.ScoreCannotBeDecreased
 import com.snackgame.server.game.session.exception.SessionNotInProgressException
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -38,7 +38,7 @@ class SessionTest {
     }
 
     @Test
-    fun `점수를 간접적으로 증가시킬 수 있다`() {
+    fun `점수를 간접적으로 증가 혹은 유지시킬 수 있다`() {
         val someSession = SomeSession()
 
         someSession.updateScoreIndirectly(someSession.score + 1)
@@ -51,7 +51,7 @@ class SessionTest {
         val someExpiredSession = SomeSession()
 
         assertThatThrownBy { someExpiredSession.updateScoreIndirectly(someExpiredSession.score - 1) }
-            .isInstanceOf(ScoreCanOnlyBeIncreasedException::class.java)
+            .isInstanceOf(ScoreCannotBeDecreased::class.java)
     }
 
     @Nested

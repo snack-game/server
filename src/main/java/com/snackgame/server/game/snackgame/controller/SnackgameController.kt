@@ -45,7 +45,7 @@ class SnackgameController(
     fun update(
         @Authenticated member: Member,
         @PathVariable sessionId: Long,
-        @Valid @RequestBody request: SnackgameUpdateRequest,
+        @RequestBody request: @Valid SnackgameUpdateRequest,
     ): SnackgameResponse = snackgameService.update(member.id, sessionId, request)
 
     @Operation(

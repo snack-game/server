@@ -2,7 +2,7 @@ package com.snackgame.server.game.session.domain
 
 import com.snackgame.server.common.domain.BaseEntity
 import com.snackgame.server.game.metadata.Metadata
-import com.snackgame.server.game.session.exception.ScoreCanOnlyBeIncreasedException
+import com.snackgame.server.game.session.exception.ScoreCannotBeDecreased
 import java.time.Duration
 import javax.persistence.Embedded
 import javax.persistence.GeneratedValue
@@ -25,7 +25,7 @@ abstract class Session(
         protected set(value) {
             sessionState.validateInProgress()
             if (value <= field) {
-                throw ScoreCanOnlyBeIncreasedException()
+                throw ScoreCannotBeDecreased()
             }
             field = value
         }
