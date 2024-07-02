@@ -142,7 +142,7 @@ class RankingControllerTest {
         void 사과게임의_선두_50등을_조회한다() {
             RestAssured.given()
                     .queryParam("by", "BEST_SCORE")
-                    .when().get("/rankings/{seasonId}/{gameId}", 시즌1().getId(), APPLE_GAME.getGameId())
+                    .when().get("/rankings/{gameId}/{seasonId}", APPLE_GAME.getGameId(), 시즌1().getId())
                     .then().log().all()
                     .statusCode(HttpStatus.OK.value())
                     .body("[0].owner.id", is((int)사과게임_시즌1_땡칠_20점().getOwnerId()))
@@ -155,7 +155,7 @@ class RankingControllerTest {
         void 스낵게임의_선두_50등을_조회한다() {
             RestAssured.given()
                     .queryParam("by", "BEST_SCORE")
-                    .when().get("/rankings/{seasonId}/{gameId}", 시즌1().getId(), SNACK_GAME.getGameId())
+                    .when().get("/rankings/{gameId}/{seasonId}", SNACK_GAME.getGameId(), 시즌1().getId())
                     .then().log().all()
                     .statusCode(HttpStatus.OK.value())
                     .body("[0].owner.id", is((int)스낵게임_시즌1_땡칠_20점().getOwnerId()))
@@ -165,18 +165,18 @@ class RankingControllerTest {
 
         private Stream<Arguments> 자신의_랭크를_조회한다() {
             return Stream.of(
-                    Arguments.of(1, 10, 베타시즌(), APPLE_GAME),
-                    Arguments.of(1, 20, 시즌1(), APPLE_GAME),
-                    Arguments.of(1, 20, 시즌1(), SNACK_GAME)
+                    Arguments.of(1, 10, APPLE_GAME, 베타시즌()),
+                    Arguments.of(1, 20, APPLE_GAME, 시즌1()),
+                    Arguments.of(1, 20, SNACK_GAME, 시즌1())
             );
         }
 
         @ParameterizedTest(name = "{0}등, {1}점, {2}")
         @MethodSource
-        void 자신의_랭크를_조회한다(long expectedRank, int expectedScore, Season season, Metadata expectedMetadata) {
+        void 자신의_랭크를_조회한다(long expectedRank, int expectedScore, Metadata expectedMetadata, Season season) {
             var response = givenAuthentication(new NameRequest(땡칠().getNameAsString()))
                     .queryParam("by", "BEST_SCORE")
-                    .when().get("/rankings/{seasonId}/{gameId}/me", season.getId(), expectedMetadata.getGameId())
+                    .when().get("/rankings/{gameId}/{seasonId}/me", expectedMetadata.getGameId(), season.getId())
                     .then()
                     .statusCode(HttpStatus.OK.value())
                     .extract().as(RankResponseV2.class);

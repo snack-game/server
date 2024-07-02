@@ -2,6 +2,7 @@ package com.snackgame.server.rank.service
 
 import com.snackgame.server.rank.controller.dto.RankResponseV2
 import com.snackgame.server.rank.domain.BestScores
+import com.snackgame.server.rank.exception.NotRankedYetException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -18,7 +19,8 @@ class BestScoreRankService(
 
     @Transactional(readOnly = true)
     fun rank(memberId: Long, gameId: Long, seasonId: Long? = null): RankResponseV2 {
-        return RankResponseV2.of(bestScores.findRankOf(memberId, gameId, seasonId))
+        val rank = bestScores.findRankOf(memberId, gameId, seasonId) ?: throw NotRankedYetException()
+        return RankResponseV2.of(rank)
     }
 
     companion object {

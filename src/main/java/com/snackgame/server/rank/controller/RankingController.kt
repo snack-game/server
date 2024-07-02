@@ -40,7 +40,7 @@ class RankingController(
     }
 
     @Operation(summary = "선두 랭크 조회", description = "특정 시즌에서 랭킹을 선두 50등까지 조회한다")
-    @GetMapping("/rankings/{seasonId}/{gameId}")
+    @GetMapping("/rankings/{gameId}/{seasonId}")
     fun showLeadingRanksBy(
         @PathVariable seasonId: Long,
         @PathVariable gameId: Long,
@@ -50,7 +50,7 @@ class RankingController(
     }
 
     @Operation(summary = "자신의 랭크 조회", description = "특정 시즌에서 자신의 랭킹을 조회한다")
-    @GetMapping("/rankings/{seasonId}/{gameId}/me")
+    @GetMapping("/rankings/{gameId}/{seasonId}/me")
     fun showRankOf(
         @Authenticated member: Member,
         @PathVariable seasonId: Long,

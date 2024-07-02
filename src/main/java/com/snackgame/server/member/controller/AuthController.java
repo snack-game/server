@@ -100,7 +100,7 @@ public class AuthController {
                             description = "액세스 토큰이 만료되었을 때, 인증이 필요한 API를 호출한 경우",
                             content = @Content(examples = @ExampleObject(
                                     "{\n"
-                                    + "  \"action\": \"REISSUE\",\n"
+                                    + "  \"code\": \"TOKEN_EXPIRED_EXCEPTION\",\n"
                                     + "  \"messages\": [\n"
                                     + "    \"토큰이 만료되었습니다\"\n"
                                     + "  ]\n"
@@ -112,7 +112,7 @@ public class AuthController {
                             description = "리프레시 토큰도 만료되었을 때, 인증이 필요한 API를 호출한 경우",
                             content = @Content(examples = @ExampleObject(
                                     "{\n"
-                                    + "  \"action\": null,\n"
+                                    + "  \"code\": \"TOKEN_UNRESOLVABLE_EXCEPTION\",\n"
                                     + "  \"messages\": [\n"
                                     + "    \"토큰을 읽지 못했습니다\"\n"
                                     + "  ]\n"
