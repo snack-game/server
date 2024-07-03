@@ -13,8 +13,10 @@ import io.swagger.v3.oas.models.responses.ApiResponses
 import org.springdoc.core.GroupedOpenApi
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import java.io.File
 
+@Profile("dev")
 @Configuration
 class ExceptionCodeDocumentationConfig {
 
