@@ -38,7 +38,7 @@ class GlobalExceptionHandler(
     fun handleAuthenticationException(exception: AuthException): ExceptionResponse {
         log.warn(exception.message, exception)
 
-        return ExceptionResponse(exception.message!!, exception, exception.action)
+        return ExceptionResponse(exception.message!!, exception.javaClass, exception.action)
     }
 
     @ExceptionHandler
@@ -51,7 +51,7 @@ class GlobalExceptionHandler(
                 return body(ExceptionResponse())
             }
             log.debug(exception.message, exception)
-            body(ExceptionResponse(exception.message!!, exception))
+            body(ExceptionResponse(exception.message!!, exception.javaClass))
         }
     }
 
@@ -60,7 +60,7 @@ class GlobalExceptionHandler(
     fun handleNoHandlerFound(exception: NoHandlerFoundException): ExceptionResponse {
         log.debug(exception.message, exception)
 
-        return ExceptionResponse("리소스를 찾지 못했습니다", exception)
+        return ExceptionResponse("리소스를 찾지 못했습니다", exception.javaClass)
     }
 
     @ExceptionHandler
@@ -68,7 +68,7 @@ class GlobalExceptionHandler(
     fun handleMissingRequestParameter(exception: HttpRequestMethodNotSupportedException): ExceptionResponse {
         log.debug(exception.message, exception)
 
-        return ExceptionResponse("HTTP 메서드가 잘못되었습니다", exception)
+        return ExceptionResponse("HTTP 메서드가 잘못되었습니다", exception.javaClass)
     }
 
     @ExceptionHandler
@@ -76,7 +76,7 @@ class GlobalExceptionHandler(
     fun handleMissingRequestParameter(exception: MissingServletRequestParameterException): ExceptionResponse {
         log.debug(exception.message, exception)
 
-        return ExceptionResponse("쿼리스트링 '${exception.parameterName}'이 없거나 잘못됐습니다", exception)
+        return ExceptionResponse("쿼리스트링 '${exception.parameterName}'이 없거나 잘못됐습니다", exception.javaClass)
     }
 
     @ExceptionHandler
@@ -84,7 +84,7 @@ class GlobalExceptionHandler(
     fun handleHttpMessageNotReadable(exception: HttpMessageNotReadableException): ExceptionResponse {
         log.debug(exception.message, exception)
 
-        return ExceptionResponse("요청 페이로드를 읽지 못했습니다", exception)
+        return ExceptionResponse("요청 페이로드를 읽지 못했습니다", exception.javaClass)
     }
 
     @ExceptionHandler
@@ -92,7 +92,7 @@ class GlobalExceptionHandler(
     fun handleHttpMessageTypeMismatch(exception: MethodArgumentTypeMismatchException): ExceptionResponse {
         log.debug(exception.message, exception)
 
-        return ExceptionResponse("요청 인자가 잘못되었습니다", exception)
+        return ExceptionResponse("요청 인자가 잘못되었습니다", exception.javaClass)
     }
 
     @ExceptionHandler
@@ -104,7 +104,7 @@ class GlobalExceptionHandler(
             .map { obj: FieldError -> obj.defaultMessage }
             .collect(Collectors.toList())
 
-        return ExceptionResponse(exceptionMessages, exception)
+        return ExceptionResponse(exceptionMessages, exception.javaClass)
     }
 
     companion object {

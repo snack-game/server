@@ -5,15 +5,15 @@ data class ExceptionResponse(
     val code: String = DEFAULT_CODE,
     @Deprecated("24/7/8 제거 예정") val action: String? = null,
 ) {
-    constructor(messages: List<String>, throwable: Throwable, action: String? = null) : this(
+    constructor(messages: List<String>, throwableClazz: Class<Throwable>, action: String? = null) : this(
         messages,
-        throwable.javaClass.simpleName.upperSnakeCase(),
+        throwableClazz.simpleName.upperSnakeCase(),
         action
     )
 
-    constructor(message: String, throwable: Throwable, action: String? = null) : this(
+    constructor(message: String, throwableClazz: Class<Throwable>, action: String? = null) : this(
         listOf(message),
-        throwable,
+        throwableClazz,
         action
     )
 
