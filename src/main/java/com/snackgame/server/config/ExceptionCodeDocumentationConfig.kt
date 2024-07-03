@@ -1,6 +1,6 @@
 package com.snackgame.server.config
 
-import com.snackgame.server.common.exception.BusinessException
+import com.snackgame.server.ServerApplication
 import com.snackgame.server.common.exception.dto.ExceptionResponse
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
@@ -20,15 +20,15 @@ class ExceptionCodeDocumentationConfig {
 
     @Bean
     fun exceptionCodes(): GroupedOpenApi {
-        val exceptionClasses = findSubclasses("com.snackgame.server", BusinessException::class.java)
-        val pathItems = exceptionClasses.entries.associate { (key, value) ->
-            val responses = value.associate { throwableClazz ->
-                val instance = throwableClazz.declaredConstructors
+        val throwables = findThrowablesIn(ServerApplication::class.java.packageName)
+        val pathItems = throwables.entries.associate { (key, value) ->
+            val responses = value.associate { throwable ->
+                val throwableInstance = throwable.declaredConstructors
                     .filter { it.parameterCount == 0 }
                     .mapNotNull { it.newInstance() }
                     .map { it as Throwable }
                     .firstOrNull()
-                val exceptionResponse = ExceptionResponse(instance?.message ?: "예외 메시지가 가변적입니다", throwableClazz)
+                val exceptionResponse = ExceptionResponse(throwableInstance?.message ?: "예외 메시지가 가변적입니다", throwable)
                 val response = ApiResponse().content(
                     Content()
                         .addMediaType("application/json", MediaType().example(exceptionResponse))
@@ -54,7 +54,7 @@ class ExceptionCodeDocumentationConfig {
             .build()
     }
 
-    fun findSubclasses(packageName: String, baseClass: Class<*>): Map<String, List<Class<Throwable>>> {
+    fun findThrowablesIn(packageName: String): Map<String, List<Class<Throwable>>> {
         val classLoader = Thread.currentThread().contextClassLoader
         val path = packageName.replace('.', '/')
         val resources = classLoader.getResources(path)
@@ -67,17 +67,18 @@ class ExceptionCodeDocumentationConfig {
 
         val classes = mutableMapOf<String, MutableList<Class<Throwable>>>()
         for (directory in directories) {
-            for (clazz in findClasses(directory, packageName)) {
-                val simplePackageName = clazz.packageName.substringAfter("$packageName.")
+            val founds = findClassesIn<Throwable>(directory, packageName)
+            for (found in founds) {
+                val simplePackageName = found.packageName.substringAfter("$packageName.")
                 classes.putIfAbsent(simplePackageName, mutableListOf())
-                classes[simplePackageName]?.add(clazz)
+                classes[simplePackageName]?.add(found)
             }
         }
         return classes
     }
 
-    private fun findClasses(directory: File, packageName: String): List<Class<Throwable>> {
-        val classes = mutableListOf<Class<Throwable>>()
+    private fun <E> findClassesIn(directory: File, packageName: String): List<Class<E>> {
+        val classes = mutableListOf<Class<E>>()
         if (!directory.exists()) {
             return classes
         }
@@ -85,12 +86,12 @@ class ExceptionCodeDocumentationConfig {
         for (file in files) {
             if (file.isDirectory) {
                 assert(!file.name.contains("."))
-                classes.addAll(findClasses(file, "$packageName.${file.name}"))
+                classes.addAll(findClassesIn(file, "$packageName.${file.name}"))
             } else if (file.name.endsWith(".class")) {
                 val className = "$packageName.${file.name.substring(0, file.name.length - 6)}"
                 val clazz = Class.forName(className)
                 if (Throwable::class.java.isAssignableFrom(clazz) && !clazz.kotlin.isAbstract) {
-                    classes.add(clazz as Class<Throwable>)
+                    classes.add(clazz as Class<E>)
                 }
             }
         }
