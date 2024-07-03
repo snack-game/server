@@ -80,7 +80,7 @@ class OpenApiConfig {
     @Bean
     fun deprecatedApis(): GroupedOpenApi {
         return GroupedOpenApi.builder()
-            .group("99-deprecated")
+            .group("98-deprecated")
             .displayName("Deprecated")
             .addOpenApiCustomiser(filterDeprecated(true))
             .build()

@@ -45,7 +45,7 @@ class ExceptionCodeDocumentationConfig {
             }
         }
         return GroupedOpenApi.builder()
-            .group("4-exception-codes")
+            .group("99-exception-codes")
             .displayName("예외 코드")
             .addOpenApiCustomiser { openApi: OpenAPI ->
                 openApi.paths(Paths())
