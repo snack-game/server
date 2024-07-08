@@ -24,7 +24,7 @@ abstract class Session(
     var score: Int = score
         protected set(value) {
             sessionState.validateInProgress()
-            if (value <= field) {
+            if (value < field) {
                 throw ScoreCannotBeDecreased()
             }
             field = value

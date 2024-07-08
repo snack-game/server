@@ -41,6 +41,7 @@ class SessionTest {
     fun `점수를 간접적으로 증가 혹은 유지시킬 수 있다`() {
         val someSession = SomeSession()
 
+        someSession.updateScoreIndirectly(someSession.score)
         someSession.updateScoreIndirectly(someSession.score + 1)
 
         assertThat(someSession.score).isOne()
