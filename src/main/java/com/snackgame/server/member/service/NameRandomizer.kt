@@ -10,7 +10,7 @@ class NameRandomizer {
     }
 
     companion object {
-        private const val RANDOMIZED_LENGTH = 12
+        private const val RANDOMIZED_LENGTH = 10
         private const val ALPHABET_POOL = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
         private fun getRandomizedAlphabets(length: Int): String {
