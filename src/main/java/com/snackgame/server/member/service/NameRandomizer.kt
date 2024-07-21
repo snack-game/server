@@ -5,12 +5,12 @@ import org.springframework.stereotype.Component
 
 @Component
 class NameRandomizer {
-    fun getBy(prefix: String): Name {
+    fun getWith(prefix: String): Name {
         return Name(prefix + "_" + getRandomizedAlphabets(RANDOMIZED_LENGTH))
     }
 
     companion object {
-        private const val RANDOMIZED_LENGTH = 12
+        private const val RANDOMIZED_LENGTH = 10
         private const val ALPHABET_POOL = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
         private fun getRandomizedAlphabets(length: Int): String {

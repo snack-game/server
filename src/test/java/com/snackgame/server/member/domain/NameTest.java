@@ -29,7 +29,13 @@ class NameTest {
     }
 
     @Test
-    void 이름이_2글자_이상이면_잘_생성된다() {
+    void 이름이_16글자보다_길면_예외를_던진다() {
+        assertThatThrownBy(() -> new Name("123456789abcdfegh"))
+                .isInstanceOf(NameLengthException.class);
+    }
+
+    @Test
+    void 이름이_2글자_이상_16글자_이하_이면_잘_생성된다() {
         assertThatNoException()
                 .isThrownBy(() -> new Name("2자"));
     }

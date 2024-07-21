@@ -39,7 +39,7 @@ open class OidcMemberService(
     private val IdTokenPayload.distinctName: Name
         get() {
             if (this.name.isNullOrBlank()) {
-                return distinctNaming.from(nameRandomizer.getBy(this.provider))
+                return distinctNaming.from(nameRandomizer.getWith(this.provider))
             }
             return distinctNaming.from(Name(this.name))
         }

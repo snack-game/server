@@ -24,9 +24,9 @@ public class DistinctNaming {
     }
 
     public Name ofGuest() {
-        Name name = nameRandomizer.getBy("guest");
+        Name name = nameRandomizer.getWith("guest");
         while (members.existsByName(name)) {
-            name = nameRandomizer.getBy("guest");
+            name = nameRandomizer.getWith("guest");
         }
         return name;
     }
