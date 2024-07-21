@@ -1,7 +1,8 @@
 package com.snackgame.server.member.domain;
 
+import static java.util.regex.Pattern.matches;
+
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Name {
 
-    private static final Pattern NUMBERED_PATTERN = Pattern.compile(".+_\\d+");
+    private static final String NUMBERED_PATTERN = ".+_\\d+";
     @Column(name = "name")
     private String string;
 
@@ -39,7 +40,7 @@ public class Name {
     }
 
     public Name nextAvailable() {
-        if (NUMBERED_PATTERN.matcher(string).matches()) {
+        if (matches(NUMBERED_PATTERN, string)) {
             int underscoreIndex = string.lastIndexOf('_');
             long currentNumber = Long.parseLong(string.substring(underscoreIndex + 1));
             return with(currentNumber + 1);
