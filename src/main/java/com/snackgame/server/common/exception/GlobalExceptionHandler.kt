@@ -38,7 +38,7 @@ class GlobalExceptionHandler(
     fun handleAuthenticationException(exception: AuthException): ExceptionResponse {
         log.warn(exception.message, exception)
 
-        return ExceptionResponse(exception.message!!, exception.javaClass, exception.action)
+        return ExceptionResponse(exception.message!!, exception.javaClass)
     }
 
     @ExceptionHandler

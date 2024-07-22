@@ -1,25 +1,24 @@
 package com.snackgame.server.common.exception.dto
 
+import org.springframework.http.HttpStatus
+
 data class ExceptionResponse(
     val messages: List<String> = DEFAULT_MESSAGE,
     val code: String = DEFAULT_CODE,
-    @Deprecated("24/7/8 제거 예정") val action: String? = null,
 ) {
-    constructor(messages: List<String>, throwableClazz: Class<Throwable>, action: String? = null) : this(
+    constructor(messages: List<String>, throwableClazz: Class<Throwable>) : this(
         messages,
-        throwableClazz.simpleName.upperSnakeCase(),
-        action
+        throwableClazz.simpleName.upperSnakeCase()
     )
 
-    constructor(message: String, throwableClazz: Class<Throwable>, action: String? = null) : this(
+    constructor(message: String, throwableClazz: Class<Throwable>) : this(
         listOf(message),
-        throwableClazz,
-        action
+        throwableClazz
     )
 
     companion object {
         private val DEFAULT_MESSAGE = listOf("처리 중 예외가 발생했습니다")
-        private const val DEFAULT_CODE = "INTERNAL"
+        private val DEFAULT_CODE = HttpStatus.INTERNAL_SERVER_ERROR.name
     }
 }
 
