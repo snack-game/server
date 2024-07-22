@@ -3,6 +3,7 @@ package com.snackgame.server.auth.token;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.snackgame.server.auth.exception.RefreshTokenExpiredException;
 import com.snackgame.server.auth.exception.TokenExpiredException;
 import com.snackgame.server.auth.token.domain.RefreshToken;
 import com.snackgame.server.auth.token.domain.RefreshTokenRepository;
@@ -29,7 +30,7 @@ public class TokenService {
 
     @Transactional
     public TokensDto reissueFrom(String refreshToken) {
-        handleExpiration(() -> refreshTokenProvider.validate(refreshToken));
+        handleTokenExpiry(() -> refreshTokenProvider.validate(refreshToken));
         return new TokensDto(
                 reissueAccessTokenFrom(refreshToken),
                 reissueRefreshTokenFrom(refreshToken)
@@ -41,11 +42,11 @@ public class TokenService {
         refreshTokenRepository.deleteByToken(refreshToken);
     }
 
-    private void handleExpiration(Runnable runnable) {
+    private void handleTokenExpiry(Runnable runnable) {
         try {
             runnable.run();
         } catch (TokenExpiredException exception) {
-            throw exception.withLogoutAction();
+            throw new RefreshTokenExpiredException();
         }
     }
 
