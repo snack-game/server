@@ -10,11 +10,11 @@ import com.snackgame.server.member.exception.DuplicateNameException;
 public class DistinctNaming {
 
     private final MemberRepository members;
-    private final NameRandomizer nameRandomizer;
+    private final GuestNameRandomizer guestNameRandomizer;
 
-    public DistinctNaming(MemberRepository members, NameRandomizer nameRandomizer) {
+    public DistinctNaming(MemberRepository members, GuestNameRandomizer guestNameRandomizer) {
         this.members = members;
-        this.nameRandomizer = nameRandomizer;
+        this.guestNameRandomizer = guestNameRandomizer;
     }
 
     public void validate(Name name) {
@@ -24,9 +24,9 @@ public class DistinctNaming {
     }
 
     public Name ofGuest() {
-        Name name = nameRandomizer.getWith("guest");
+        Name name = guestNameRandomizer.getWith("guest");
         while (members.existsByName(name)) {
-            name = nameRandomizer.getWith("guest");
+            name = guestNameRandomizer.getWith("guest");
         }
         return name;
     }

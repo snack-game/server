@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 open class OidcMemberService(
     private val members: MemberRepository,
     private val distinctNaming: DistinctNaming,
-    private val nameRandomizer: NameRandomizer,
+    private val socialMemberNameRandomizer: SocialMemberNameRandomizer,
     private val idTokenResolver: IdTokenResolver
 ) {
 
@@ -39,7 +39,7 @@ open class OidcMemberService(
     private val IdTokenPayload.distinctName: Name
         get() {
             if (this.name.isNullOrBlank()) {
-                return distinctNaming.from(nameRandomizer.getWith(this.provider))
+                return distinctNaming.from(socialMemberNameRandomizer.getName())
             }
             return distinctNaming.from(Name(this.name))
         }
