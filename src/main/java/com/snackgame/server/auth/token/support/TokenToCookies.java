@@ -43,7 +43,7 @@ public class TokenToCookies {
 
     private ResponseCookie.ResponseCookieBuilder baseCookieFrom(String name, String value) {
         return ResponseCookie.from(name, value)
-                .maxAge(refreshTokenProvider.getExpiry())
+                .maxAge(refreshTokenProvider.getExpiry().multipliedBy(2))
                 .httpOnly(true)
                 .secure(true)
                 .sameSite(SAME_SITE_OPTION);
