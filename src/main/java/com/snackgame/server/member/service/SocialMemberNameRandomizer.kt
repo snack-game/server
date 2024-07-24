@@ -10,6 +10,13 @@ class SocialMemberNameRandomizer {
         return Name(getRandomizedPureWord() + "_스낵이")
     }
 
+    private fun getRandomizedPureWord(): String {
+        val adjective = adjectives[(adjectives.indices).random()]
+        val determiner = determiners[(determiners.indices).random()]
+
+        return determiner + "_" + adjective
+    }
+
     companion object {
 
         private val adjectives: Array<String> = arrayOf(
@@ -25,12 +32,5 @@ class SocialMemberNameRandomizer {
 
         )
 
-    }
-
-    private fun getRandomizedPureWord(): String {
-        val adjective = adjectives[(adjectives.indices).random()]
-        val determiner = determiners[(determiners.indices).random()]
-
-        return determiner + "_" + adjective
     }
 }
