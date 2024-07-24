@@ -34,7 +34,7 @@ public class Name {
     }
 
     private void validateLengthOf(String string) {
-        if (string.length() < 2 || string.length() > 16) {
+        if (string.length() < 2 || string.length() > 13) {
             throw new NameLengthException();
         }
     }
