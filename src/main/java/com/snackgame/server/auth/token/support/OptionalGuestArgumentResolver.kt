@@ -14,7 +14,7 @@ import java.util.*
 import javax.servlet.http.HttpServletRequest
 
 @Component
-class GuestArgumentResolver(
+class OptionalGuestArgumentResolver(
     private val accessTokenProvider: JwtProvider,
     private val guestResolver: GuestResolver<*>
 ) : HandlerMethodArgumentResolver {
