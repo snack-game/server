@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.snackgame.server.member.exception.MemberNotFoundException;
@@ -15,6 +16,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
         return findById(id)
                 .orElseThrow(MemberNotFoundException::new);
     }
+
+    @Query("select g from Guest g where g.id = :id")
+    Optional<Guest> findGuestById(Long id);
 
     Optional<Member> findByName(Name name);
 
