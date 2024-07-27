@@ -2,6 +2,7 @@ package com.snackgame.server.config
 
 import com.snackgame.server.auth.oauth.support.JustAuthenticated
 import com.snackgame.server.auth.token.support.Authenticated
+import com.snackgame.server.auth.token.support.OptionalGuest
 import com.snackgame.server.auth.token.support.TokensFromCookie
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
@@ -152,7 +153,8 @@ class OpenApiConfig {
                 .addAnnotationsToIgnore(
                     Authenticated::class.java,
                     JustAuthenticated::class.java,
-                    TokensFromCookie::class.java
+                    TokensFromCookie::class.java,
+                    OptionalGuest::class.java
                 )
         }
     }

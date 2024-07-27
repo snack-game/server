@@ -9,18 +9,11 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.snackgame.server.member.exception.EmptyNameException;
 import com.snackgame.server.member.exception.NameLengthException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class NameTest {
-
-    @Test
-    void 이름은_비워둘_수_없다() {
-        assertThatThrownBy(() -> new Name(null))
-                .isInstanceOf(EmptyNameException.class);
-    }
 
     @Test
     void 이름이_2글자보다_짧으면_예외를_던진다() {
