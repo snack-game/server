@@ -22,13 +22,13 @@ import com.snackgame.server.auth.token.TokenService;
 import com.snackgame.server.auth.token.dto.TokensDto;
 import com.snackgame.server.auth.token.support.Authenticated;
 import com.snackgame.server.auth.token.support.TokenToCookies;
-import com.snackgame.server.member.service.MemberAccountService;
 import com.snackgame.server.member.controller.dto.GroupRequest;
 import com.snackgame.server.member.controller.dto.MemberDetailsResponse;
 import com.snackgame.server.member.controller.dto.MemberRequest;
 import com.snackgame.server.member.controller.dto.NameRequest;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.domain.SocialMember;
+import com.snackgame.server.member.service.MemberAccountService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -97,7 +97,7 @@ public class MemberController {
             @Authenticated Member victim,
             @JustAuthenticated SocialMember socialMember
     ) {
-        Member integrated = memberAccountService.integrate(victim, socialMember);
+        Member integrated = memberAccountService.integrate(victim.getId(), socialMember.getId());
         TokensDto tokens = tokenService.issueFor(integrated.getId());
 
         return ResponseEntity.ok()

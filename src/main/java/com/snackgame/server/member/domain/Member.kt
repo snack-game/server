@@ -1,6 +1,8 @@
 package com.snackgame.server.member.domain
 
 import com.snackgame.server.common.domain.BaseEntity
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.Where
 import javax.persistence.DiscriminatorColumn
 import javax.persistence.Embedded
 import javax.persistence.Entity
@@ -12,6 +14,8 @@ import javax.persistence.Inheritance
 import javax.persistence.ManyToOne
 
 @EntityListeners(MemberEntityListener::class)
+@SQLDelete(sql = "update member set is_valid = false where id = ?")
+@Where(clause = "is_valid = true")
 @Inheritance
 @DiscriminatorColumn(name = "type")
 @Entity
@@ -53,10 +57,6 @@ open class Member(
 
     fun changeProfileImageTo(profileImage: ProfileImage) {
         this.profileImage = profileImage
-    }
-
-    fun invalidate() {
-        this.isValid = false
     }
 
     fun getNameAsString(): String = name.string

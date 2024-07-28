@@ -16,6 +16,7 @@ import com.snackgame.server.member.domain.MemberRepository;
 import com.snackgame.server.member.domain.Name;
 import com.snackgame.server.member.exception.DuplicateNameException;
 import com.snackgame.server.member.exception.MemberNotFoundException;
+import com.snackgame.server.member.fixture.MemberFixture;
 import com.snackgame.server.support.general.ServiceTest;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -140,5 +141,16 @@ class MemberAccountServiceTest {
 
         assertThat(memberAccountService.findNamesStartWith("땡칠"))
                 .contains(fullName, shortName);
+    }
+
+    @Test
+    void 계정_통합_시_기존_계정은_제거된다() {
+        MemberFixture.saveAll();
+        Member guest = memberAccountService.createGuest();
+
+        memberAccountService.integrate(guest.getId(), 땡칠().getId());
+
+        assertThatThrownBy(() -> memberAccountService.getBy(guest.getId()))
+                .isInstanceOf(MemberNotFoundException.class);
     }
 }

@@ -16,7 +16,6 @@ import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.domain.MemberRepository;
 import com.snackgame.server.member.domain.Name;
 import com.snackgame.server.member.domain.ProfileImage;
-import com.snackgame.server.member.domain.SocialMember;
 
 import lombok.RequiredArgsConstructor;
 
@@ -56,12 +55,12 @@ public class MemberAccountService {
     }
 
     @Transactional
-    public Member integrate(Member victim, SocialMember socialMember) {
+    public Member integrate(long victimId, long currentMemberId) {
         for (AccountIntegration integration : accountIntegrations) {
-            integration.execute(victim.getId(), socialMember.getId());
+            integration.execute(victimId, currentMemberId);
         }
-        victim.invalidate();
-        return socialMember;
+        members.deleteById(victimId);
+        return members.getById(currentMemberId);
     }
 
     @Transactional

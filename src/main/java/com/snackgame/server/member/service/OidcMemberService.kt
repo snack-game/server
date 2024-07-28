@@ -35,12 +35,11 @@ class OidcMemberService(
                 )
             }
         socialMember.setAdditional(payload.email, payload.distinctName.string)
-        return members.save(socialMember)
-            .also {
-                if (guest != null) {
-                    memberAccountService.integrate(guest, socialMember)
-                }
+        return members.save(socialMember).also {
+            if (guest != null) {
+                memberAccountService.integrate(guest.id, socialMember.id)
             }
+        }
     }
 
     private val IdTokenPayload.distinctName: Name
