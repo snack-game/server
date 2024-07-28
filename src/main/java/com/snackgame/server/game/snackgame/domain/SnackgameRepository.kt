@@ -1,6 +1,7 @@
 package com.snackgame.server.game.snackgame.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
@@ -19,4 +20,8 @@ interface SnackgameRepository : JpaRepository<Snackgame, Long> {
         nativeQuery = true
     )
     fun findPercentileOf(sessionId: Long): Double?
+
+    @Modifying
+    @Query("update Snackgame set ownerId = :toMemberId where ownerId = :fromMemberId")
+    fun transferSessions(fromMemberId: Long, toMemberId: Long): Int
 }

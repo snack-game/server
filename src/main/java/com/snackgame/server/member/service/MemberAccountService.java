@@ -28,7 +28,7 @@ public class MemberAccountService {
     private final MemberRepository members;
     private final GroupService groupService;
     private final DistinctNaming distinctNaming;
-    private final AccountTransfer accountTransfer;
+    private final List<AccountIntegration> accountIntegrations;
 
     private final ResourceResolver resourceResolver;
 
@@ -57,7 +57,9 @@ public class MemberAccountService {
 
     @Transactional
     public Member integrate(Member victim, SocialMember socialMember) {
-        accountTransfer.transferAll(victim.getId(), socialMember.getId());
+        for (AccountIntegration integration : accountIntegrations) {
+            integration.execute(victim.getId(), socialMember.getId());
+        }
         victim.invalidate();
         return socialMember;
     }

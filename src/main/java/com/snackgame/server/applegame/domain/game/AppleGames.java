@@ -15,7 +15,7 @@ public interface AppleGames extends JpaRepository<AppleGame, Long> {
 
     @Modifying
     @Query("update AppleGame set ownerId = :toMemberId where ownerId = :fromMemberId")
-    void transferAll(Long fromMemberId, Long toMemberId);
+    int transferAll(Long fromMemberId, Long toMemberId);
 
     @Deprecated(forRemoval = true)
     default AppleGame getBy(Long sessionId) {
