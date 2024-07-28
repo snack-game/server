@@ -3,6 +3,7 @@ package com.snackgame.server.member.domain;
 import static java.math.BigDecimal.ZERO;
 
 import java.math.BigDecimal;
+import java.util.stream.LongStream;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -24,8 +25,9 @@ public class Status {
     public Status() {
     }
 
-    public Status(Long level) {
+    public Status(long level, double exp) {
         this.level = level;
+        this.exp = BigDecimal.valueOf(exp);
     }
 
     public void addExp(double amount) {
@@ -38,11 +40,26 @@ public class Status {
     }
 
     public BigDecimal expRequiredForLevel() {
+        return getExpRequiredFor(level);
+    }
+
+    private BigDecimal getExpRequiredFor(Long level) {
         BigDecimal weight = BigDecimal.valueOf(MULTIPLIER).pow(level.intValue());
         return BigDecimal.valueOf(200).multiply(weight);
     }
 
     private void addLevel() {
         this.level += 1;
+    }
+
+    public BigDecimal getExp() {
+        return exp;
+    }
+
+    public double getTotalExp() {
+        double earnedBefore = LongStream.range(0, level)
+                .mapToDouble(level -> getExpRequiredFor(level).doubleValue())
+                .sum();
+        return exp.add(BigDecimal.valueOf(earnedBefore)).doubleValue();
     }
 }
