@@ -16,7 +16,6 @@ import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.domain.MemberRepository;
 import com.snackgame.server.member.domain.Name;
 import com.snackgame.server.member.domain.ProfileImage;
-import com.snackgame.server.member.domain.SocialMember;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +27,7 @@ public class MemberAccountService {
     private final MemberRepository members;
     private final GroupService groupService;
     private final DistinctNaming distinctNaming;
-    private final AccountTransfer accountTransfer;
+    private final List<AccountIntegration> accountIntegrations;
 
     private final ResourceResolver resourceResolver;
 
@@ -56,10 +55,12 @@ public class MemberAccountService {
     }
 
     @Transactional
-    public Member integrate(Member victim, SocialMember socialMember) {
-        accountTransfer.transferAll(victim.getId(), socialMember.getId());
-        victim.invalidate();
-        return socialMember;
+    public Member integrate(long victimId, long currentMemberId) {
+        for (AccountIntegration integration : accountIntegrations) {
+            integration.execute(victimId, currentMemberId);
+        }
+        members.deleteById(victimId);
+        return members.getById(currentMemberId);
     }
 
     @Transactional

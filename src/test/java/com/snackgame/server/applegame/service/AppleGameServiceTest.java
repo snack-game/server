@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame;
+package com.snackgame.server.applegame.service;
 
 import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
 import static com.snackgame.server.member.fixture.MemberFixture.정환;
@@ -20,9 +20,9 @@ import com.snackgame.server.applegame.domain.game.AppleGame;
 import com.snackgame.server.applegame.domain.game.AppleGames;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.fixture.SeasonFixture;
-import com.snackgame.server.member.service.MemberAccountService;
 import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.fixture.MemberFixture;
+import com.snackgame.server.member.service.MemberAccountService;
 import com.snackgame.server.support.general.ServiceTest;
 
 @SuppressWarnings("NonAsciiCharacters")

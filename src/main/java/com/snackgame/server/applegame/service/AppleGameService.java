@@ -1,4 +1,4 @@
-package com.snackgame.server.applegame;
+package com.snackgame.server.applegame.service;
 
 import java.util.List;
 import java.util.Optional;

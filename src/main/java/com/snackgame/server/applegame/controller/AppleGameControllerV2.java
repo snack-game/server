@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.snackgame.server.applegame.AppleGameService;
+import com.snackgame.server.applegame.service.AppleGameService;
 import com.snackgame.server.applegame.controller.dto.AppleGameResponseV2;
 import com.snackgame.server.applegame.controller.dto.GameResultResponse;
 import com.snackgame.server.applegame.controller.dto.RangeRequest;
