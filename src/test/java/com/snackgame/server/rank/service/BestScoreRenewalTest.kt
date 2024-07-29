@@ -5,14 +5,13 @@ package com.snackgame.server.rank.service
 import com.snackgame.server.fixture.BestScoreFixture
 import com.snackgame.server.game.metadata.Metadata
 import com.snackgame.server.game.session.event.SessionEndEvent
-import com.snackgame.server.member.fixture.MemberFixture
 import com.snackgame.server.member.service.MemberAccountService
 import com.snackgame.server.rank.domain.BestScores
 import com.snackgame.server.support.general.ServiceTest
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
 
 @ServiceTest
 internal class BestScoreRenewalTest {
@@ -26,15 +25,12 @@ internal class BestScoreRenewalTest {
     @Autowired
     lateinit var bestScores: BestScores
 
-    @BeforeEach
-    fun setUp() {
-        MemberFixture.saveAll()
-        BestScoreFixture.saveAll()
-    }
-
+    @Transactional
     @Test
-    fun `게스트 점수는 랭크에 기록되지 않는다`() {
+    fun `게스트의 최고점수는 언랭크 상태로 기록된다`() {
+        BestScoreFixture.saveAll()
         val guest = memberAccountService.createGuest()
+
         bestScoreRenewal.renewBestScoreWith(
             SessionEndEvent(
                 Metadata.APPLE_GAME,
@@ -44,6 +40,8 @@ internal class BestScoreRenewalTest {
             )
         )
 
-        assertThat(bestScores.findAll()).filteredOn { it.ownerId == guest.id }.isEmpty()
+        assertThat(bestScores.findAll())
+            .filteredOn { it.ownerId == guest.id }
+            .noneMatch { it.isRanked }
     }
 }

@@ -20,8 +20,8 @@ class BestScore(
     val seasonId: Long,
     val sessionId: Long,
     val score: Int = 0,
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val isRanked: Boolean = true,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0
 ) {
 
@@ -31,12 +31,12 @@ class BestScore(
 
     fun renewWith(sessionId: Long, score: Int): BestScore {
         if (score >= this.score) {
-            return BestScore(ownerId, gameId, seasonId, sessionId, score, id)
+            return BestScore(ownerId, gameId, seasonId, sessionId, score, isRanked, id)
         }
         return this
     }
 
     fun transferTo(ownerId: Long): BestScore {
-        return BestScore(ownerId, gameId, seasonId, sessionId, score, id)
+        return BestScore(ownerId, gameId, seasonId, sessionId, score, true, id)
     }
 }
