@@ -10,7 +10,7 @@ interface BestScores : JpaRepository<BestScore, Long> {
         value = """
             with best AS (select owner_id, game_id, season_id, score
                 from best_score best
-                where (:seasonId is null or season_id = :seasonId) and game_id = :gameId
+                where (:seasonId is null or season_id = :seasonId) and game_id = :gameId and is_ranked = true
                 order by score desc
                 limit :size
             )
@@ -29,7 +29,7 @@ interface BestScores : JpaRepository<BestScore, Long> {
             with best AS (
                 select rank() over (order by score desc) as `rank`, owner_id, game_id, season_id, score
                 from best_score best
-                where (:seasonId is null or season_id = :seasonId) and game_id = :gameId
+                where (:seasonId is null or season_id = :seasonId) and game_id = :gameId and is_ranked = true
                     and score >= (
                         select score from best_score 
                         where owner_id = :ownerId and (:seasonId is null or season_id = :seasonId) and game_id = :gameId 

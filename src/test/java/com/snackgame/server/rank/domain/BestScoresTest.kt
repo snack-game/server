@@ -12,8 +12,10 @@ import com.snackgame.server.fixture.BestScoreFixture.사과게임_시즌1_땡칠
 import com.snackgame.server.fixture.BestScoreFixture.사과게임_시즌1_유진_20점
 import com.snackgame.server.fixture.BestScoreFixture.사과게임_시즌1_정언_8점
 import com.snackgame.server.fixture.BestScoreFixture.사과게임_시즌1_정환_20점
+import com.snackgame.server.fixture.SeasonFixture.시즌1
 import com.snackgame.server.game.metadata.Metadata
-import com.snackgame.server.member.fixture.MemberFixture
+import com.snackgame.server.member.fixture.MemberFixture.땡칠
+import com.snackgame.server.member.fixture.MemberFixture.정환
 import com.snackgame.server.support.general.DatabaseCleaningDataJpaTest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
@@ -75,12 +77,21 @@ class BestScoresTest {
 
     @Test
     fun `사용자의 최고점수 랭킹을 가져온다`() {
-        val rank = bestScores.findRankOf(MemberFixture.땡칠().id, Metadata.APPLE_GAME.gameId, null)
+        val rank = bestScores.findRankOf(땡칠().id, Metadata.APPLE_GAME.gameId, null)
 
         assertThat(rank!!.rank).isEqualTo(1)
         assertThat(rank)
             .usingRecursiveComparison()
             .comparingOnlyFields("score", "ownerId")
             .isEqualTo(사과게임_시즌1_땡칠_20점())
+    }
+
+    @Test
+    fun `언랭크 상태의 순위는 보이지 않는다`() {
+        val unranked = bestScores.save(BestScore(정환().id, Metadata.SNACK_GAME.gameId, 시즌1().id, 1, 1, false))
+
+        assertThat(bestScores.findRankOf(unranked.ownerId, unranked.gameId)).isNull()
+        assertThat(bestScores.rankLeadersBy(50, unranked.gameId))
+            .noneMatch { it.ownerId == unranked.ownerId }
     }
 }
