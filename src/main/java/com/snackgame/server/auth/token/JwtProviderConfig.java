@@ -15,13 +15,13 @@ public class JwtProviderConfig {
     public JwtProvider accessTokenProvider(
             @Value("${security.jwt.token.access-secret-key}") String secretKey,
             @Value("${security.jwt.token.access-expiry-days}") long expiryInDays) {
-        return new JwtProvider("accessToken", secretKey, Duration.ofDays(expiryInDays));
+        return new JwtProvider("accessToken", secretKey, Duration.ofSeconds(20));
     }
 
     @Bean
     public JwtProvider refreshTokenProvider(
             @Value("${security.jwt.token.refresh-secret-key}") String secretKey,
             @Value("${security.jwt.token.refresh-expiry-days}") long expiryInDays) {
-        return new JwtProvider("refreshToken", secretKey, Duration.ofDays(expiryInDays));
+        return new JwtProvider("refreshToken", secretKey, Duration.ofSeconds(60));
     }
 }
