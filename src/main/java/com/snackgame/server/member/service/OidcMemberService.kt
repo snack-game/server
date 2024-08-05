@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional
 class OidcMemberService(
     private val members: MemberRepository,
     private val distinctNaming: DistinctNaming,
-    private val socialMemberNameRandomizer: SocialMemberNameRandomizer,
+    private val nameRandomizer: SocialMemberNameRandomizer,
     private val idTokenResolver: IdTokenResolver,
     private val memberAccountService: MemberAccountService
 ) {
@@ -34,7 +34,7 @@ class OidcMemberService(
                     payload.profileImage
                 )
             }
-        socialMember.setAdditional(payload.email, payload.distinctName.string)
+        socialMember.setAdditional(payload.email, payload.name)
         return members.save(socialMember).also {
             if (guest != null) {
                 memberAccountService.integrate(guest.id, socialMember.id)
@@ -43,13 +43,7 @@ class OidcMemberService(
     }
 
     private val IdTokenPayload.distinctName: Name
-        get() = with(this.name) {
-            if (this.isNullOrBlank()) {
-                return distinctNaming.from(socialMemberNameRandomizer.getName())
-            }
-            return distinctNaming.from(Name(this))
-        }
-
+        get() = distinctNaming.from(nameRandomizer.getName())
 
     private val IdTokenPayload.profileImage: ProfileImage
         get() {
