@@ -29,7 +29,7 @@ import com.snackgame.server.applegame.domain.game.AppleGame;
 import com.snackgame.server.applegame.domain.game.AppleGames;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.fixture.SeasonFixture;
-import com.snackgame.server.member.controller.dto.MemberDetailsResponse;
+import com.snackgame.server.member.service.dto.MemberDetailsResponse;
 import com.snackgame.server.member.fixture.MemberFixture;
 import com.snackgame.server.support.restassured.RestAssuredTest;
 

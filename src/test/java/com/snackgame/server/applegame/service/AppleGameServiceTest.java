@@ -153,7 +153,7 @@ class AppleGameServiceTest {
         ));
         appleGameService.finish(정환().getId(), game.getSessionId());
 
-        Member member = memberAccountService.getBy(정환().getId());
-        assertThat(member).extracting("status.exp").isEqualTo(new BigDecimal("4.00"));
+        var member = memberAccountService.getBy(정환().getId());
+        assertThat(member).extracting("status.exp").isEqualTo(4.0);
     }
 }
