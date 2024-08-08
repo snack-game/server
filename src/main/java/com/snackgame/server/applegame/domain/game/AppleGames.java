@@ -42,4 +42,6 @@ public interface AppleGames extends JpaRepository<AppleGame, Long> {
     }
 
     Optional<AppleGame> findByOwnerIdAndSessionId(Long ownerId, Long sessionId);
+
+    void deleteAllByOwnerId(long ownerId);
 }

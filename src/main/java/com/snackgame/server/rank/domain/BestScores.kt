@@ -47,4 +47,6 @@ interface BestScores : JpaRepository<BestScore, Long> {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     fun findByOwnerIdAndGameIdAndSeasonId(ownerId: Long, gameId: Long, seasonId: Long): BestScore?
+
+    fun deleteAllByOwnerId(ownerId: Long)
 }

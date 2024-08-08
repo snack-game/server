@@ -62,4 +62,9 @@ public class Status {
                 .sum();
         return exp.add(BigDecimal.valueOf(earnedBefore)).doubleValue();
     }
+
+    public void reset() {
+        this.level = 0L;
+        this.exp = ZERO;
+    }
 }

@@ -35,4 +35,13 @@ class StatusTest {
 
         assertThat(status.getTotalExp()).isEqualTo(200 + 240 + 288 + 123);
     }
+
+    @Test
+    void 경험치와_레벨을_0으로_초기화할_수_있다() {
+        Status status = new Status(3L, 123);
+
+        status.reset();
+
+        assertThat(status.getTotalExp()).isZero();
+    }
 }

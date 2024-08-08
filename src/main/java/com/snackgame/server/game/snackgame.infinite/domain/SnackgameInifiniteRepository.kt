@@ -19,4 +19,6 @@ interface SnackgameInifiniteRepository : JpaRepository<SnackgameInfinite, Long> 
         nativeQuery = true
     )
     fun findPercentileOf(sessionId: Long): Double?
+    
+    fun deleteAllByOwnerId(memberId: Long)
 }
