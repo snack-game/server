@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -78,6 +79,12 @@ class MemberController(
     ): MemberDetailsResponse {
         memberAccountService.changeProfileImageOf(member.id, profileImage.resource)
         return MemberDetailsResponse.of(member)
+    }
+
+    @Operation(summary = "현재 사용자 계정 탈퇴", description = "현재 사용자의 계정을 탈퇴한다")
+    @DeleteMapping(value = ["/members/me"])
+    fun delete(@Authenticated member: Member) {
+        memberAccountService.delete(member.id)
     }
 
     @Operation(summary = "현재 계정을 소셜 계정으로 통합", description = "현재 사용자를 직전에 로그인한 소셜 계정으로 통합한다")
