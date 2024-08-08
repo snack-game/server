@@ -4,7 +4,6 @@ import static com.snackgame.server.member.fixture.MemberFixture.땡칠;
 import static com.snackgame.server.member.fixture.MemberFixture.정환;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,9 +19,7 @@ import com.snackgame.server.applegame.domain.game.AppleGame;
 import com.snackgame.server.applegame.domain.game.AppleGames;
 import com.snackgame.server.applegame.fixture.TestFixture;
 import com.snackgame.server.fixture.SeasonFixture;
-import com.snackgame.server.member.domain.Member;
 import com.snackgame.server.member.fixture.MemberFixture;
-import com.snackgame.server.member.service.MemberAccountService;
 import com.snackgame.server.support.general.ServiceTest;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -32,8 +29,6 @@ class AppleGameServiceTest {
 
     @Autowired
     AppleGameService appleGameService;
-    @Autowired
-    MemberAccountService memberAccountService;
     @Autowired
     AppleGames appleGames;
 
@@ -141,19 +136,5 @@ class AppleGameServiceTest {
 
         assertThat(result.getScore()).isEqualTo(2);
         assertThat(result.getPercentile()).isEqualTo(50);
-    }
-
-    @Test
-    void 게임이_끝날때_게임_점수만큼_경험치를_부여한다() {
-        var game = new AppleGame(TestFixture.TWO_BY_FOUR(), 정환().getId());
-        appleGames.save(game);
-
-        appleGameService.placeMoves(정환().getId(), game.getSessionId(), List.of(
-                new RangeRequest(new CoordinateRequest(0, 1), new CoordinateRequest(1, 3))
-        ));
-        appleGameService.finish(정환().getId(), game.getSessionId());
-
-        var member = memberAccountService.getBy(정환().getId());
-        assertThat(member).extracting("status.exp").isEqualTo(4.0);
     }
 }

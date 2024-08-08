@@ -1,6 +1,7 @@
-package com.snackgame.server.member.service
+package com.snackgame.server.status
 
 import com.snackgame.server.member.domain.MemberRepository
+import com.snackgame.server.member.service.AccountIntegration
 import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component

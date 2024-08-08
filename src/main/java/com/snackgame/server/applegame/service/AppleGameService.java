@@ -12,9 +12,8 @@ import com.snackgame.server.applegame.controller.dto.RangeRequest;
 import com.snackgame.server.applegame.domain.game.AppleGame;
 import com.snackgame.server.applegame.domain.game.AppleGames;
 import com.snackgame.server.applegame.domain.game.Board;
-import com.snackgame.server.applegame.event.GameEndEvent;
-import com.snackgame.server.member.domain.Member;
-import com.snackgame.server.member.domain.MemberRepository;
+import com.snackgame.server.game.metadata.Metadata;
+import com.snackgame.server.game.session.event.SessionEndEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +24,6 @@ public class AppleGameService {
 
     private final AppleGames appleGames;
     private final ApplicationEventPublisher eventPublisher;
-    private final MemberRepository memberRepository;
 
     public AppleGame startGameFor(Long memberId) {
         AppleGame game = AppleGame.ofRandomized(memberId);
@@ -58,10 +56,7 @@ public class AppleGameService {
     public GameResultResponse finish(Long memberId, Long sessionId) {
         AppleGame game = appleGames.getBy(memberId, sessionId);
         game.finish();
-        eventPublisher.publishEvent(new GameEndEvent(game));
-
-        Member member = memberRepository.getById(memberId);
-        member.getStatus().addExp(game.getScore());
+        eventPublisher.publishEvent(new SessionEndEvent(Metadata.APPLE_GAME, memberId, sessionId, game.getScore()));
 
         return new GameResultResponse(
                 game.getScore(),
