@@ -2,9 +2,9 @@ package com.snackgame.server.member.service
 
 import com.snackgame.server.auth.oauth.oidc.IdTokenResolver
 import com.snackgame.server.auth.oauth.oidc.payload.IdTokenPayload
+import com.snackgame.server.member.service.dto.MemberDetailsResponse
 import com.snackgame.server.member.controller.dto.OidcRequest
 import com.snackgame.server.member.domain.Guest
-import com.snackgame.server.member.domain.Member
 import com.snackgame.server.member.domain.MemberRepository
 import com.snackgame.server.member.domain.Name
 import com.snackgame.server.member.domain.ProfileImage
@@ -23,7 +23,7 @@ class OidcMemberService(
 ) {
 
     @Transactional
-    fun getBy(oidcRequest: OidcRequest, guest: Guest?): Member {
+    fun getBy(oidcRequest: OidcRequest, guest: Guest?): MemberDetailsResponse {
         val payload: IdTokenPayload = idTokenResolver.resolve(oidcRequest.idToken)
         val socialMember = members.findByProviderAndProvidedId(payload.provider, payload.id)
             .orElseGet {
@@ -35,11 +35,12 @@ class OidcMemberService(
                 )
             }
         socialMember.setAdditional(payload.email, payload.name)
-        return members.save(socialMember).also {
-            if (guest != null) {
-                memberAccountService.integrate(guest.id, socialMember.id)
+        return MemberDetailsResponse.of(members.save(socialMember))
+            .also {
+                if (guest != null) {
+                    memberAccountService.integrate(guest.id, socialMember.id)
+                }
             }
-        }
     }
 
     private val IdTokenPayload.distinctName: Name

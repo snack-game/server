@@ -8,7 +8,6 @@ import com.snackgame.server.game.snackgame.domain.SnackgameInifiniteRepository
 import com.snackgame.server.game.snackgame.service.dto.SnackgameInfiniteEndResponse
 import com.snackgame.server.game.snackgame.service.dto.SnackgameInfiniteResponse
 import com.snackgame.server.game.snackgame.service.dto.SnackgameInfiniteUpdateRequest
-import com.snackgame.server.member.domain.MemberRepository
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class SnackgameInfiniteService(
     private val snackGameRepository: SnackgameInifiniteRepository,
-    private val memberRepository: MemberRepository,
     private val eventPublisher: ApplicationEventPublisher
 ) {
 
@@ -59,11 +57,7 @@ class SnackgameInfiniteService(
         val game = snackGameRepository.getBy(memberId, sessionId)
 
         game.end()
-
         eventPublisher.publishEvent(SessionEndEvent.of(game))
-        // TODO: 모듈화 + 이벤트 기반으로 동작하도록 분리. 게임은 게임에만 집중하도록.
-        val member = memberRepository.getById(memberId)
-        member.status.addExp(game.score.toDouble())
 
         return SnackgameInfiniteEndResponse.of(game, snackGameRepository.ratePercentileOf(sessionId))
     }

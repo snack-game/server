@@ -1,4 +1,4 @@
-package com.snackgame.server.member.service
+package com.snackgame.server.status
 
 import com.snackgame.server.member.domain.MemberRepository
 import com.snackgame.server.member.fixture.MemberFixture

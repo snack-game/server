@@ -5,7 +5,7 @@ import java.beans.ConstructorProperties
 import javax.validation.constraints.PositiveOrZero
 
 data class SnackgameInfiniteUpdateRequest @ConstructorProperties("score") constructor(
-    @PositiveOrZero(message = "점수는 음수일 수 없습니다")
+    @field:PositiveOrZero(message = "점수는 음수일 수 없습니다")
     @field:Schema(example = "10")
-    val score: Int
+    val score: Int = 0
 )

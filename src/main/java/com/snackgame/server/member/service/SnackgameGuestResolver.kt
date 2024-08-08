@@ -8,8 +8,5 @@ import org.springframework.stereotype.Component
 @Component
 class SnackgameGuestResolver(private val members: MemberRepository) : GuestResolver<Guest?> {
 
-    override fun resolve(guestId: Long): Guest? {
-        return members.findGuestById(guestId)
-            .orElse(null)
-    }
+    override fun resolve(guestId: Long): Guest? = members.findGuestById(guestId)
 }

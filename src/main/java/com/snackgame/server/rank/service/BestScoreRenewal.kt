@@ -38,7 +38,7 @@ class BestScoreRenewal(
             seasonId,
             session.sessionId,
             session.score,
-            memberAccountService.getBy(session.ownerId).accountType != AccountType.GUEST
+            memberAccountService.getBy(session.ownerId).type != AccountType.GUEST
         )
         return bestScores.save(newBestScore)
     }

@@ -6,7 +6,7 @@ import com.snackgame.server.auth.token.dto.TokensDto
 import com.snackgame.server.auth.token.support.OptionalGuest
 import com.snackgame.server.auth.token.support.TokenToCookies
 import com.snackgame.server.auth.token.support.TokensFromCookie
-import com.snackgame.server.member.controller.dto.MemberDetailsResponse
+import com.snackgame.server.member.service.dto.MemberDetailsResponse
 import com.snackgame.server.member.controller.dto.NameRequest
 import com.snackgame.server.member.controller.dto.OidcRequest
 import com.snackgame.server.member.controller.dto.TokenResponse
@@ -43,7 +43,7 @@ class AuthController(
 
         return ResponseEntity.ok()
             .header(HttpHeaders.SET_COOKIE, *tokenToCookies.from(tokens))
-            .body(MemberDetailsResponse.of(guest))
+            .body(guest)
     }
 
     @Operation(summary = "일반 사용자 토큰 발급", description = "사용자의 이름으로 토큰을 발급한다")
@@ -54,7 +54,7 @@ class AuthController(
 
         return ResponseEntity.ok()
             .header(HttpHeaders.SET_COOKIE, *tokenToCookies.from(tokens))
-            .body(MemberDetailsResponse.of(member))
+            .body(member)
     }
 
     @Operation(
@@ -84,7 +84,7 @@ class AuthController(
 
         return ResponseEntity.ok()
             .header(HttpHeaders.SET_COOKIE, *tokenToCookies.from(tokens))
-            .body(MemberDetailsResponse.of(member))
+            .body(member)
     }
 
     @Operation(

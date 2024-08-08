@@ -2,7 +2,6 @@ package com.snackgame.server.member.domain;
 
 import static com.snackgame.server.member.fixture.MemberFixture.정환;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.snackgame.server.member.exception.MemberNotFoundException;
 import com.snackgame.server.member.fixture.MemberFixture;
 import com.snackgame.server.support.general.DatabaseCleaningDataJpaTest;
 
@@ -27,18 +25,6 @@ class MemberRepositoryTest {
     @BeforeEach
     void setUp() {
         MemberFixture.saveAll();
-    }
-
-    @Test
-    void 사용자를_없는_id로_찾으면_예외를_던진다() {
-        assertThatThrownBy(() -> memberRepository.getById(0L))
-                .isInstanceOf(MemberNotFoundException.class);
-    }
-
-    @Test
-    void 사용자를_없는_이름으로_찾으면_예외를_던진다() {
-        assertThatThrownBy(() -> memberRepository.getByName(new Name("없는이름")))
-                .isInstanceOf(MemberNotFoundException.class);
     }
 
     @Test

@@ -44,9 +44,6 @@ open class Member(
 
     private var isValid = true
 
-    @Deprecated("Java 하위 호환성 확보용, 코틀린 전환 완료 시 제거")
-    constructor(name: Name) : this(name, null)
-
     open fun changeNameTo(name: Name) {
         this.name = name
     }

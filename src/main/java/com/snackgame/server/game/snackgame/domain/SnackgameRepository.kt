@@ -24,4 +24,6 @@ interface SnackgameRepository : JpaRepository<Snackgame, Long> {
     @Modifying
     @Query("update Snackgame set ownerId = :toMemberId where ownerId = :fromMemberId")
     fun transferSessions(fromMemberId: Long, toMemberId: Long): Int
+
+    fun deleteAllByOwnerId(memberId: Long)
 }
