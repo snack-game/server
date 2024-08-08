@@ -4,6 +4,7 @@ import com.snackgame.server.member.exception.MemberNotFoundException
 import com.snackgame.server.member.fixture.MemberFixture
 import com.snackgame.server.member.fixture.MemberFixture.땡칠
 import com.snackgame.server.support.general.ServiceTest
+import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.anyLong
@@ -25,8 +26,7 @@ class MemberWithdrawalTest {
 
     @TestComponent
     class MockOperation : MemberWithdrawalOperation {
-        override fun executeOn(memberId: Long) {
-        }
+        override fun executeOn(memberId: Long) {}
     }
 
     @Test
@@ -46,5 +46,16 @@ class MemberWithdrawalTest {
         memberAccountService.delete(땡칠().id)
 
         verify(mockOperation, times(1)).executeOn(anyLong())
+    }
+
+    @Test
+    fun `회원 탈퇴 후 재가입할 수 있다`() {
+        MemberFixture.saveAll()
+        memberAccountService.delete(땡칠().id)
+
+        val member = memberAccountService.createWith(땡칠().getNameAsString())
+
+        assertThat(member.id).isNotEqualTo(땡칠().id)
+        assertThat(member.name).isEqualTo(땡칠().name.string)
     }
 }
