@@ -31,7 +31,7 @@ class SnackgameSessionTransferTest {
     @Transactional
     @Test
     fun `한 사용자의 스낵게임 세션을 다른 사용자에게 모두 이전한다`() {
-        repeat(5) { FixtureSaver.save(Snackgame(땡칠().id)) }
+        repeat(5) { FixtureSaver.save(Snackgame.ofRandomized(땡칠().id)) }
 
         snackgameSessionTransfer.execute(땡칠().id, 정환().id)
 

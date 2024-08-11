@@ -1,8 +1,9 @@
 package com.snackgame.server.game.snackgame.service.dto
 
-import com.snackgame.server.applegame.domain.game.Percentile
+
 import com.snackgame.server.game.session.domain.Session
 import com.snackgame.server.game.session.service.dto.SessionResponse
+import com.snackgame.server.game.snackgame.domain.Percentile
 import com.snackgame.server.game.snackgame.domain.SnackgameInfinite
 import io.swagger.v3.oas.annotations.media.Schema
 
