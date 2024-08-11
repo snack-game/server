@@ -5,9 +5,12 @@ import com.snackgame.server.game.snackgame.service.SnackgameService
 import com.snackgame.server.game.snackgame.service.dto.SnackgameEndResponse
 import com.snackgame.server.game.snackgame.service.dto.SnackgameResponse
 import com.snackgame.server.game.snackgame.service.dto.SnackgameUpdateRequest
+import com.snackgame.server.game.snackgame.service.dto.StreakRequest
 import com.snackgame.server.member.domain.Member
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -41,12 +44,30 @@ class SnackgameController(
 
 현재는 점수 수정만 가능하며, 기존 점수가 덮어쓰기된다."""
     )
-    @PutMapping("/{sessionId}")
+    @PutMapping("/{sessionId}/score")
     fun update(
         @Authenticated member: Member,
         @PathVariable sessionId: Long,
         @RequestBody request: @Valid SnackgameUpdateRequest,
     ): SnackgameResponse = snackgameService.update(member.id, sessionId, request)
+
+    @Operation(
+
+    )
+    @PutMapping("/{sessionId}")
+    fun placeMoves(
+        @Authenticated member: Member,
+        @PathVariable sessionId: Long,
+        @RequestBody requests: @Valid List<StreakRequest>
+    ): ResponseEntity<SnackgameResponse> = snackgameService.placeMoves(member.id, sessionId, requests)
+        .map { game ->
+            ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(SnackgameResponse.of(game))
+        }
+        .orElseGet {
+            ResponseEntity.ok().build()
+        }
 
     @Operation(
         summary = "스낵게임 세션 일시정지",

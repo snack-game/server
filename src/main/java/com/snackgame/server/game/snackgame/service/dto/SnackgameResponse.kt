@@ -6,14 +6,14 @@ import com.snackgame.server.game.snackgame.domain.Snackgame
 
 class SnackgameResponse(
     session: Session,
-    val board: String = "" // TODO: replace with board
+    val board: List<List<SnackResponse>>
 ) : SessionResponse(session) {
 
     companion object {
         fun of(snackgame: Snackgame): SnackgameResponse {
             return SnackgameResponse(
                 snackgame,
-                "준비중"
+                SnackResponse.of(snackgame.getSnacks())
             )
         }
     }
