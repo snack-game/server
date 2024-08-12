@@ -44,21 +44,25 @@ class SnackgameController(
 
 현재는 점수 수정만 가능하며, 기존 점수가 덮어쓰기된다."""
     )
-    @PutMapping("/{sessionId}/score")
+    @PutMapping("/{sessionId}")
     fun update(
         @Authenticated member: Member,
         @PathVariable sessionId: Long,
-        @RequestBody request: @Valid SnackgameUpdateRequest,
+        @RequestBody @Valid request: SnackgameUpdateRequest,
     ): SnackgameResponse = snackgameService.update(member.id, sessionId, request)
 
     @Operation(
+        summary = "스낵게임 세션 수 삽입",
+        description = """
+            지정한 세션에 수들을 삽입한다. 황금사과를 제거한 경우 초기화된 판을 응답한다.
+        """
 
     )
-    @PutMapping("/{sessionId}")
+    @PutMapping("/{sessionId}/moves")
     fun placeMoves(
         @Authenticated member: Member,
         @PathVariable sessionId: Long,
-        @RequestBody requests: @Valid List<StreakRequest>
+        @RequestBody @Valid requests: List<StreakRequest>
     ): ResponseEntity<SnackgameResponse> = snackgameService.placeMoves(member.id, sessionId, requests)
         .map { game ->
             ResponseEntity

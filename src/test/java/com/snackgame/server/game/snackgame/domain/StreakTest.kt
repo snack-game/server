@@ -27,7 +27,6 @@ class StreakTest {
                 Coordinate(2, 1),
             )
         )
-        println(properStreak.toCoordinates().size)
         assertDoesNotThrow { properStreak.validateStreak() }
     }
 }
