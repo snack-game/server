@@ -4,18 +4,18 @@ import com.snackgame.server.game.snackgame.snack.PlainSnack
 import com.snackgame.server.game.snackgame.snack.Snack
 import java.util.concurrent.ThreadLocalRandom
 
-fun createRandomized(width: Int, height: Int): MutableList<MutableList<Snack>> {
-    if (allPositive(width, height)) {
-        val snacks: MutableList<MutableList<Snack>> = createRows(width, height)
+fun createRandomized(height: Int, width: Int): MutableList<MutableList<Snack>> {
+    if (allPositive(height, width)) {
+        val snacks: MutableList<MutableList<Snack>> = createRows(height, width)
         goldenOneIn(snacks)
         return snacks
     }
     return arrayListOf()
 }
 
-private fun createRows(width: Int, height: Int): MutableList<MutableList<Snack>> {
+private fun createRows(height: Int, width: Int): MutableList<MutableList<Snack>> {
     val snacks: MutableList<MutableList<Snack>> = arrayListOf()
-    for (i in 0..height) {
+    for (i in 0 until height) {
         snacks.add(createRow(width))
     }
 
@@ -24,7 +24,7 @@ private fun createRows(width: Int, height: Int): MutableList<MutableList<Snack>>
 
 private fun createRow(width: Int): MutableList<Snack> {
     val row: MutableList<Snack> = arrayListOf()
-    for (i in 0..width) {
+    for (i in 0 until width) {
         row.add(PlainSnack.ofRandomizedNumber())
 
     }

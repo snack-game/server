@@ -10,7 +10,7 @@ class Streak(private val coordinates: MutableList<Coordinate>) {
     }
 
     fun validateStreak() {
-        for (i in coordinates.indices - 1) {
+        for (i in 0 until coordinates.size - 1) {
             if (!compareDirections(coordinates[i], coordinates[i + 1])) throw InvalidCoordinateException()
         }
     }

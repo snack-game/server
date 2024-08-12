@@ -6,16 +6,17 @@ import com.snackgame.server.game.snackgame.exception.SnackNumberRangeException
 
 @JsonDeserialize(using = SnackDeserializer::class)
 abstract class Snack protected constructor(
-    private val number: Int = 0
 ) {
+    private var number: Int = 0
 
     protected companion object {
         const val NUMBER_MINIMUM = 1
         const val NUMBER_MAXIMUM = 9
     }
 
-    init {
+    constructor(number: Int) : this() {
         validateRangeOf(number)
+        this.number = number
     }
 
     private fun validateRangeOf(number: Int) {

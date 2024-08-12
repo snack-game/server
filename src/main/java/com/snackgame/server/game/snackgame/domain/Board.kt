@@ -1,20 +1,21 @@
 package com.snackgame.server.game.snackgame.domain
 
 import com.snackgame.server.game.snackgame.exception.InvalidBoardSizeException
+import com.snackgame.server.game.snackgame.exception.InvalidCoordinateException
 import com.snackgame.server.game.snackgame.exception.SnackNotRemovableException
 import com.snackgame.server.game.snackgame.snack.EmptySnack
 import com.snackgame.server.game.snackgame.snack.Snack
 import java.util.stream.Collectors
 
-class Board(
-    private var snacks: MutableList<MutableList<Snack>>,
-) {
-    init {
+class Board() {
+    private var snacks: MutableList<MutableList<Snack>> = arrayListOf()
+
+    constructor(snacks: MutableList<MutableList<Snack>>) : this() {
         validateIsRectangle(snacks)
-        snacks.map { ArrayList(it) }
+        this.snacks = snacks.map { ArrayList(it) }.toMutableList()
     }
 
-    constructor(width: Int, height: Int) : this(createRandomized(width, height))
+    constructor(height: Int, width: Int) : this(createRandomized(height, width))
 
     private fun validateIsRectangle(snacks: List<List<Snack>>) {
         if (snacks.isEmpty() || snacks[0].isEmpty()) {
@@ -23,7 +24,7 @@ class Board(
     }
 
     fun reset(): MutableList<MutableList<Snack>> {
-        return createRandomized(getWidth(), getHeight())
+        return createRandomized(getHeight(), getWidth())
     }
 
     fun removeSnacksIn(streak: Streak): List<Snack> {
@@ -35,7 +36,11 @@ class Board(
     }
 
     private fun validateIsIncluded(coordinates: List<Coordinate>) {
-        coordinates.forEach { coordinate -> coordinate.y < snacks.size && coordinate.x < snacks[0].size }
+        coordinates.forEach { coordinate ->
+            if (coordinate.y >= snacks.size || coordinate.x >= snacks[0].size) {
+                throw InvalidCoordinateException()
+            }
+        }
     }
 
     private fun validateSumOf(coordinates: List<Coordinate>) {
