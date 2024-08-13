@@ -7,9 +7,9 @@ import com.snackgame.server.game.snackgame.snack.PlainSnack
 object TestFixture {
 
     const val TWO_BY_FOUR_AS_JSON =
-        "{\"apples\":[[{\"number\":1,\"isGolden\":false},{\"number\":1,\"isGolden\":false},{\"number\":0,\"isGolden\":false},{\"number\":5,\"isGolden\":false}],[{\"number\":9,\"isGolden\":false},{\"number\":2,\"isGolden\":false},{\"number\":0,\"isGolden\":false},{\"number\":2,\"isGolden\":false}]]}"
-    const val TWO_BY_TWO_WITH_GOLDEN_APPLE_AS_JSON =
-        "{\"apples\":[[{\"number\":1,\"isGolden\":false},{\"number\":8,\"isGolden\":false}],[{\"number\":9,\"isGolden\":true},{\"number\":2,\"isGolden\":false}]]}"
+        "{\"snacks\":[[{\"number\":1,\"isGolden\":false},{\"number\":1,\"isGolden\":false},{\"number\":0,\"isGolden\":false},{\"number\":5,\"isGolden\":false}],[{\"number\":9,\"isGolden\":false},{\"number\":2,\"isGolden\":false},{\"number\":0,\"isGolden\":false},{\"number\":2,\"isGolden\":false}]]}"
+    const val TWO_BY_TWO_WITH_GOLDEN_SNACK_AS_JSON =
+        "{\"snacks\":[[{\"number\":1,\"isGolden\":false},{\"number\":8,\"isGolden\":false}],[{\"number\":9,\"isGolden\":true},{\"number\":2,\"isGolden\":false}]]}"
 
     /**
      * <p>[1, 1, _, 5]</p>

@@ -10,14 +10,7 @@ import javax.persistence.Converter
 @Converter(autoApply = true)
 class BoardConverter : AttributeConverter<Board, String> {
 
-    companion object {
-        private val OBJECT_MAPPER = ObjectMapper().apply {
-            setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-            setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE)
-        }
-    }
-
-    override fun convertToDatabaseColumn(board: Board?): String {
+    override fun convertToDatabaseColumn(board: Board): String {
         return try {
             OBJECT_MAPPER.writeValueAsString(board)
         } catch (e: JsonProcessingException) {
@@ -25,11 +18,18 @@ class BoardConverter : AttributeConverter<Board, String> {
         }
     }
 
-    override fun convertToEntityAttribute(dbJson: String?): Board? {
+    override fun convertToEntityAttribute(dbJson: String): Board {
         return try {
             OBJECT_MAPPER.readValue(dbJson, Board::class.java)
         } catch (e: JsonProcessingException) {
             throw RuntimeException(e)
+        }
+    }
+
+    companion object {
+        private val OBJECT_MAPPER = ObjectMapper().apply {
+            setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
+            setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE)
         }
     }
 }
