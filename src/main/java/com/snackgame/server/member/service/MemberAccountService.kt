@@ -64,9 +64,9 @@ class MemberAccountService(
     }
 
     @Transactional
-    fun changeGroupNameOf(memberId: Long, groupName: String) {
+    fun changeGroupNameOf(memberId: Long, groupName: String?) {
         val member = members.getBy(memberId)
-        val group = groupService.createIfNotExists(groupName)
+        val group = groupName?.let { groupService.createIfNotExists(it) }
         member.changeGroupTo(group)
     }
 
