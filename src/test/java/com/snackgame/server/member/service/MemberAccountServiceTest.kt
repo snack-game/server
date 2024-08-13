@@ -101,6 +101,14 @@ internal class MemberAccountServiceTest {
     }
 
     @Test
+    fun `그룹 이름이 null이면 그룹을 탈퇴한다`() {
+        val member = memberAccountService.createWith(땡칠().getNameAsString(), 땡칠().group!!.name)
+        memberAccountService.changeGroupNameOf(member.id, null)
+
+        assertThat(memberAccountService.getBy(member.id).group).isNull()
+    }
+
+    @Test
     fun `사용자를 id로 찾는다`() {
         val created = memberAccountService.createWith(땡칠().getNameAsString(), 땡칠().group!!.name)
 

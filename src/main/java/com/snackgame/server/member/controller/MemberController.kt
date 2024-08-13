@@ -65,7 +65,7 @@ class MemberController(
     @PutMapping("/members/me/group")
     fun changeGroup(
         @Authenticated member: Member,
-        @Valid @RequestBody groupRequest: GroupRequest
+        @RequestBody groupRequest: GroupRequest
     ): MemberDetailsResponse {
         memberAccountService.changeGroupNameOf(member.id, groupRequest.group)
         return MemberDetailsResponse.of(member)
