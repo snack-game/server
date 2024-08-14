@@ -1,10 +1,10 @@
 package com.snackgame.server.member.service.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
-import javax.validation.constraints.Size
+import javax.validation.constraints.Pattern
 
 
 data class GroupRequest @JsonCreator constructor(
-    @Size(min = 1, message = "그룹 이름이 너무 짧습니다")
+    @Pattern(regexp = "[a-zA-Z가-힣0-9-_]{2,}", message = "사용할 수 없는 그룹이름입니다")
     val group: String?
 )
