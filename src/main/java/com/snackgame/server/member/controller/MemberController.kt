@@ -65,14 +65,14 @@ class MemberController(
     @PutMapping("/members/me/group")
     fun changeGroup(
         @Authenticated member: Member,
-        @RequestBody groupRequest: GroupRequest
+        @Valid @RequestBody groupRequest: GroupRequest
     ): MemberDetailsResponse {
         memberAccountService.changeGroupNameOf(member.id, groupRequest.group)
         return MemberDetailsResponse.of(member)
     }
 
     @Operation(summary = "나의 프로필 이미지 변경", description = "현재 사용자의 프로필 이미지를 변경한다")
-    @PutMapping(value = ["/members/me/profile-image"], consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PutMapping("/members/me/profile-image", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun changeProfileImage(
         @Authenticated member: Member,
         @RequestPart profileImage: MultipartFile
@@ -82,7 +82,7 @@ class MemberController(
     }
 
     @Operation(summary = "현재 사용자 계정 탈퇴", description = "현재 사용자의 계정을 탈퇴한다")
-    @DeleteMapping(value = ["/members/me"])
+    @DeleteMapping("/members/me")
     fun delete(@Authenticated member: Member) {
         memberAccountService.delete(member.id)
     }
