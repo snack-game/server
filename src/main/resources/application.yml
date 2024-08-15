@@ -13,6 +13,9 @@ spring:
       add-mappings: false
   lifecycle:
     timeout-per-shutdown-phase: 10s
+  servlet:
+    multipart:
+      max-file-size: 5MB
 springdoc:
   api-docs:
     path: /docs
