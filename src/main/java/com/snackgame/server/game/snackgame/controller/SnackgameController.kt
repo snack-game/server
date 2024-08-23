@@ -62,7 +62,7 @@ class SnackgameController(
     fun placeMoves(
         @Authenticated member: Member,
         @PathVariable sessionId: Long,
-        @RequestBody @Valid requests: List<StreakRequest>
+        @RequestBody requests: List<StreakRequest>
     ): ResponseEntity<SnackgameResponse> = snackgameService.placeMoves(member.id, sessionId, requests)
         .map { game ->
             ResponseEntity

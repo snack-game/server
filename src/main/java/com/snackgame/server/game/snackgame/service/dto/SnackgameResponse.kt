@@ -4,8 +4,9 @@ import com.snackgame.server.game.session.domain.Session
 import com.snackgame.server.game.session.service.dto.SessionResponse
 import com.snackgame.server.game.snackgame.domain.Snackgame
 
-class SnackgameResponse(
-    session: Session,
+
+data class SnackgameResponse(
+    val session: Session,
     val board: List<List<SnackResponse>>
 ) : SessionResponse(session) {
 

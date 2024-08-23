@@ -5,6 +5,7 @@ import com.snackgame.server.game.metadata.Metadata.SNACK_GAME
 import com.snackgame.server.game.session.domain.Session
 import com.snackgame.server.game.snackgame.snack.Snack
 import java.time.Duration
+import javax.persistence.Convert
 import javax.persistence.Entity
 import javax.persistence.Lob
 
@@ -12,6 +13,7 @@ import javax.persistence.Lob
 class Snackgame(
     ownerId: Long,
     @Lob
+    @Convert(converter = BoardConverter::class)
     val board: Board,
     timeLimit: Duration = SESSION_TIME + SPARE_TIME,
     score: Int = 0

@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -37,36 +38,37 @@ public class AppleGame extends BaseEntity {
     private Long sessionId;
     private Long ownerId;
     @Lob
-    private Board board;
+    @Convert(converter = AppleGameBoardConverter.class)
+    private AppleGameBoard appleGameBoard;
     private int score = 0;
     private LocalDateTime finishedAt;
 
-    public AppleGame(Board board, Long ownerId) {
-        this.board = board;
+    public AppleGame(AppleGameBoard appleGameBoard, Long ownerId) {
+        this.appleGameBoard = appleGameBoard;
         this.ownerId = ownerId;
         this.finishedAt = willFinishAt();
     }
 
-    public AppleGame(Board board, Long ownerId, LocalDateTime finishedAt) {
-        this.board = board;
+    public AppleGame(AppleGameBoard appleGameBoard, Long ownerId, LocalDateTime finishedAt) {
+        this.appleGameBoard = appleGameBoard;
         this.ownerId = ownerId;
         this.finishedAt = finishedAt;
     }
 
-    public AppleGame(Board board, Long ownerId, LocalDateTime finishedAt, int score) {
-        this.board = board;
+    public AppleGame(AppleGameBoard appleGameBoard, Long ownerId, LocalDateTime finishedAt, int score) {
+        this.appleGameBoard = appleGameBoard;
         this.ownerId = ownerId;
         this.finishedAt = finishedAt;
         this.score = score;
     }
 
     public static AppleGame ofRandomized(Long ownerId) {
-        return new AppleGame(new Board(DEFAULT_HEIGHT, DEFAULT_WIDTH), ownerId);
+        return new AppleGame(new AppleGameBoard(DEFAULT_HEIGHT, DEFAULT_WIDTH), ownerId);
     }
 
     public void restart() {
         validateOngoing();
-        this.board = board.reset();
+        this.appleGameBoard = appleGameBoard.reset();
         this.score = 0;
         this.createdAt = now();
         this.finishedAt = willFinishAt();
@@ -74,9 +76,9 @@ public class AppleGame extends BaseEntity {
 
     public void removeApplesIn(Range range) {
         validateOngoing();
-        List<Apple> removed = board.removeApplesIn(range);
+        List<Apple> removed = appleGameBoard.removeApplesIn(range);
         if (removed.stream().anyMatch(Apple::isGolden)) {
-            board = board.reset();
+            appleGameBoard = appleGameBoard.reset();
         }
         score += removed.size();
     }
@@ -102,7 +104,7 @@ public class AppleGame extends BaseEntity {
     }
 
     public List<List<Apple>> getApples() {
-        return board.getApples();
+        return appleGameBoard.getApples();
     }
 
     public void increase(int amount) {

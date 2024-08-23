@@ -7,6 +7,7 @@ import com.snackgame.server.game.snackgame.snack.EmptySnack
 import com.snackgame.server.game.snackgame.snack.Snack
 import java.util.stream.Collectors
 
+
 class Board() {
     private var snacks: MutableList<MutableList<Snack>> = arrayListOf()
 

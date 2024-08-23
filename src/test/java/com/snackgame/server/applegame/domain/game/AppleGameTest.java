@@ -47,12 +47,12 @@ class AppleGameTest {
                 new Coordinate(1, 3)
         );
         game.removeApplesIn(range);
-        var previousBoard = game.getBoard();
+        var previousBoard = game.getAppleGameBoard();
         var previousCreatedAt = game.getCreatedAt();
 
         game.restart();
 
-        assertThat(game.getBoard()).isNotEqualTo(previousBoard);
+        assertThat(game.getAppleGameBoard()).isNotEqualTo(previousBoard);
         assertThat(game.getScore()).isZero();
         assertThat(game.getCreatedAt()).isAfter(previousCreatedAt);
     }
