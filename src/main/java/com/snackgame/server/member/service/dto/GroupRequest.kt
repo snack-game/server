@@ -5,6 +5,6 @@ import javax.validation.constraints.Pattern
 
 
 data class GroupRequest @JsonCreator constructor(
-
-    val group: @Pattern(regexp = "^[a-zA-Z가-힣0-9-_]{2,10}$", message = "사용할 수 없는 그룹이름입니다") String?
+    @field:Pattern(regexp = "^[a-zA-Z가-힣0-9-_]{2,10}$", message = "사용할 수 없는 그룹이름입니다")
+    val group: String?
 )
