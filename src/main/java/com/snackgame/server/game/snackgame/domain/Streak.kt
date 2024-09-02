@@ -17,7 +17,7 @@ class Streak(private val coordinates: MutableList<Coordinate>) {
 
     private fun compareDirections(before: Coordinate, after: Coordinate): Boolean {
         val yDif = abs(after.y - before.y)
-        val xDif = abs(after.x - before.y)
+        val xDif = abs(after.x - before.x)
 
         return yDif <= 1 && xDif <= 1
     }

@@ -24,6 +24,16 @@ object TestFixture {
         )
     }
 
+    fun THREE_BY_FOUR(): Board {
+        return Board(
+            arrayListOf(
+                arrayListOf(PlainSnack.of(1), PlainSnack.of(1), EmptySnack.get(), PlainSnack.of(5)),
+                arrayListOf(PlainSnack.of(9), PlainSnack.of(2), EmptySnack.get(), PlainSnack.of(2)),
+                arrayListOf(PlainSnack.of(1), PlainSnack.of(1), PlainSnack.of(3), PlainSnack.of(5))
+            )
+        )
+    }
+
     /**
      * <p>[1, 1]</p>
      * <p>[<b>9</b>, 2]</p>
