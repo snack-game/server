@@ -1,6 +1,7 @@
 package com.snackgame.server.game.snackgame.domain
 
 import com.snackgame.server.game.snackgame.exception.InvalidCoordinateException
+import com.snackgame.server.game.snackgame.exception.InvalidStreakException
 import kotlin.math.abs
 
 class Streak(private val coordinates: MutableList<Coordinate>) {
@@ -11,7 +12,7 @@ class Streak(private val coordinates: MutableList<Coordinate>) {
 
     fun validateStreak() {
         for (i in 0 until coordinates.size - 1) {
-            if (!compareDirections(coordinates[i], coordinates[i + 1])) throw InvalidCoordinateException()
+            if (!compareDirections(coordinates[i], coordinates[i + 1])) throw InvalidStreakException()
         }
     }
 
