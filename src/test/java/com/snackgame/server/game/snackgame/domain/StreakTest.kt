@@ -1,6 +1,6 @@
 package com.snackgame.server.game.snackgame.domain
 
-import com.snackgame.server.game.snackgame.exception.InvalidCoordinateException
+import com.snackgame.server.game.snackgame.exception.InvalidStreakException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -16,7 +16,7 @@ class StreakTest {
                 Coordinate(4, 2),
             )
         )
-        assertThrows<InvalidCoordinateException> {
+        assertThrows<InvalidStreakException> {
             wrongStreak.validateStreak()
         }
 
