@@ -4,16 +4,17 @@ import com.snackgame.server.game.session.domain.Session
 import com.snackgame.server.game.session.service.dto.SessionResponse
 import com.snackgame.server.game.snackgame.domain.Snackgame
 
-class SnackgameResponse(
-    session: Session,
-    val board: String = "" // TODO: replace with board
+
+data class SnackgameResponse(
+    val session: Session,
+    val board: List<List<SnackResponse>>
 ) : SessionResponse(session) {
 
     companion object {
         fun of(snackgame: Snackgame): SnackgameResponse {
             return SnackgameResponse(
                 snackgame,
-                "준비중"
+                SnackResponse.of(snackgame.getSnacks())
             )
         }
     }

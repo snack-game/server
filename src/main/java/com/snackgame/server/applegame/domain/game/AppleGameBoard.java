@@ -16,20 +16,20 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Board {
+public class AppleGameBoard {
 
     private static final int REMOVABLE_SUM = 10;
 
     private List<List<Apple>> apples;
 
-    public Board(List<List<Apple>> apples) {
+    public AppleGameBoard(List<List<Apple>> apples) {
         validateSquared(apples);
         this.apples = apples.stream()
                 .map(ArrayList::new)
                 .collect(Collectors.toList());
     }
 
-    public Board(int height, int width) {
+    public AppleGameBoard(int height, int width) {
         this(ApplesFactory.createRandomized(height, width));
     }
 
@@ -39,8 +39,8 @@ public class Board {
         }
     }
 
-    public Board reset() {
-        return new Board(this.getHeight(), this.getWidth());
+    public AppleGameBoard reset() {
+        return new AppleGameBoard(this.getHeight(), this.getWidth());
     }
 
     protected List<Apple> removeApplesIn(Range range) {

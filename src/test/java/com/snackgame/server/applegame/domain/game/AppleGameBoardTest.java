@@ -20,14 +20,14 @@ import com.snackgame.server.applegame.exception.InvalidBoardSizeException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class BoardTest {
+class AppleGameBoardTest {
 
     @Test
     void 게임판_높이는_1이상이어야_한다() {
         int height = 0;
         int width = 8;
 
-        assertThatThrownBy(() -> new Board(height, width))
+        assertThatThrownBy(() -> new AppleGameBoard(height, width))
                 .isInstanceOf(InvalidBoardSizeException.class)
                 .hasMessage("잘못된 크기의 게임판입니다");
     }
@@ -37,7 +37,7 @@ class BoardTest {
         int height = 1;
         int width = 0;
 
-        assertThatThrownBy(() -> new Board(height, width))
+        assertThatThrownBy(() -> new AppleGameBoard(height, width))
                 .isInstanceOf(InvalidBoardSizeException.class)
                 .hasMessage("잘못된 크기의 게임판입니다");
     }
@@ -47,7 +47,7 @@ class BoardTest {
         int height = 4;
         int width = 8;
 
-        var board = new Board(height, width);
+        var board = new AppleGameBoard(height, width);
 
         assertThat(board.getApples()).hasSize(height);
         assertThat(board.getApples()).allSatisfy(
@@ -59,7 +59,7 @@ class BoardTest {
     void 게임판을_초기화해도_같은_크기를_가진다() {
         int height = 4;
         int width = 8;
-        var board = new Board(height, width);
+        var board = new AppleGameBoard(height, width);
 
         var reset = board.reset();
 
@@ -73,7 +73,7 @@ class BoardTest {
     void 게임판을_초기화하면_사과들이_바뀐다() {
         int height = 4;
         int width = 8;
-        var board = new Board(height, width);
+        var board = new AppleGameBoard(height, width);
 
         var reset = board.reset();
 
@@ -132,7 +132,7 @@ class BoardTest {
 
     @Test
     void 하나를_황금사과로_만든다() {
-        var board = new Board(10, 8);
+        var board = new AppleGameBoard(10, 8);
 
         long goldenAppleCount = board.getApples().stream()
                 .flatMap(Collection::stream)

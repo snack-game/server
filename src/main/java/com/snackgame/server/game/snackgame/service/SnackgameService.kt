@@ -1,16 +1,20 @@
 package com.snackgame.server.game.snackgame.service
 
-import com.snackgame.server.applegame.domain.game.Percentile
+
 import com.snackgame.server.game.session.event.SessionEndEvent
 import com.snackgame.server.game.session.exception.NoSuchSessionException
+import com.snackgame.server.game.snackgame.domain.Percentile
 import com.snackgame.server.game.snackgame.domain.Snackgame
 import com.snackgame.server.game.snackgame.domain.SnackgameRepository
 import com.snackgame.server.game.snackgame.service.dto.SnackgameEndResponse
 import com.snackgame.server.game.snackgame.service.dto.SnackgameResponse
 import com.snackgame.server.game.snackgame.service.dto.SnackgameUpdateRequest
+import com.snackgame.server.game.snackgame.service.dto.StreakRequest
+import com.snackgame.server.game.snackgame.service.dto.StreakRequest.Companion.toStreak
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
 class SnackgameService(
@@ -20,7 +24,7 @@ class SnackgameService(
 
     @Transactional
     fun startSessionFor(memberId: Long): SnackgameResponse {
-        val game = snackGameRepository.save(Snackgame(memberId))
+        val game = snackGameRepository.save(Snackgame.ofRandomized(memberId))
 
         return SnackgameResponse.of(game)
     }
@@ -32,6 +36,19 @@ class SnackgameService(
         game.setScoreUnsafely(request.score)
 
         return SnackgameResponse.of(game)
+    }
+
+    @Transactional
+    fun placeMoves(memberId: Long, sessionId: Long, streakRequests: List<StreakRequest>): Optional<Snackgame> {
+        val game = snackGameRepository.getBy(memberId, sessionId)
+        val previous = game.board
+
+        game.removeSnacks(toStreak(streakRequests))
+
+        return if (!game.board.equals(previous)) {
+            Optional.of<Snackgame>(game)
+        } else Optional.empty<Snackgame>()
+
     }
 
     @Transactional

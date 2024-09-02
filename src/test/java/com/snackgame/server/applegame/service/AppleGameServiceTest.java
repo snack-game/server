@@ -101,9 +101,9 @@ class AppleGameServiceTest {
 
         AppleGame current = appleGames.getBy(땡칠().getId(), previous.getSessionId());
         assertThat(current.getCreatedAt()).isAfter(previous.getCreatedAt());
-        assertThat(current.getBoard())
+        assertThat(current.getAppleGameBoard())
                 .usingRecursiveComparison()
-                .isNotEqualTo(previous.getBoard());
+                .isNotEqualTo(previous.getAppleGameBoard());
     }
 
     @Test

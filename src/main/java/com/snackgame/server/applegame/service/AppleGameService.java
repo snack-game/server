@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.snackgame.server.applegame.controller.dto.GameResultResponse;
 import com.snackgame.server.applegame.controller.dto.RangeRequest;
 import com.snackgame.server.applegame.domain.game.AppleGame;
+import com.snackgame.server.applegame.domain.game.AppleGameBoard;
 import com.snackgame.server.applegame.domain.game.AppleGames;
-import com.snackgame.server.applegame.domain.game.Board;
 import com.snackgame.server.game.metadata.Metadata;
 import com.snackgame.server.game.session.event.SessionEndEvent;
 
@@ -32,11 +32,11 @@ public class AppleGameService {
 
     public Optional<AppleGame> placeMoves(Long memberId, Long sessionId, List<RangeRequest> rangeRequests) {
         AppleGame game = appleGames.getBy(memberId, sessionId);
-        Board previous = game.getBoard();
+        AppleGameBoard previous = game.getAppleGameBoard();
 
         rangeRequests.forEach(request -> game.removeApplesIn(request.toRange()));
 
-        if (!game.getBoard().equals(previous)) {
+        if (!game.getAppleGameBoard().equals(previous)) {
             return Optional.of(game);
         }
         return Optional.empty();

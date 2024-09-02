@@ -10,31 +10,31 @@ import com.snackgame.server.applegame.fixture.TestFixture;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class BoardConverterTest {
+class AppleGameBoardConverterTest {
 
-    private final BoardConverter converter = new BoardConverter();
+    private final AppleGameBoardConverter converter = new AppleGameBoardConverter();
 
     @Test
     void 게임판을_JSON으로_변환한다() {
-        Board board = TestFixture.TWO_BY_FOUR();
+        AppleGameBoard appleGameBoard = TestFixture.TWO_BY_FOUR();
 
-        String serialized = converter.convertToDatabaseColumn(board);
+        String serialized = converter.convertToDatabaseColumn(appleGameBoard);
 
         assertThat(serialized).isEqualTo(TestFixture.TWO_BY_FOUR_AS_JSON);
     }
 
     @Test
     void 황금사과를_포함한_게임판을_JSON으로_변환한다() {
-        Board board = TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE();
+        AppleGameBoard appleGameBoard = TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE();
 
-        String serialized = converter.convertToDatabaseColumn(board);
+        String serialized = converter.convertToDatabaseColumn(appleGameBoard);
 
         assertThat(serialized).isEqualTo(TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE_AS_JSON);
     }
 
     @Test
     void JSON_게임판을_사과객체들로_변환한다() {
-        Board expected = TestFixture.TWO_BY_FOUR();
+        AppleGameBoard expected = TestFixture.TWO_BY_FOUR();
 
         var deserialized = converter.convertToEntityAttribute(TestFixture.TWO_BY_FOUR_AS_JSON);
 
@@ -45,7 +45,7 @@ class BoardConverterTest {
 
     @Test
     void 황금사과를_포함한_게임판을_역직렬화한다() {
-        Board expected = TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE();
+        AppleGameBoard expected = TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE();
 
         var deserialized = converter.convertToEntityAttribute(TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE_AS_JSON);
 

@@ -46,7 +46,7 @@ class AppleGamesTest {
         appleGames.save(game);
 
         String applesJson = jdbcTemplate.queryForObject(
-                "SELECT board FROM apple_game WHERE session_id = " + game.getSessionId(),
+                "SELECT apple_game_board FROM apple_game WHERE session_id = " + game.getSessionId(),
                 String.class);
         assertThat(applesJson).isEqualTo(TWO_BY_TWO_WITH_GOLDEN_APPLE_AS_JSON);
     }

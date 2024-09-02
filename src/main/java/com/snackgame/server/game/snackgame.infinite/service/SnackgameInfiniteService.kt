@@ -1,8 +1,9 @@
 package com.snackgame.server.game.snackgame.service
 
-import com.snackgame.server.applegame.domain.game.Percentile
+
 import com.snackgame.server.game.session.event.SessionEndEvent
 import com.snackgame.server.game.session.exception.NoSuchSessionException
+import com.snackgame.server.game.snackgame.domain.Percentile
 import com.snackgame.server.game.snackgame.domain.SnackgameInfinite
 import com.snackgame.server.game.snackgame.domain.SnackgameInifiniteRepository
 import com.snackgame.server.game.snackgame.service.dto.SnackgameInfiniteEndResponse

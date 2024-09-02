@@ -9,7 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Converter(autoApply = true)
-public class BoardConverter implements AttributeConverter<Board, String> {
+public class AppleGameBoardConverter implements AttributeConverter<AppleGameBoard, String> {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -19,18 +19,18 @@ public class BoardConverter implements AttributeConverter<Board, String> {
     }
 
     @Override
-    public String convertToDatabaseColumn(Board board) {
+    public String convertToDatabaseColumn(AppleGameBoard appleGameBoard) {
         try {
-            return OBJECT_MAPPER.writeValueAsString(board);
+            return OBJECT_MAPPER.writeValueAsString(appleGameBoard);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public Board convertToEntityAttribute(String dbJson) {
+    public AppleGameBoard convertToEntityAttribute(String dbJson) {
         try {
-            return OBJECT_MAPPER.readValue(dbJson, Board.class);
+            return OBJECT_MAPPER.readValue(dbJson, AppleGameBoard.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
