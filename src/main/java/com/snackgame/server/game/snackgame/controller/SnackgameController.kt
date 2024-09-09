@@ -52,9 +52,10 @@ class SnackgameController(
     ): SnackgameResponse = snackgameService.update(member.id, sessionId, request)
 
     @Operation(
-        summary = "스낵게임 세션 수 삽입",
+        summary = "스낵게임 세션 검증",
         description = """
-            지정한 세션에 수들을 삽입한다. 황금사과를 제거한 경우 초기화된 판을 응답한다.
+            스트릭을 순서대로 전달하여 게임을 시뮬레이션한다.
+            여기서 스트릭은 <b>선택된 스낵들의 좌표값</b>으로 표현된다.
         """
 
     )
