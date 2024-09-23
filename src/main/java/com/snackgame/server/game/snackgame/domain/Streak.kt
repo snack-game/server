@@ -3,24 +3,36 @@ package com.snackgame.server.game.snackgame.domain
 import com.snackgame.server.game.snackgame.exception.InvalidStreakException
 import kotlin.math.abs
 
-class Streak(private val coordinates: MutableList<Coordinate>) {
+class Streak(val coordinates: List<Coordinate>) {
 
-    fun toCoordinates(): MutableList<Coordinate> {
-        return coordinates
+    val length = coordinates.size
+
+    init {
+        validateDirectionsOf(coordinates)
+        validateLengthOf(coordinates)
     }
 
-    fun validateStreak() {
-        for (i in 0 until coordinates.size - 1) {
-            if (!compareDirections(coordinates[i], coordinates[i + 1])) throw InvalidStreakException()
+    private fun validateLengthOf(coordinates: List<Coordinate>) {
+        if (coordinates.size < 2) {
+            throw InvalidStreakException() // TODO: 오류 메시지 상세화, 로깅
         }
     }
 
-    private fun compareDirections(before: Coordinate, after: Coordinate): Boolean {
-        val yDif = abs(after.y - before.y)
-        val xDif = abs(after.x - before.x)
-
-        return yDif <= 1 && xDif <= 1
+    private fun validateDirectionsOf(coordinates: List<Coordinate>) {
+        for (i in 0 until coordinates.size - 1) {
+            if (!isStraightOrDiagonal(coordinates[i], coordinates[i + 1])) {
+                throw InvalidStreakException()
+            }
+        }
     }
 
+    private fun isStraightOrDiagonal(one: Coordinate, other: Coordinate): Boolean {
+        val yDif = abs(other.y - one.y)
+        val xDif = abs(other.x - one.x)
 
+        if (yDif == 0 && xDif == 0) {
+            return false
+        }
+        return yDif * xDif == 0 || yDif == xDif
+    }
 }
