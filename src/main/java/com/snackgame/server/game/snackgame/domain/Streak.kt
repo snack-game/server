@@ -8,13 +8,20 @@ class Streak(val coordinates: List<Coordinate>) {
     val length = coordinates.size
 
     init {
-        validateDirectionsOf(coordinates)
         validateLengthOf(coordinates)
+        validateNoDuplicateIn(coordinates)
+        validateDirectionsOf(coordinates)
     }
 
     private fun validateLengthOf(coordinates: List<Coordinate>) {
         if (coordinates.size < 2) {
             throw InvalidStreakException() // TODO: 오류 메시지 상세화, 로깅
+        }
+    }
+
+    private fun validateNoDuplicateIn(coordinates: List<Coordinate>) {
+        if (coordinates.distinct().size != coordinates.size) {
+            throw InvalidStreakException()
         }
     }
 
