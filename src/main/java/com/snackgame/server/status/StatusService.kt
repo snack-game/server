@@ -16,9 +16,10 @@ class StatusService(private val memberRepository: MemberRepository) {
     @Transactional
     fun onSessionEnd(session: SessionEndEvent) {
         when (session.metadata) {
-            Metadata.SNACK_GAME -> addExpWithScore(session)
-            Metadata.APPLE_GAME -> addExpWithScore(session)
-            Metadata.SNACK_GAME_INFINITE -> addExpWithScore(session)
+            Metadata.SNACK_GAME,
+            Metadata.APPLE_GAME,
+            Metadata.SNACK_GAME_INFINITE,
+            Metadata.SNACK_GAME_BIZ -> addExpWithScore(session)
         }
     }
 

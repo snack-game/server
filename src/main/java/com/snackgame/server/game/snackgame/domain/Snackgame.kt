@@ -1,6 +1,5 @@
 package com.snackgame.server.game.snackgame.domain
 
-import com.snackgame.server.game.metadata.Metadata
 import com.snackgame.server.game.metadata.Metadata.SNACK_GAME
 import com.snackgame.server.game.session.domain.Session
 import com.snackgame.server.game.snackgame.snack.Snack
@@ -10,7 +9,7 @@ import javax.persistence.Entity
 import javax.persistence.Lob
 
 @Entity
-class Snackgame(
+open class Snackgame(
     ownerId: Long,
     @Lob
     @Convert(converter = BoardConverter::class)
@@ -19,27 +18,20 @@ class Snackgame(
     score: Int = 0
 ) : Session(ownerId, timeLimit, score) {
 
-
-    @Deprecated("스트릭 구현 시 제거 예정")
+    @Deprecated("스트릭 구현 완료 시 제거")
     fun setScoreUnsafely(score: Int) {
         this.score = score
     }
 
-
     fun removeSnacks(streak: Streak) {
-        streak.validateStreak()
         val removedSnacks = board.removeSnacksIn(streak)
-
-        if (removedSnacks.stream().anyMatch(Snack::isGolden)) {
+        if (removedSnacks.any(Snack::isGolden)) {
             board.reset()
         }
-        increaseScore(removedSnacks.size)
+        this.score += streak.length
     }
 
-    private fun increaseScore(size: Int) {
-        this.score += size
-    }
-
+    @Deprecated("대체", ReplaceWith("board.getSnacks()"))
     fun getSnacks(): List<List<Snack>> {
         return board.getSnacks()
     }
@@ -47,10 +39,10 @@ class Snackgame(
     override val metadata = SNACK_GAME
 
     companion object {
-        private const val DEFAULT_HEIGHT = 8
-        private const val DEFAULT_WIDTH = 6
-        private val SESSION_TIME = Duration.ofMinutes(2)
-        private val SPARE_TIME = Duration.ofSeconds(2)
+        const val DEFAULT_HEIGHT = 8
+        const val DEFAULT_WIDTH = 6
+        val SESSION_TIME = Duration.ofMinutes(2)
+        val SPARE_TIME = Duration.ofSeconds(2)
 
         fun ofRandomized(ownerId: Long): Snackgame {
             return Snackgame(ownerId, Board(DEFAULT_HEIGHT, DEFAULT_WIDTH))
