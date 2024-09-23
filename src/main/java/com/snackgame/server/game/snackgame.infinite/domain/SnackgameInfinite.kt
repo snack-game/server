@@ -1,6 +1,5 @@
 package com.snackgame.server.game.snackgame.domain
 
-import com.snackgame.server.game.metadata.Metadata
 import com.snackgame.server.game.metadata.Metadata.SNACK_GAME_INFINITE
 import com.snackgame.server.game.session.domain.Session
 import javax.persistence.Entity
@@ -13,5 +12,5 @@ class SnackgameInfinite(ownerId: Long) : Session(ownerId) {
         this.score = score
     }
 
-    override fun getMetadata(): Metadata = SNACK_GAME_INFINITE
+    override val metadata = SNACK_GAME_INFINITE
 }

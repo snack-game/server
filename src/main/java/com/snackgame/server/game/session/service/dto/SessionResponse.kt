@@ -8,7 +8,7 @@ abstract class SessionResponse(
     session: Session
 ) : Serializable {
 
-    val metadata = MetadataResponse.of(session.getMetadata())
+    val metadata = MetadataResponse.of(session.metadata)
     val ownerId = session.ownerId
     val sessionId = session.sessionId
     val state = session.currentState

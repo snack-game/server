@@ -22,7 +22,7 @@ class SessionTest {
             this.score = score
         }
 
-        override fun getMetadata(): Metadata = Metadata.APPLE_GAME
+        override val metadata = Metadata.APPLE_GAME
     }
 
     @Test

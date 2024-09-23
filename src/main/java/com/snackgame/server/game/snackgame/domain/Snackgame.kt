@@ -44,7 +44,7 @@ class Snackgame(
         return board.getSnacks()
     }
 
-    override fun getMetadata(): Metadata = SNACK_GAME
+    override val metadata = SNACK_GAME
 
     companion object {
         private const val DEFAULT_HEIGHT = 8
