@@ -7,7 +7,6 @@ import com.snackgame.server.game.snackgame.snack.EmptySnack
 import com.snackgame.server.game.snackgame.snack.Snack
 import java.util.stream.Collectors
 
-
 class Board() {
     private var snacks: MutableList<MutableList<Snack>> = arrayListOf()
 
@@ -29,11 +28,12 @@ class Board() {
     }
 
     fun removeSnacksIn(streak: Streak): List<Snack> {
-        validateIsIncluded(streak.toCoordinates())
-        validateSumOf(streak.toCoordinates())
+        validateIsIncluded(streak.coordinates)
+        validateSumOf(streak.coordinates)
 
-        return streak.toCoordinates().stream().map(this::removeSnacksAt).filter(Snack::exists)
-            .collect(Collectors.toList())
+        val snacksToRemove = streak.coordinates.map { snacks[it.y][it.x] }
+        streak.coordinates.forEach { removeSnacksAt(it) } // TODO: 제거한 스낵과 제거할 스낵 사이에 스낵이 없음을 검증해야 한다
+        return snacksToRemove
     }
 
     private fun validateIsIncluded(coordinates: List<Coordinate>) {
@@ -61,8 +61,9 @@ class Board() {
     }
 
     private fun removeSnacksAt(coordinate: Coordinate): Snack {
-        val row = snacks[coordinate.y]
-        return row.set(coordinate.x, EmptySnack.get())
+        val removed = snacks[coordinate.y][coordinate.x]
+        snacks[coordinate.y][coordinate.x] = EmptySnack.get()
+        return removed
     }
 
     fun getSnacks(): List<List<Snack>> {
