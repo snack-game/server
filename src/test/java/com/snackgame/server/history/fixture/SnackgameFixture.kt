@@ -1,6 +1,6 @@
 package com.snackgame.server.history.fixture
 
-import com.snackgame.server.game.snackgame.domain.Snackgame
+import com.snackgame.server.game.snackgame.core.domain.Snackgame
 import com.snackgame.server.game.snackgame.fixture.TestFixture
 import com.snackgame.server.member.fixture.MemberFixture.땡칠
 import com.snackgame.server.support.fixture.FixtureSaver
@@ -17,7 +17,7 @@ object SnackgameFixture {
 
     fun second() = Snackgame(
         땡칠().id,
-        TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(),
+        TestFixture.TWO_BY_TWO_WITH_GOLDEN_SNACK(),
         Duration.ofDays(6).negated(),
         200
     )
@@ -66,14 +66,14 @@ object SnackgameFixture {
 
     fun seventh() = Snackgame(
         땡칠().id,
-        TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(),
+        TestFixture.TWO_BY_TWO_WITH_GOLDEN_SNACK(),
         Duration.ofDays(1).negated(),
         700
     )
 
     fun eighth() = Snackgame(
         땡칠().id,
-        TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(),
+        TestFixture.TWO_BY_TWO_WITH_GOLDEN_SNACK(),
         Duration.ZERO,
         800
     )

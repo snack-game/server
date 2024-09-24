@@ -1,8 +1,9 @@
 package com.snackgame.server.game.snackgame.fixture
 
-import com.snackgame.server.game.snackgame.domain.Board
-import com.snackgame.server.game.snackgame.snack.EmptySnack
-import com.snackgame.server.game.snackgame.snack.PlainSnack
+import com.snackgame.server.game.snackgame.core.domain.Board
+import com.snackgame.server.game.snackgame.core.domain.snack.EmptySnack
+import com.snackgame.server.game.snackgame.core.domain.snack.GoldenSnack
+import com.snackgame.server.game.snackgame.core.domain.snack.PlainSnack
 
 object TestFixture {
 
@@ -12,8 +13,11 @@ object TestFixture {
         "{\"snacks\":[[{\"number\":1,\"isGolden\":false},{\"number\":8,\"isGolden\":false}],[{\"number\":9,\"isGolden\":true},{\"number\":2,\"isGolden\":false}]]}"
 
     /**
-     * <p>[1, 1, _, 5]</p>
-     * <p>[9, 2, _, 2]</p>
+     * 다음과 같은 보드를 생성합니다:
+     *
+     * `1`, `1`, `_`, `5`
+     *
+     * `9`, `2`, `_`, `2`
      */
     fun TWO_BY_FOUR(): Board {
         return Board(
@@ -24,6 +28,15 @@ object TestFixture {
         )
     }
 
+    /**
+     * 다음과 같은 보드를 생성합니다:
+     *
+     * `1`, `1`, `_`, `5`
+     *
+     * `9`, `2`, `_`, `2`
+     *
+     * `1`, `1`, `3`, `5`
+     */
     fun THREE_BY_FOUR(): Board {
         return Board(
             arrayListOf(
@@ -35,15 +48,18 @@ object TestFixture {
     }
 
     /**
-     * <p>[1, 1]</p>
-     * <p>[<b>9</b>, 2]</p>
-     * 9는 황금사과이다.
+     * 다음과 같은 보드를 생성합니다.
+     * 9는 황금 스낵입니다
+     *
+     * `1`, `8`
+     *
+     * **`(9)`**, `2`
      */
-    fun TWO_BY_TWO_WITH_GOLDEN_APPLE(): Board {
+    fun TWO_BY_TWO_WITH_GOLDEN_SNACK(): Board {
         return Board(
             arrayListOf(
                 arrayListOf(PlainSnack.of(1), PlainSnack.of(8)),
-                arrayListOf(PlainSnack.of(9).golden(), PlainSnack.of(2))
+                arrayListOf(GoldenSnack.of(9), PlainSnack.of(2))
             )
         )
     }

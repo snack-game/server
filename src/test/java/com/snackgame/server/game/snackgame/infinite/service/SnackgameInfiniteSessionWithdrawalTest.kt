@@ -1,7 +1,7 @@
 package com.snackgame.server.game.snackgame.infinite.service
 
-import com.snackgame.server.game.snackgame.domain.SnackgameInfinite
-import com.snackgame.server.game.snackgame.domain.SnackgameInifiniteRepository
+import com.snackgame.server.game.snackgame.infinite.domain.SnackgameInfinite
+import com.snackgame.server.game.snackgame.infinite.domain.SnackgameInifiniteRepository
 import com.snackgame.server.member.fixture.MemberFixture.땡칠
 import com.snackgame.server.support.fixture.FixtureSaver
 import com.snackgame.server.support.general.ServiceTest

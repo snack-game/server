@@ -13,7 +13,7 @@ data class SessionEndEvent(
     companion object {
         fun of(session: Session): SessionEndEvent {
             return SessionEndEvent(
-                session.getMetadata(),
+                session.metadata,
                 session.ownerId,
                 session.sessionId,
                 session.score

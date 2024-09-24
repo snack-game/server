@@ -33,7 +33,7 @@ abstract class Session(
     val currentState: SessionStateType
         get() = sessionState.current
 
-    abstract fun getMetadata(): Metadata
+    abstract val metadata: Metadata
 
     fun pause() = sessionState.pause()
     fun resume() = sessionState.resume()
