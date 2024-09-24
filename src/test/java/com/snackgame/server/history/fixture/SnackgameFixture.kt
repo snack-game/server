@@ -1,6 +1,6 @@
 package com.snackgame.server.history.fixture
 
-import com.snackgame.server.game.snackgame.domain.Snackgame
+import com.snackgame.server.game.snackgame.core.domain.Snackgame
 import com.snackgame.server.game.snackgame.fixture.TestFixture
 import com.snackgame.server.member.fixture.MemberFixture.땡칠
 import com.snackgame.server.support.fixture.FixtureSaver

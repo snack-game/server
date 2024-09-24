@@ -2,8 +2,8 @@
 
 package com.snackgame.server.game.snackgame.biz.domain
 
-import com.snackgame.server.game.snackgame.domain.Coordinate
-import com.snackgame.server.game.snackgame.domain.Streak
+import com.snackgame.server.game.snackgame.core.domain.Coordinate
+import com.snackgame.server.game.snackgame.core.domain.Streak
 import com.snackgame.server.game.snackgame.fixture.TestFixture.THREE_BY_FOUR
 import com.snackgame.server.member.fixture.MemberFixture.땡칠
 import org.assertj.core.api.Assertions.assertThat

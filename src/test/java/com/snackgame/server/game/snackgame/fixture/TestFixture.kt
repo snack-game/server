@@ -1,9 +1,9 @@
 package com.snackgame.server.game.snackgame.fixture
 
-import com.snackgame.server.game.snackgame.domain.Board
-import com.snackgame.server.game.snackgame.snack.EmptySnack
-import com.snackgame.server.game.snackgame.snack.GoldenSnack
-import com.snackgame.server.game.snackgame.snack.PlainSnack
+import com.snackgame.server.game.snackgame.core.domain.Board
+import com.snackgame.server.game.snackgame.core.domain.snack.EmptySnack
+import com.snackgame.server.game.snackgame.core.domain.snack.GoldenSnack
+import com.snackgame.server.game.snackgame.core.domain.snack.PlainSnack
 
 object TestFixture {
 

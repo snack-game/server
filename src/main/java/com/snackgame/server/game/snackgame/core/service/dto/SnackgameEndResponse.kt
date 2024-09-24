@@ -1,21 +1,21 @@
-package com.snackgame.server.game.snackgame.service.dto
+package com.snackgame.server.game.snackgame.core.service.dto
 
 
 import com.snackgame.server.game.session.domain.Session
 import com.snackgame.server.game.session.service.dto.SessionResponse
 import com.snackgame.server.game.snackgame.core.domain.Percentile
-import com.snackgame.server.game.snackgame.domain.SnackgameInfinite
+import com.snackgame.server.game.snackgame.core.domain.Snackgame
 import io.swagger.v3.oas.annotations.media.Schema
 
-class SnackgameInfiniteEndResponse(
+class SnackgameEndResponse(
     session: Session,
     @field:Schema(example = "20")
     val percentile: Int
 ) : SessionResponse(session) {
 
     companion object {
-        fun of(snackgame: SnackgameInfinite, percentile: Percentile): SnackgameInfiniteEndResponse {
-            return SnackgameInfiniteEndResponse(
+        fun of(snackgame: Snackgame, percentile: Percentile): SnackgameEndResponse {
+            return SnackgameEndResponse(
                 snackgame,
                 percentile.percentage()
             )
