@@ -37,9 +37,6 @@ class Streak(val coordinates: List<Coordinate>) {
         val yDif = abs(other.y - one.y)
         val xDif = abs(other.x - one.x)
 
-        if (yDif == 0 && xDif == 0) {
-            return false
-        }
         return yDif * xDif == 0 || yDif == xDif
     }
 }
