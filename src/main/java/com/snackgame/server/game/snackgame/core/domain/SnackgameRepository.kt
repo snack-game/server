@@ -1,4 +1,4 @@
-package com.snackgame.server.game.snackgame.core.domain;
+package com.snackgame.server.game.snackgame.core.domain
 
 import com.snackgame.server.game.session.exception.NoSuchSessionException
 import org.springframework.data.jpa.repository.JpaRepository
@@ -38,4 +38,3 @@ fun SnackgameRepository.ratePercentileOf(sessionId: Long): Percentile {
         return Percentile(this)
     }
 }
-
