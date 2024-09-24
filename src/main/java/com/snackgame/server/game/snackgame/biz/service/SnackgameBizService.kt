@@ -42,9 +42,8 @@ class SnackgameBizService(
         val game = snackGameBizRepository.getBy(memberId, sessionId)
         val previous = game.board
 
-        streaks.toStreaks().forEach { streak ->
-            game.remove(streak)
-        }
+        streaks.toStreaks()
+            .forEach { game.remove(it) }
 
         return SnackgameResponse.of(game)
             .takeIf { game.board != previous }
