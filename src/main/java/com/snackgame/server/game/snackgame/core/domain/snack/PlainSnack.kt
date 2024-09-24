@@ -5,6 +5,18 @@ import java.util.concurrent.ThreadLocalRandom
 
 class PlainSnack private constructor(number: Int) : Snack(number) {
 
+    override fun golden(): GoldenSnack {
+        return GoldenSnack.of(getNumber())
+    }
+
+    override fun isGolden(): Boolean {
+        return false
+    }
+
+    override fun exists(): Boolean {
+        return true
+    }
+
     companion object {
         private val CACHE: MutableMap<Int, PlainSnack> = ConcurrentHashMap()
 
@@ -16,17 +28,5 @@ class PlainSnack private constructor(number: Int) : Snack(number) {
             val randomizedNumber = ThreadLocalRandom.current().nextInt(NUMBER_MINIMUM, NUMBER_MAXIMUM + 1)
             return of(randomizedNumber)
         }
-    }
-
-    override fun golden(): GoldenSnack {
-        return GoldenSnack.of(getNumber())
-    }
-
-    override fun isGolden(): Boolean {
-        return false
-    }
-
-    override fun exists(): Boolean {
-        return true
     }
 }

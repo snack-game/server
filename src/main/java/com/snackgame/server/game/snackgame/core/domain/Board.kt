@@ -1,5 +1,6 @@
 package com.snackgame.server.game.snackgame.core.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.snackgame.server.game.snackgame.core.domain.snack.EmptySnack
 import com.snackgame.server.game.snackgame.core.domain.snack.Snack
 import com.snackgame.server.game.snackgame.exception.InvalidBoardSizeException
@@ -7,6 +8,7 @@ import com.snackgame.server.game.snackgame.exception.InvalidCoordinateException
 import com.snackgame.server.game.snackgame.exception.SnackNotRemovableException
 import java.util.stream.Collectors
 
+@JsonIgnoreProperties("height", "width")
 class Board() {
     private var snacks: MutableList<MutableList<Snack>> = arrayListOf()
 
@@ -23,8 +25,8 @@ class Board() {
         }
     }
 
-    fun reset(): MutableList<MutableList<Snack>> {
-        return createRandomized(getHeight(), getWidth())
+    fun reset(): Board {
+        return Board(createRandomized(height, width))
     }
 
     fun removeSnacksIn(streak: Streak): List<Snack> {
@@ -70,14 +72,8 @@ class Board() {
         return snacks.map { ArrayList(it) }
     }
 
-
-    private fun getHeight(): Int {
-        return this.snacks.size
-    }
-
-    private fun getWidth(): Int {
-        return this.snacks[0].size
-    }
+    private val height get() = snacks.size
+    private val width get() = snacks[0].size
 
     companion object {
         private const val REMOVABLE_SUM = 10

@@ -35,6 +35,4 @@ abstract class Snack protected constructor(
     fun getNumber(): Int {
         return number
     }
-
-
 }

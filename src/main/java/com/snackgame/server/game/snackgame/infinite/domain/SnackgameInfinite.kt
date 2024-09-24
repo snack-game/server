@@ -1,4 +1,4 @@
-package com.snackgame.server.game.snackgame.domain
+package com.snackgame.server.game.snackgame.infinite.domain
 
 import com.snackgame.server.game.metadata.Metadata.SNACK_GAME_INFINITE
 import com.snackgame.server.game.session.domain.Session

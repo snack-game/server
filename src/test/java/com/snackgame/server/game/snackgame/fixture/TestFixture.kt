@@ -49,13 +49,13 @@ object TestFixture {
 
     /**
      * 다음과 같은 보드를 생성합니다.
-     * 9는 황금 사과입니다
+     * 9는 황금 스낵입니다
      *
      * `1`, `8`
      *
      * **`(9)`**, `2`
      */
-    fun TWO_BY_TWO_WITH_GOLDEN_APPLE(): Board {
+    fun TWO_BY_TWO_WITH_GOLDEN_SNACK(): Board {
         return Board(
             arrayListOf(
                 arrayListOf(PlainSnack.of(1), PlainSnack.of(8)),

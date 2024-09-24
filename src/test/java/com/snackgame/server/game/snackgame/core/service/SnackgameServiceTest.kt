@@ -1,9 +1,12 @@
+@file:Suppress("NonAsciiCharacters")
+
 package com.snackgame.server.game.snackgame.core.service
 
 import com.snackgame.server.fixture.SeasonFixture
 import com.snackgame.server.game.snackgame.core.domain.Snackgame
 import com.snackgame.server.game.snackgame.core.domain.SnackgameRepository
-import com.snackgame.server.game.snackgame.core.service.dto.StreakRequest
+import com.snackgame.server.game.snackgame.core.service.dto.CoordinateRequest
+import com.snackgame.server.game.snackgame.core.service.dto.StreaksRequest
 import com.snackgame.server.game.snackgame.fixture.TestFixture
 import com.snackgame.server.member.fixture.MemberFixture
 import com.snackgame.server.member.fixture.MemberFixture.땡칠
@@ -30,16 +33,16 @@ class SnackgameServiceTest {
 
     @Test
     fun `게임을 조작한다`() {
-        var game = snackgameRepository.save(Snackgame(땡칠().id, TestFixture.TWO_BY_FOUR()))
+        val game = snackgameRepository.save(Snackgame(땡칠().id, TestFixture.TWO_BY_FOUR()))
 
-        var streakRequests = listOf<StreakRequest>(
-            StreakRequest(1, 0),
-            StreakRequest(0, 0)
+        val coordinates = listOf(
+            CoordinateRequest(1, 0),
+            CoordinateRequest(0, 0)
         )
 
-        snackgameService.placeMoves(땡칠().id, game.sessionId, streakRequests)
+        snackgameService.removeStreaks(땡칠().id, game.sessionId, StreaksRequest(listOf(coordinates)))
 
-        var found = snackgameRepository.findByOwnerIdAndSessionId(땡칠().id, game.sessionId)
+        val found = snackgameRepository.findByOwnerIdAndSessionId(땡칠().id, game.sessionId)
         assertThat(found?.score).isEqualTo(2)
     }
 }

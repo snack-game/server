@@ -1,6 +1,6 @@
 package com.snackgame.server.game.snackgame.infinite.service
 
-import com.snackgame.server.game.snackgame.domain.SnackgameInifiniteRepository
+import com.snackgame.server.game.snackgame.infinite.domain.SnackgameInifiniteRepository
 import com.snackgame.server.member.service.MemberWithdrawalOperation
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation

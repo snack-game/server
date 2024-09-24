@@ -1,7 +1,7 @@
-package com.snackgame.server.game.snackgame.infinite.service
+package com.snackgame.server.game.snackgame.biz.service
 
+import com.snackgame.server.game.snackgame.biz.domain.SnackgameBizRepository
 import com.snackgame.server.game.snackgame.infinite.domain.SnackgameInfinite
-import com.snackgame.server.game.snackgame.infinite.domain.SnackgameInifiniteRepository
 import com.snackgame.server.member.fixture.MemberFixture.땡칠
 import com.snackgame.server.support.fixture.FixtureSaver
 import com.snackgame.server.support.general.ServiceTest
@@ -13,13 +13,13 @@ import org.springframework.transaction.annotation.Transactional
 
 @Suppress("NonAsciiCharacters")
 @ServiceTest
-class SnackgameInfiniteSessionWithdrawalTest {
+class SnackgameBizSessionWithdrawalTest {
 
     @Autowired
-    private lateinit var snackgameInfiniteSessionWithdrawal: SnackgameInfiniteSessionWithdrawal
+    private lateinit var snackgameInfiniteSessionWithdrawal: SnackgameBizSessionWithdrawal
 
     @Autowired
-    private lateinit var snackgameInfiniteRepository: SnackgameInifiniteRepository
+    private lateinit var snackgameInfiniteRepository: SnackgameBizRepository
 
     @BeforeEach
     fun setUp() {

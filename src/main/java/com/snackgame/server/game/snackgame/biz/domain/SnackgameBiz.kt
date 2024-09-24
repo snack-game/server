@@ -18,12 +18,15 @@ import javax.persistence.Lob
 @Entity
 open class SnackgameBiz(
     ownerId: Long,
-    @Lob
-    @Convert(converter = BoardConverter::class)
-    val board: Board = Board(DEFAULT_HEIGHT, DEFAULT_WIDTH),
+    board: Board = Board(DEFAULT_HEIGHT, DEFAULT_WIDTH),
     timeLimit: Duration = SESSION_TIME + SPARE_TIME,
     score: Int = 0
 ) : Session(ownerId, timeLimit, score) {
+
+    @Lob
+    @Convert(converter = BoardConverter::class)
+    var board = board
+        private set
 
     @Deprecated("스트릭 구현 시 제거 예정")
     fun setScoreUnsafely(score: Int) {
@@ -32,10 +35,10 @@ open class SnackgameBiz(
 
     fun remove(streak: Streak) {
         val removedSnacks = board.removeSnacksIn(streak)
-        if (removedSnacks.any(Snack::isGolden)) {
-            board.reset()
-        }
         this.score += removedSnacks.size
+        if (removedSnacks.any(Snack::isGolden)) {
+            this.board = board.reset()
+        }
     }
 
     override val metadata = SNACK_GAME_BIZ

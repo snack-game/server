@@ -1,7 +1,7 @@
-package com.snackgame.server.game.snackgame.core.controller
+package com.snackgame.server.game.snackgame.biz.controller
 
 import com.snackgame.server.auth.token.support.Authenticated
-import com.snackgame.server.game.snackgame.core.service.SnackgameService
+import com.snackgame.server.game.snackgame.biz.service.SnackgameBizService
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameEndResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameUpdateRequest
@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
 
-@Tag(name = "🍿 스낵게임")
-@RequestMapping("/games/2")
+@Tag(name = "🍿 스낵게임 Biz")
+@RequestMapping("/games/4")
 @RestController
-class SnackgameController(
-    private val snackgameService: SnackgameService
+class SnackgameBizController(
+    private val snackgameBizService: SnackgameBizService
 ) {
 
     @Operation(
@@ -35,7 +35,7 @@ class SnackgameController(
     )
     @PostMapping
     fun startSessionFor(@Authenticated member: Member): SnackgameResponse =
-        snackgameService.startSessionFor(member.id)
+        snackgameBizService.startSessionFor(member.id)
 
     @Operation(
         summary = "[임시] 스낵게임 세션 수정",
@@ -49,7 +49,7 @@ class SnackgameController(
         @Authenticated member: Member,
         @PathVariable sessionId: Long,
         @RequestBody @Valid request: SnackgameUpdateRequest,
-    ): SnackgameResponse = snackgameService.update(member.id, sessionId, request)
+    ): SnackgameResponse = snackgameBizService.update(member.id, sessionId, request)
 
     @Operation(
         summary = "스트릭 추가",
@@ -64,7 +64,7 @@ class SnackgameController(
         @PathVariable sessionId: Long,
         @RequestBody streaksRequest: StreaksRequest
     ): ResponseEntity<SnackgameResponse?> {
-        val game = snackgameService.removeStreaks(member.id, sessionId, streaksRequest)
+        val game = snackgameBizService.removeStreaks(member.id, sessionId, streaksRequest)
         return game.let {
             ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -81,15 +81,15 @@ class SnackgameController(
     )
     @PostMapping("/{sessionId}/pause")
     fun pause(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameResponse =
-        snackgameService.pause(member.id, sessionId)
+        snackgameBizService.pause(member.id, sessionId)
 
     @Operation(summary = "스낵게임 세션 재개", description = "해당 세션을 재개한다")
     @PostMapping("/{sessionId}/resume")
     fun resume(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameResponse =
-        snackgameService.resume(member.id, sessionId)
+        snackgameBizService.resume(member.id, sessionId)
 
     @Operation(summary = "스낵게임 세션 종료", description = "세션을 종료한다")
     @PostMapping("/{sessionId}/end")
     fun end(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameEndResponse =
-        snackgameService.end(member.id, sessionId)
+        snackgameBizService.end(member.id, sessionId)
 }

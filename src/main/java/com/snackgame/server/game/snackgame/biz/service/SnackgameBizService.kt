@@ -1,11 +1,11 @@
-package com.snackgame.server.game.snackgame.core.service
+package com.snackgame.server.game.snackgame.biz.service
 
 
 import com.snackgame.server.game.session.event.SessionEndEvent
-import com.snackgame.server.game.snackgame.core.domain.Snackgame
-import com.snackgame.server.game.snackgame.core.domain.SnackgameRepository
-import com.snackgame.server.game.snackgame.core.domain.getBy
-import com.snackgame.server.game.snackgame.core.domain.ratePercentileOf
+import com.snackgame.server.game.snackgame.biz.domain.SnackgameBiz
+import com.snackgame.server.game.snackgame.biz.domain.SnackgameBizRepository
+import com.snackgame.server.game.snackgame.biz.domain.getBy
+import com.snackgame.server.game.snackgame.biz.domain.ratePercentileOf
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameEndResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameUpdateRequest
@@ -15,14 +15,14 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class SnackgameService(
-    private val snackGameRepository: SnackgameRepository,
+class SnackgameBizService(
+    private val snackGameBizRepository: SnackgameBizRepository,
     private val eventPublisher: ApplicationEventPublisher
 ) {
 
     @Transactional
     fun startSessionFor(memberId: Long): SnackgameResponse {
-        val game = snackGameRepository.save(Snackgame(memberId))
+        val game = snackGameBizRepository.save(SnackgameBiz(memberId))
 
         return SnackgameResponse.of(game)
     }
@@ -30,7 +30,7 @@ class SnackgameService(
     @Deprecated("대체", ReplaceWith("removeStreaks()"))
     @Transactional
     fun update(memberId: Long, sessionId: Long, request: SnackgameUpdateRequest): SnackgameResponse {
-        val game = snackGameRepository.getBy(memberId, sessionId)
+        val game = snackGameBizRepository.getBy(memberId, sessionId)
 
         game.setScoreUnsafely(request.score)
 
@@ -39,7 +39,7 @@ class SnackgameService(
 
     @Transactional
     fun removeStreaks(memberId: Long, sessionId: Long, streaks: StreaksRequest): SnackgameResponse? {
-        val game = snackGameRepository.getBy(memberId, sessionId)
+        val game = snackGameBizRepository.getBy(memberId, sessionId)
         val previous = game.board
 
         streaks.toStreaks().forEach { streak ->
@@ -52,7 +52,7 @@ class SnackgameService(
 
     @Transactional
     fun pause(memberId: Long, sessionId: Long): SnackgameResponse {
-        val game = snackGameRepository.getBy(memberId, sessionId)
+        val game = snackGameBizRepository.getBy(memberId, sessionId)
 
         game.pause()
 
@@ -61,7 +61,7 @@ class SnackgameService(
 
     @Transactional
     fun resume(memberId: Long, sessionId: Long): SnackgameResponse {
-        val game = snackGameRepository.getBy(memberId, sessionId)
+        val game = snackGameBizRepository.getBy(memberId, sessionId)
 
         game.resume()
 
@@ -70,11 +70,11 @@ class SnackgameService(
 
     @Transactional
     fun end(memberId: Long, sessionId: Long): SnackgameEndResponse {
-        val game = snackGameRepository.getBy(memberId, sessionId)
+        val game = snackGameBizRepository.getBy(memberId, sessionId)
 
         game.end()
         eventPublisher.publishEvent(SessionEndEvent.of(game))
 
-        return SnackgameEndResponse.of(game, snackGameRepository.ratePercentileOf(sessionId))
+        return SnackgameEndResponse.of(game, snackGameBizRepository.ratePercentileOf(sessionId))
     }
 }

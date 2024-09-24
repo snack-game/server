@@ -1,5 +1,7 @@
-package com.snackgame.server.game.snackgame.domain;
+package com.snackgame.server.game.snackgame.infinite.domain
 
+import com.snackgame.server.game.session.exception.NoSuchSessionException
+import com.snackgame.server.game.snackgame.core.domain.Percentile
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
@@ -19,6 +21,16 @@ interface SnackgameInifiniteRepository : JpaRepository<SnackgameInfinite, Long> 
         nativeQuery = true
     )
     fun findPercentileOf(sessionId: Long): Double?
-    
+
     fun deleteAllByOwnerId(memberId: Long)
+}
+
+fun SnackgameInifiniteRepository.getBy(ownerId: Long, sessionId: Long): SnackgameInfinite =
+    findByOwnerIdAndSessionId(ownerId, sessionId) ?: throw NoSuchSessionException()
+
+fun SnackgameInifiniteRepository.ratePercentileOf(sessionId: Long): Percentile {
+    with(findPercentileOf(sessionId)) {
+        this ?: throw NoSuchSessionException()
+        return Percentile(this)
+    }
 }

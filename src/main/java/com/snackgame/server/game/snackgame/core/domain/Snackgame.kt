@@ -11,29 +11,27 @@ import javax.persistence.Lob
 @Entity
 open class Snackgame(
     ownerId: Long,
-    @Lob
-    @Convert(converter = BoardConverter::class)
-    val board: Board,
+    board: Board = Board(DEFAULT_HEIGHT, DEFAULT_WIDTH),
     timeLimit: Duration = SESSION_TIME + SPARE_TIME,
     score: Int = 0
 ) : Session(ownerId, timeLimit, score) {
+
+    @Lob
+    @Convert(converter = BoardConverter::class)
+    var board = board
+        private set
 
     @Deprecated("스트릭 구현 완료 시 제거")
     fun setScoreUnsafely(score: Int) {
         this.score = score
     }
 
-    fun removeSnacks(streak: Streak) {
+    fun remove(streak: Streak) {
         val removedSnacks = board.removeSnacksIn(streak)
-        if (removedSnacks.any(Snack::isGolden)) {
-            board.reset()
-        }
         this.score += streak.length
-    }
-
-    @Deprecated("대체", ReplaceWith("board.getSnacks()"))
-    fun getSnacks(): List<List<Snack>> {
-        return board.getSnacks()
+        if (removedSnacks.any(Snack::isGolden)) {
+            this.board = board.reset()
+        }
     }
 
     override val metadata = SNACK_GAME
@@ -41,11 +39,7 @@ open class Snackgame(
     companion object {
         const val DEFAULT_HEIGHT = 8
         const val DEFAULT_WIDTH = 6
-        val SESSION_TIME = Duration.ofMinutes(2)
-        val SPARE_TIME = Duration.ofSeconds(2)
-
-        fun ofRandomized(ownerId: Long): Snackgame {
-            return Snackgame(ownerId, Board(DEFAULT_HEIGHT, DEFAULT_WIDTH))
-        }
+        val SESSION_TIME: Duration = Duration.ofMinutes(2)
+        val SPARE_TIME: Duration = Duration.ofSeconds(2)
     }
 }

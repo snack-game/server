@@ -10,7 +10,7 @@ class SnackgameTest {
 
     @Test
     fun 게임을_6_X_8크기의_게임판으로_생성한다() {
-        val game = Snackgame.ofRandomized(땡칠().id)
+        val game = Snackgame(땡칠().id)
         assertThat(game.board.getSnacks()).hasSize(8)
         assertThat(game.board.getSnacks()).allSatisfy { row ->
             assertThat(row).hasSize(6)
@@ -26,13 +26,13 @@ class SnackgameTest {
                 Coordinate(1, 0)
             )
         )
-        game.removeSnacks(streak)
+        game.remove(streak)
         assertThat(game.score).isEqualTo(2)
     }
 
     @Test
     fun 황금스낵를_제거해도_점수는_초기화되지_않는다() {
-        val game = Snackgame(땡칠().id, TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE())
+        val game = Snackgame(땡칠().id, TestFixture.TWO_BY_TWO_WITH_GOLDEN_SNACK())
         val streak = Streak(
             arrayListOf(
                 Coordinate(0, 0),
@@ -40,7 +40,7 @@ class SnackgameTest {
             )
         )
         val expectedScore = game.score + 2
-        game.removeSnacks(streak)
+        game.remove(streak)
         assertThat(game.score).isEqualTo(expectedScore)
     }
 }

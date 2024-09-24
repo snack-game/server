@@ -17,7 +17,7 @@ object SnackgameFixture {
 
     fun second() = Snackgame(
         땡칠().id,
-        TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(),
+        TestFixture.TWO_BY_TWO_WITH_GOLDEN_SNACK(),
         Duration.ofDays(6).negated(),
         200
     )
@@ -66,14 +66,14 @@ object SnackgameFixture {
 
     fun seventh() = Snackgame(
         땡칠().id,
-        TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(),
+        TestFixture.TWO_BY_TWO_WITH_GOLDEN_SNACK(),
         Duration.ofDays(1).negated(),
         700
     )
 
     fun eighth() = Snackgame(
         땡칠().id,
-        TestFixture.TWO_BY_TWO_WITH_GOLDEN_APPLE(),
+        TestFixture.TWO_BY_TWO_WITH_GOLDEN_SNACK(),
         Duration.ZERO,
         800
     )

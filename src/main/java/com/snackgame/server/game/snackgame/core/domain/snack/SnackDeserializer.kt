@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.node.BooleanNode
 import com.fasterxml.jackson.databind.node.IntNode
 
-class SnackDeserializer : StdDeserializer<Snack>(Snack.javaClass) {
+class SnackDeserializer : StdDeserializer<Snack>(Snack::class.java) {
 
     override fun deserialize(p: JsonParser, context: DeserializationContext): Snack {
         val node = p.readValueAsTree<JsonNode>()
