@@ -3,6 +3,7 @@ package com.snackgame.server.game.snackgame.biz.domain
 import com.snackgame.server.game.session.exception.NoSuchSessionException
 import com.snackgame.server.game.snackgame.core.domain.Percentile
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
@@ -21,6 +22,10 @@ interface SnackgameBizRepository : JpaRepository<SnackgameBiz, Long> {
         nativeQuery = true
     )
     fun findPercentileOf(sessionId: Long): Double?
+
+    @Modifying
+    @Query("update SnackgameBiz set ownerId = :toMemberId where ownerId = :fromMemberId")
+    fun transferSessions(fromMemberId: Long, toMemberId: Long): Int
 
     fun deleteAllByOwnerId(memberId: Long)
 }

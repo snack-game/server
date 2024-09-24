@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional
 class SnackgameBizSessionWithdrawalTest {
 
     @Autowired
-    private lateinit var snackgameInfiniteSessionWithdrawal: SnackgameBizSessionWithdrawal
+    private lateinit var snackgameBizSessionWithdrawal: SnackgameBizSessionWithdrawal
 
     @Autowired
-    private lateinit var snackgameInfiniteRepository: SnackgameBizRepository
+    private lateinit var snackgameBizRepository: SnackgameBizRepository
 
     @BeforeEach
     fun setUp() {
@@ -29,8 +29,8 @@ class SnackgameBizSessionWithdrawalTest {
     @Transactional
     @Test
     fun `회원의 세션을 모두 제거한다`() {
-        snackgameInfiniteSessionWithdrawal.executeOn(땡칠().id)
+        snackgameBizSessionWithdrawal.executeOn(땡칠().id)
 
-        assertThat(snackgameInfiniteRepository.findAll()).noneMatch { it.ownerId == 땡칠().id }
+        assertThat(snackgameBizRepository.findAll()).noneMatch { it.ownerId == 땡칠().id }
     }
 }

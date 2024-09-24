@@ -42,7 +42,7 @@ class SnackgameServiceTest {
 
         snackgameService.removeStreaks(땡칠().id, game.sessionId, StreaksRequest(listOf(coordinates)))
 
-        val found = snackgameRepository.findByOwnerIdAndSessionId(땡칠().id, game.sessionId)
-        assertThat(found?.score).isEqualTo(2)
+        val found = snackgameRepository.findByOwnerIdAndSessionId(땡칠().id, game.sessionId)!!
+        assertThat(found.score).isEqualTo(2)
     }
 }
