@@ -5,7 +5,7 @@ import kotlin.math.abs
 
 class Streak(val coordinates: List<Coordinate>) {
 
-    val length = coordinates.size
+    val length get() = coordinates.size
 
     init {
         validateLengthOf(coordinates)
