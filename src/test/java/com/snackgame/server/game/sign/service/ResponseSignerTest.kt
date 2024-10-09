@@ -34,13 +34,14 @@ class ResponseSignerTest {
             .`when`().get("/test")
             .then().extract().body().asString()
 
-        assertThat(responseBody).contains(
+        assertThat(responseBody).endsWith(
             """
-            "signed":"eyJhbGciOiJSUzI1NiJ9.eyJrZXkiOiJ2YWx1ZSJ9.Jrg2SkMT2c3LIMR_pIKmdEF2-3UyH1r8nS-
-            q43l5KmKN1hQve4EG18JD5btvGMfZEZu2vjwRmgP-ybhKBNt0-khZ8zBGh3YQ4FILkMETyS-7ObJD
-            6N_737BjVa0iMg7MKb6_enoTDJ_p-6_murR7Y1ujSGrGJWSvzdO9FooQTetc7LQorQXUhjk5Wm-ggQ
-            rMnTSTYlNPaSuXrtdVzB3jbMbC0jK-rcr0-sntFCvC2WCC_vRcr7aRZk72RVBI5EEDy5DW_kxIRrbT
-            dUSglBx5YPkCec9XKZtGKpFUhgWkyfKjEUgYgfg6e6AEzJPMuX5L2V6LKwBdn4TSkh4u3pyk-g"
+            "signed":"eyJraWQiOiI3ODMwMjU4MTEiLCJhbGciOiJSUzI1NiJ9.eyJrZXkiOiJ2YWx1ZSJ9.
+            h6BYhu1fwDdMso6_J0eZ-5P0VRBBFHg1ssGOuwU5yvEBWL4Ya1dRFPnl0vJAXcQEdVH8EAyxex1n
+            zqby_PoZuiQ6azOKqyXfrMkG_kGtfwhNvmXMW92crSorp9UnHg9dHEEYWFabpeobI5BYXAN5_Cgl
+            wSqwRlvJTwPqFNbyxrvO34ADBkHGh5fa251sWxYYfhTX5xxxatsvqno0RCItmQQ5Q3E9apzJInPU
+            T4oRjN3GF2IGHvxyeVlNQW4I2tKNE5a6j2ECa3mgLNkaz0fYLVpoBaDqnw4U2pdG40jdGGWRlVui
+            GYwtbr44-iJyRyuQDlhnhiK6403pS_BQEzLz2A"}
             """.replace("\\s+".toRegex(), "")
         )
     }

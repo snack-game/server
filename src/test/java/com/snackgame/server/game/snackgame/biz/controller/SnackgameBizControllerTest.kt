@@ -22,6 +22,6 @@ class SnackgameBizControllerTest {
 
         RestAssuredUtil.givenAuthentication(땡칠_인증정보())
             .`when`().post("/games/4/1/end")
-            .then().body(containsString(""""signed":"eyJhbGciOiJSUzI1NiJ9"""))
+            .then().body(containsString(""""signed":"eyJraWQiOiI3ODMwMjU4MTEiLCJhbGciOiJSUzI1NiJ9"""))
     }
 }

@@ -4,6 +4,7 @@ package com.snackgame.server.game.sign.domain
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 class SignerTest {
@@ -11,17 +12,31 @@ class SignerTest {
     private val signer = Signer(PRIVATE_KEY)
 
     @Test
-    fun `주어진 개인키를 사용, 객체를 JWT로 서명한다`() {
+    fun `개인키를 사용해 객체를 JWT로 서명한다`() {
         data class TestObject(val key: String)
 
         val testObjectAsJson = TestObject("value")
-            .let { ObjectMapper().writeValueAsString(it).toByteArray() }
+            .let { ObjectMapper().writeValueAsString(it) }
 
-        val jwtPayload = signer.sign(testObjectAsJson.decodeToString())
+        val jwtPayload = signer.sign(testObjectAsJson)
             .substringAfter('.')
             .substringBeforeLast('.')
 
-        assertThat(jwtPayload).asBase64Decoded().isEqualTo(testObjectAsJson)
+        assertThat(jwtPayload).asBase64Decoded().asString()
+            .isEqualTo(testObjectAsJson)
+    }
+
+    @Test
+    fun `개인키의 hashCode를 keyId로 사용하여 서명한다`() {
+        val jwtHeader = signer.sign("")
+            .substringBefore('.')
+        assertThat(jwtHeader).asBase64Decoded().asString().contains(""""kid":"${PRIVATE_KEY.hashCode()}"""")
+    }
+
+    @Test
+    fun `서명할 데이터는 JSON이어야한다`() {
+        assertThatThrownBy { signer.sign("{") }
+            .hasMessage("Could not parse JSON")
     }
 
     companion object {

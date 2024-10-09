@@ -8,9 +8,11 @@ class Signer(private val privateKey: PrivateKey) {
 
     fun sign(content: String): String {
         runCatching { ObjectMapper().readTree(content) }
-            .onFailure { throw Exception("Could not parse signed data") }
+            .onFailure { throw Exception("Could not parse JSON") }
 
         return Jwts.builder()
+            .header().keyId(privateKey.hashCode().toString())
+            .and()
             .content(content)
             .signWith(privateKey)
             .compact()
