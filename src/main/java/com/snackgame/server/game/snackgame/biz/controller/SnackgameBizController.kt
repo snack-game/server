@@ -1,6 +1,7 @@
 package com.snackgame.server.game.snackgame.biz.controller
 
 import com.snackgame.server.auth.token.support.Authenticated
+import com.snackgame.server.game.sign.service.Signed
 import com.snackgame.server.game.snackgame.biz.service.SnackgameBizService
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameEndResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameResponse
@@ -88,6 +89,7 @@ class SnackgameBizController(
     fun resume(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameResponse =
         snackgameBizService.resume(member.id, sessionId)
 
+    @Signed
     @Operation(summary = "스낵게임 세션 종료", description = "세션을 종료한다")
     @PostMapping("/{sessionId}/end")
     fun end(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameEndResponse =
