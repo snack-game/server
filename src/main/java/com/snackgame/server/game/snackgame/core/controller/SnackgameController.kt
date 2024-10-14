@@ -63,13 +63,11 @@ class SnackgameController(
         @Authenticated member: Member,
         @PathVariable sessionId: Long,
         @RequestBody streaksRequest: StreaksRequest
-    ): ResponseEntity<SnackgameResponse?> {
+    ): ResponseEntity<SnackgameResponse> {
         val game = snackgameService.removeStreaks(member.id, sessionId, streaksRequest)
-        return game.let {
-            ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(it)
-        } ?: ResponseEntity.ok().build()
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(game)
     }
 
     @Operation(
