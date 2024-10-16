@@ -25,7 +25,7 @@ class NotificationControllerTest {
         RestAssuredUtil.givenAuthentication(땡칠_인증정보())
             .contentType(ContentType.JSON)
             .body(DeviceTokenRequest("a_device_token"))
-            .`when`().post("/notification/devices")
+            .`when`().post("/notifications/devices")
             .then().statusCode(HttpStatus.OK.value())
     }
 }
