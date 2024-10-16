@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class NotificationController(private val notificationService: NotificationService) {
 
-    @Operation(summary = "일반 사용자 생성", description = "기기를 등록한다")
-    @PostMapping("/notification/devices")
+    @Operation(summary = "기기 등록", description = "기기를 등록한다")
+    @PostMapping("/notifications/devices")
     fun registerDevice(
         @Authenticated member: Member,
         @RequestBody deviceTokenRequest: DeviceTokenRequest
