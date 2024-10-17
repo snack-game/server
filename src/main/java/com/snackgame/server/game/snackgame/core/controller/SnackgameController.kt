@@ -66,7 +66,7 @@ class SnackgameController(
     ): ResponseEntity<SnackgameResponse> {
         val game = snackgameService.removeStreaks(member.id, sessionId, streaksRequest)
         return ResponseEntity
-            .status(HttpStatus.CREATED)
+            .status(HttpStatus.OK)
             .body(game)
     }
 
