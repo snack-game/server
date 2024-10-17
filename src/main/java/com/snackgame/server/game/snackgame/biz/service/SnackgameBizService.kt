@@ -38,15 +38,13 @@ class SnackgameBizService(
     }
 
     @Transactional
-    fun removeStreaks(memberId: Long, sessionId: Long, streaks: StreaksRequest): SnackgameResponse? {
+    fun removeStreaks(memberId: Long, sessionId: Long, streaksRequest: StreaksRequest): SnackgameResponse {
         val game = snackGameBizRepository.getBy(memberId, sessionId)
-        val previous = game.board
 
-        streaks.toStreaks()
+        streaksRequest.toStreaks()
             .forEach { game.remove(it) }
 
         return SnackgameResponse.of(game)
-            .takeIf { game.board != previous }
     }
 
     @Transactional
