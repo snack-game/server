@@ -14,7 +14,7 @@ public class RankOwnerResponse {
     private final Long id;
     @Schema(example = "보리")
     private final String name;
-    @Schema(example = "https://snackgame.s3.ap-northeast-2.amazonaws.com/unhashed/7d9b26272791438b8dc6893a4cbd6f50-77423374")
+    @Schema(example = "https://d104q5gjwhhnfk.cloudfront.net/unhashed/7d9b26272791438b8dc6893a4cbd6f50-77423374")
     private final String profileImage;
     private final StatusResponse status;
     private final GroupResponse group;

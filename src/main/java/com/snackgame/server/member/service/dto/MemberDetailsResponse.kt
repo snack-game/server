@@ -12,7 +12,7 @@ class MemberDetailsResponse(
     @field:Schema(example = "닉네임")
     val name: String,
     val group: GroupResponse?,
-    @field:Schema(example = "https://snackgame.s3.ap-northeast-2.amazonaws.com/unhashed/7d9b26272791438b8dc6893a4cbd6f50-77423374")
+    @field:Schema(example = "https://d104q5gjwhhnfk.cloudfront.net/unhashed/7d9b26272791438b8dc6893a4cbd6f50-77423374")
     val profileImage: String,
     val status: StatusResponse,
     @field:Schema(example = "SOCIAL", allowableValues = ["SELF", "GUEST", "SOCIAL"])

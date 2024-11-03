@@ -18,7 +18,7 @@ public class ProfileImage {
     private static final int MAXIMUM_URL_LENGTH = 255;
 
     public static final ProfileImage EMPTY = new ProfileImage(
-            "https://snackgame.s3.ap-northeast-2.amazonaws.com/static/logo.png");
+            "https://d104q5gjwhhnfk.cloudfront.net/static/logo.png");
 
     @Column(name = "profile_image", nullable = false)
     private String url;

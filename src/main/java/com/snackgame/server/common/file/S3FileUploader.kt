@@ -14,6 +14,8 @@ import java.util.stream.Collectors
 class S3FileUploader(
     @Value("\${cloud.aws.s3.bucket}")
     private val bucket: String,
+    @Value("\${cloud.aws.cloudfront.domain}")
+    private val cloudFrontDomain: String,
     private val amazonS3Client: AmazonS3
 ) {
 
@@ -35,7 +37,7 @@ class S3FileUploader(
             it
         }
         amazonS3Client.putObject(bucket, key, resource.inputStream, metadata)
-        return amazonS3Client.getUrl(bucket, key)
+        return URL("https://$cloudFrontDomain/$key")
     }
 
     private fun uniquePathOf(resource: Resource): String {
