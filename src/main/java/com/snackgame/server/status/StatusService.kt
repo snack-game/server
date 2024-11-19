@@ -20,6 +20,8 @@ class StatusService(private val memberRepository: MemberRepository) {
             Metadata.APPLE_GAME,
             Metadata.SNACK_GAME_INFINITE,
             Metadata.SNACK_GAME_BIZ -> addExpWithScore(session)
+
+            else -> {}
         }
     }
 
