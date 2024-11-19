@@ -4,6 +4,7 @@ package com.snackgame.server.game.snackgame.core.service.dto
 import com.snackgame.server.game.session.domain.Session
 import com.snackgame.server.game.session.service.dto.SessionResponse
 import com.snackgame.server.game.snackgame.biz.domain.SnackgameBiz
+import com.snackgame.server.game.snackgame.biz.domain.SnackgameBizV2
 import com.snackgame.server.game.snackgame.core.domain.Percentile
 import com.snackgame.server.game.snackgame.core.domain.Snackgame
 import com.snackgame.server.game.snackgame.infinite.domain.SnackgameInfinite
@@ -31,6 +32,13 @@ class SnackgameEndResponse(
         }
 
         fun of(snackgame: SnackgameBiz, percentile: Percentile): SnackgameEndResponse {
+            return SnackgameEndResponse(
+                snackgame,
+                percentile.percentage()
+            )
+        }
+
+        fun of(snackgame: SnackgameBizV2, percentile: Percentile): SnackgameEndResponse {
             return SnackgameEndResponse(
                 snackgame,
                 percentile.percentage()
