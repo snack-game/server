@@ -59,7 +59,8 @@ class SnackgameBizV2Service(
         val game = snackgameBizRepository.getBy(memberId, sessionId)
 
         game.end()
-        eventPublisher.publishEvent(SessionEndEvent.of(game))
+        // TODO: 외부 사용자 식별 작업 후 활성화
+//        eventPublisher.publishEvent(SessionEndEvent.of(game))
 
         return SnackgameEndResponse.of(game, snackgameBizRepository.ratePercentileOf(sessionId))
     }
