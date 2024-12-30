@@ -1,4 +1,4 @@
-package com.snackgame.server.messaging.notification.config;
+package com.snackgame.server.messaging.push.config;
 
 import java.io.InputStream;
 
@@ -11,7 +11,7 @@ import org.springframework.core.io.ClassPathResource;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.snackgame.server.messaging.notification.exception.FCMException;
+import com.snackgame.server.messaging.push.exception.FCMException;
 
 @Configuration
 public class FCMConfig {

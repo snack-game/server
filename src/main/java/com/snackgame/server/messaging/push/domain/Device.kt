@@ -1,4 +1,4 @@
-package com.snackgame.server.messaging.notification.domain
+package com.snackgame.server.messaging.push.domain
 
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue

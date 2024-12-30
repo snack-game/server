@@ -1,11 +1,11 @@
-package com.snackgame.server.messaging.notification.controller
+package com.snackgame.server.messaging.push.controller
 
 import com.snackgame.server.auth.token.support.Authenticated
 import com.snackgame.server.member.domain.Member
-import com.snackgame.server.messaging.notification.service.DeviceService
-import com.snackgame.server.messaging.notification.service.FCMPushService
-import com.snackgame.server.messaging.notification.service.dto.DeviceTokenRequest
-import com.snackgame.server.messaging.notification.service.dto.NotificationDto
+import com.snackgame.server.messaging.push.service.DeviceService
+import com.snackgame.server.messaging.push.service.FCMPushService
+import com.snackgame.server.messaging.push.service.dto.DeviceTokenRequest
+import com.snackgame.server.messaging.push.service.dto.NotificationDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.PostMapping

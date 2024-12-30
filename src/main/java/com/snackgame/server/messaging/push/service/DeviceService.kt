@@ -1,14 +1,14 @@
-package com.snackgame.server.messaging.notification.service
+package com.snackgame.server.messaging.push.service
 
-import com.snackgame.server.messaging.notification.domain.Device
-import com.snackgame.server.messaging.notification.domain.DeviceRepository
-import com.snackgame.server.messaging.notification.exception.DuplicatedDeviceException
-import com.snackgame.server.messaging.notification.service.dto.DeviceResponse
-import com.snackgame.server.messaging.notification.service.dto.DeviceTokenRequest
+import com.snackgame.server.messaging.push.domain.Device
+import com.snackgame.server.messaging.push.domain.DeviceRepository
+import com.snackgame.server.messaging.push.exception.DuplicatedDeviceException
+import com.snackgame.server.messaging.push.service.dto.DeviceResponse
+import com.snackgame.server.messaging.push.service.dto.DeviceTokenRequest
 import org.springframework.stereotype.Service
 
 @Service
-class NotificationService(private val deviceRepository: DeviceRepository) {
+class DeviceService(private val deviceRepository: DeviceRepository) {
 
     fun registerDeviceFor(ownerId: Long, deviceToken: DeviceTokenRequest) {
         if (!deviceRepository.existsByOwnerIdAndToken(ownerId, deviceToken.token)) {

@@ -1,4 +1,4 @@
-package com.snackgame.server.messaging.notification.exception;
+package com.snackgame.server.messaging.push.exception;
 
 import com.snackgame.server.common.exception.Kind;
 

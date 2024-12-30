@@ -1,4 +1,4 @@
-package com.snackgame.server.messaging.notification.service.dto
+package com.snackgame.server.messaging.push.service.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonSetter

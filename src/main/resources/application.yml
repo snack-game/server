@@ -28,3 +28,6 @@ springdoc:
 
 server:
   shutdown: graceful
+
+fcm:
+  project_id: snackgame

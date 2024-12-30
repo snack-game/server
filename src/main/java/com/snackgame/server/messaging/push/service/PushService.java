@@ -1,4 +1,4 @@
-package com.snackgame.server.messaging.notification.service;
+package com.snackgame.server.messaging.push.service;
 
 import java.util.concurrent.Future;
 

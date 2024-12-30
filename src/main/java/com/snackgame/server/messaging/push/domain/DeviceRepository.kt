@@ -1,4 +1,4 @@
-package com.snackgame.server.messaging.notification.domain
+package com.snackgame.server.messaging.push.domain
 
 import org.springframework.data.jpa.repository.JpaRepository
 
