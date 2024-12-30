@@ -16,7 +16,7 @@ import com.snackgame.server.messaging.notification.exception.FCMException;
 @Configuration
 public class FCMConfig {
 
-    private static final String FIREBASE_PATH_RESOURCE = "firebase-service-key.json"
+    private static final String FIREBASE_PATH_RESOURCE = "firebase-service-key.json";
     @Value("${fcm.project_id}")
     private String projectId;
 
