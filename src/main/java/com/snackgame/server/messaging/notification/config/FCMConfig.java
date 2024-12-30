@@ -1,6 +1,5 @@
 package com.snackgame.server.messaging.notification.config;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import javax.annotation.PostConstruct;
@@ -12,27 +11,28 @@ import org.springframework.core.io.ClassPathResource;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.snackgame.server.messaging.notification.exception.FcmException;
+import com.snackgame.server.messaging.notification.exception.FCMException;
 
 @Configuration
-public class FcmConfig {
+public class FCMConfig {
 
-    @Value("${fcm.file_path}")
-    private String firebaseKeyPath;
+    private static final String FIREBASE_PATH_RESOURCE = "firebase-service-key.json"
+    @Value("${fcm.project_id}")
+    private String projectId;
 
     @PostConstruct
     public void init() {
         try {
-            InputStream serviceAccount = new ClassPathResource(firebaseKeyPath).getInputStream();
+            InputStream serviceAccount = new ClassPathResource(FIREBASE_PATH_RESOURCE).getInputStream();
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setProjectId(projectId)
                     .build();
-
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
             }
-        } catch (IOException exception) {
-            throw new FcmException();
+        } catch (Exception exception) {
+            throw new FCMException();
         }
     }
 
