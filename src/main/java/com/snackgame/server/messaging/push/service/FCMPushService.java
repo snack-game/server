@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.MulticastMessage;
 import com.snackgame.server.messaging.push.service.dto.DeviceResponse;
-import com.snackgame.server.messaging.push.service.dto.NotificationDto;
+import com.snackgame.server.messaging.push.service.dto.NotificationRequest;
 
 @Service
 public class FCMPushService implements PushService {
@@ -21,18 +21,18 @@ public class FCMPushService implements PushService {
     }
 
     @Override
-    public Future<?> sendPushMessage(String title, String body, Long ownerId) {
-        MulticastMessage multicastMessage = makeMessage(title, body, ownerId);
+    public Future<?> sendPushMessage(NotificationRequest request, Long ownerId) {
+        MulticastMessage multicastMessage = makeMessage(request, ownerId);
         return FirebaseMessaging.getInstance().sendEachForMulticastAsync(multicastMessage);
     }
 
-    private MulticastMessage makeMessage(String title, String body, Long ownerId) {
+    private MulticastMessage makeMessage(NotificationRequest request, Long ownerId) {
 
         List<DeviceResponse> devicesOf = deviceService.getDevicesOf(ownerId);
 
         MulticastMessage message = MulticastMessage.builder()
                 .addAllTokens(devicesOf.stream().map(DeviceResponse::getToken).collect(Collectors.toList()))
-                .setNotification(NotificationDto.toNotificationWith(title, body))
+                .setNotification(request.toNotification())
                 .build();
         return message;
     }

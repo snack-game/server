@@ -2,7 +2,9 @@ package com.snackgame.server.messaging.push.service;
 
 import java.util.concurrent.Future;
 
+import com.snackgame.server.messaging.push.service.dto.NotificationRequest;
+
 public interface PushService {
 
-    public Future<?> sendPushMessage(String title, String body, Long ownerId);
+    Future<?> sendPushMessage(NotificationRequest request, Long ownerId);
 }

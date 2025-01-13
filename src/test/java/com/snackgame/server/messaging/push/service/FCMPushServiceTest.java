@@ -13,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.snackgame.server.member.fixture.MemberFixture;
 import com.snackgame.server.messaging.push.service.dto.DeviceTokenRequest;
+import com.snackgame.server.messaging.push.service.dto.NotificationRequest;
 import com.snackgame.server.support.general.ServiceTest;
 
+@SuppressWarnings("NonAsciiCharacters")
 @Disabled
 @ServiceTest
 public class FCMPushServiceTest {
@@ -37,7 +39,9 @@ public class FCMPushServiceTest {
                 new DeviceTokenRequest(
                         "cFwP3VYHh0eyoXkyY9MwJr:APA91bHX5YiVXuIvi-pLDqNHcJMhl7hKrqLTC7opFMbzj4CsXrg1wu2ayG_LFVREto678gQdWGUnmBXwKEpEJTfXheX0Fz83xwqDzVrKvXF3H5t07XXU6e-boq8JnZVCbs6NB_VfGRh8"));
 
-        Future<?> future = fcmPushService.sendPushMessage("테스트", "테스트", 정환().getId());
+        Future<?> future = fcmPushService.sendPushMessage(
+                new NotificationRequest("테스트", "테스트"),
+                정환().getId());
 
         future.get();
     }

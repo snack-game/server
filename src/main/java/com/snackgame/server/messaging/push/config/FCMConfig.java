@@ -4,7 +4,6 @@ import java.io.InputStream;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
@@ -17,8 +16,7 @@ import com.snackgame.server.messaging.push.exception.FCMException;
 public class FCMConfig {
 
     private static final String FIREBASE_PATH_RESOURCE = "secrets/firebase-service-key.json";
-    @Value("${fcm.project_id}")
-    private String projectId;
+    private static final String PROJECT_ID = "snackgame";
 
     @PostConstruct
     public void init() {
@@ -26,7 +24,7 @@ public class FCMConfig {
             InputStream serviceAccount = new ClassPathResource(FIREBASE_PATH_RESOURCE).getInputStream();
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .setProjectId(projectId)
+                    .setProjectId(PROJECT_ID)
                     .build();
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
