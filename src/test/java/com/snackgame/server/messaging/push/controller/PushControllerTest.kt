@@ -1,10 +1,10 @@
 @file:Suppress("NonAsciiCharacters")
 
-package com.snackgame.server.messaging.notification.controller
+package com.snackgame.server.messaging.push.controller
 
 import com.snackgame.server.member.fixture.MemberFixture
 import com.snackgame.server.member.fixture.MemberFixture.땡칠_인증정보
-import com.snackgame.server.messaging.notification.service.dto.DeviceTokenRequest
+import com.snackgame.server.messaging.push.service.dto.DeviceTokenRequest
 import com.snackgame.server.support.restassured.RestAssuredTest
 import com.snackgame.server.support.restassured.RestAssuredUtil
 import io.restassured.http.ContentType
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 
 @RestAssuredTest
-class NotificationControllerTest {
+class PushControllerTest {
 
     @BeforeEach
     fun setUp() {
