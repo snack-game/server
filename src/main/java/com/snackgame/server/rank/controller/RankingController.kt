@@ -5,6 +5,8 @@ import com.snackgame.server.member.domain.Member
 import com.snackgame.server.rank.controller.dto.RankResponseV2
 import com.snackgame.server.rank.domain.Season
 import com.snackgame.server.rank.domain.SeasonRepository
+import com.snackgame.server.rank.history.RankHistory
+import com.snackgame.server.rank.history.RankHistoryService
 import com.snackgame.server.rank.service.BestScoreRankService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -17,7 +19,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class RankingController(
     private val bestScoreRankService: BestScoreRankService,
-    private val seasonRepository: SeasonRepository
+    private val seasonRepository: SeasonRepository,
+    private val rankHistoryService: RankHistoryService
 ) {
 
     @Operation(summary = "전체 시즌 - 선두 랭크 조회", description = "전체 시즌에서 랭킹을 선두 50등까지 조회한다")
@@ -64,6 +67,13 @@ class RankingController(
     @GetMapping("/seasons")
     fun showAllSeasons(): List<Season> {
         return seasonRepository.findAll()
+    }
+
+    @GetMapping("/rankings/histories")
+    fun showMembersBelow(
+        @Authenticated member: Member
+    ): List<RankHistory> {
+        return rankHistoryService.findMemberBelow(member.id)
     }
 
     enum class Criteria {
