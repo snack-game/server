@@ -7,17 +7,14 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.snackgame.server.rank.event.BestScoreRenewalEvent;
-import com.snackgame.server.rank.provoke.ProvokeService;
 
 @Service
 public class RankHistoryRenewal {
 
     private final RankHistories rankHistories;
-    private final ProvokeService provokeService;
 
-    public RankHistoryRenewal(RankHistories rankHistories, ProvokeService provokeService) {
+    public RankHistoryRenewal(RankHistories rankHistories) {
         this.rankHistories = rankHistories;
-        this.provokeService = provokeService;
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -29,7 +26,6 @@ public class RankHistoryRenewal {
             /// TODO: 1/16/25 save와 update가 필요한게 같은데 어떻게 잘 합쳐볼수없을까
             rankHistories.save(rankHistory.renewWith(event.getOwnerId(), event.getRenewedRank()));
             rankHistories.update(event.getOwnerId(), event.getRenewedRank());
-            provokeService.reserveProvoking(event.getOwnerId(), event.getSessionId());
         }
     }
 
