@@ -16,25 +16,25 @@ import lombok.NoArgsConstructor;
 public class RankHistory {
 
     private Long ownerId;
-
-    private Long beforeRank;
-
+    private Long beforeRank = Long.MAX_VALUE;
+    private Long currentRank = Long.MAX_VALUE;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public RankHistory(Long ownerId, Long beforeRank, Long id) {
+    public RankHistory(Long ownerId, Long beforeRank, Long currentRank, Long id) {
         this.ownerId = ownerId;
         this.beforeRank = beforeRank;
+        this.currentRank = currentRank;
         this.id = id;
     }
 
     public RankHistory renewWith(Long ownerId, Long newRank) {
-        return new RankHistory(ownerId, newRank, id);
+        return new RankHistory(ownerId, currentRank, newRank, id);
     }
 
-    public boolean canRenewBy(Long rank) {
-        return beforeRank > rank;
+    public boolean canRenewBy(Long newRank) {
+        return currentRank > newRank;
     }
 
 }

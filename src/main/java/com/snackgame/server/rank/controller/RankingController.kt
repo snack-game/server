@@ -5,8 +5,8 @@ import com.snackgame.server.member.domain.Member
 import com.snackgame.server.rank.controller.dto.RankResponseV2
 import com.snackgame.server.rank.domain.Season
 import com.snackgame.server.rank.domain.SeasonRepository
-import com.snackgame.server.rank.history.RankHistory
 import com.snackgame.server.rank.history.RankHistoryService
+import com.snackgame.server.rank.history.RankHistoryWithName
 import com.snackgame.server.rank.service.BestScoreRankService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -72,7 +72,7 @@ class RankingController(
     @GetMapping("/rankings/histories")
     fun showMembersBelow(
         @Authenticated member: Member
-    ): List<RankHistory> {
+    ): List<RankHistoryWithName> {
         return rankHistoryService.findMemberBelow(member.id)
     }
 

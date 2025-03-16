@@ -6,6 +6,7 @@ import static com.snackgame.server.rank.history.fixture.RankHistoryFixture.랭�
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,18 +31,22 @@ public class RankHistoriesTest {
     @Test
     void belowContainsThree() {
 
-        List<RankHistory> belows = rankHistories.findBelow(랭크_1등().getOwnerId(), 3);
+        List<RankHistoryWithName> belows = rankHistories.findBelowWithName(랭크_1등().getOwnerId(), 3);
 
-        assertThat(belows.stream().map(RankHistory::getId)).contains(랭크_4등().getOwnerId());
+        for (int i = 0; i < 3; i++) {
+            System.out.println("id: " + belows.stream().map(RankHistoryWithName::getId).collect(Collectors.toList()));
+        }
+
+        assertThat(belows.stream().map(RankHistoryWithName::getId)).contains(랭크_4등().getOwnerId());
     }
 
     @DisplayName("랭크전적 조회 시 하위 4번째는 조회하지 않는다")
     @Test
     void belowDoesNotContainsFourth() {
 
-        List<RankHistory> belows = rankHistories.findBelow(랭크_1등().getOwnerId(), 3);
+        List<RankHistoryWithName> belows = rankHistories.findBelowWithName(랭크_1등().getOwnerId(), 3);
 
-        assertThat(belows.stream().map(RankHistory::getId)).doesNotContain(랭크_5등().getOwnerId());
+        assertThat(belows.stream().map(RankHistoryWithName::getId)).doesNotContain(랭크_5등().getOwnerId());
     }
 
 }

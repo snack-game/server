@@ -9,8 +9,8 @@ class RankHistoryService(
 ) {
 
     @Transactional(readOnly = true)
-    fun findMemberBelow(ownerId: Long): List<RankHistory> {
-        return rankHistories.findBelow(ownerId, MEMBER_SIZE)
+    fun findMemberBelow(ownerId: Long): List<RankHistoryWithName> {
+        return rankHistories.findBelowWithName(ownerId, MEMBER_SIZE)
     }
 
     companion object {
