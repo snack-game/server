@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+
 public interface RankHistories extends JpaRepository<RankHistory, Long> {
 
     RankHistory findByOwnerId(Long ownerId);
@@ -28,5 +29,6 @@ public interface RankHistories extends JpaRepository<RankHistory, Long> {
                    + "WHERE owner_id = :ownerId)) ",
             nativeQuery = true)
     List<RankHistoryWithName> findBelowWithName(@Param("ownerId") Long ownerId, @Param("size") int size);
+
 
 }

@@ -7,6 +7,7 @@ import com.snackgame.server.rank.domain.Season
 import com.snackgame.server.rank.domain.SeasonRepository
 import com.snackgame.server.rank.history.RankHistoryService
 import com.snackgame.server.rank.history.RankHistoryWithName
+
 import com.snackgame.server.rank.service.BestScoreRankService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag

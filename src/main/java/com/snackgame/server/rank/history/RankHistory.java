@@ -18,6 +18,7 @@ public class RankHistory {
     private Long ownerId;
     private Long beforeRank = Long.MAX_VALUE;
     private Long currentRank = Long.MAX_VALUE;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,6 +27,7 @@ public class RankHistory {
         this.ownerId = ownerId;
         this.beforeRank = beforeRank;
         this.currentRank = currentRank;
+
         this.id = id;
     }
 
@@ -35,6 +37,7 @@ public class RankHistory {
 
     public boolean canRenewBy(Long newRank) {
         return currentRank > newRank;
+
     }
 
 }

@@ -41,6 +41,7 @@ public class RankHistoryRenewalTest {
                 BestScoreRenewalEvent.of(new SessionEndEvent(Metadata.SNACK_GAME, 정언().getId(), 14, 100), 1L));
 
         assertThat(rankHistories.findByOwnerId(땡칠().getId()).getCurrentRank()).isEqualTo(2L);
+
     }
 
 }

@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,7 @@ public class RankHistoriesTest {
         }
 
         assertThat(belows.stream().map(RankHistoryWithName::getId)).contains(랭크_4등().getOwnerId());
+
     }
 
     @DisplayName("랭크전적 조회 시 하위 4번째는 조회하지 않는다")
@@ -47,6 +49,7 @@ public class RankHistoriesTest {
         List<RankHistoryWithName> belows = rankHistories.findBelowWithName(랭크_1등().getOwnerId(), 3);
 
         assertThat(belows.stream().map(RankHistoryWithName::getId)).doesNotContain(랭크_5등().getOwnerId());
+
     }
 
 }

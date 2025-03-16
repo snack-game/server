@@ -9,6 +9,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import com.snackgame.server.rank.event.BestScoreRenewalEvent;
 import com.snackgame.server.rank.provoke.ProvokeService;
 
+
 @Service
 public class RankHistoryRenewal {
 
@@ -18,6 +19,7 @@ public class RankHistoryRenewal {
     public RankHistoryRenewal(RankHistories rankHistories, ProvokeService provokeService) {
         this.rankHistories = rankHistories;
         this.provokeService = provokeService;
+
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -30,6 +32,7 @@ public class RankHistoryRenewal {
             rankHistories.save(rankHistory.renewWith(event.getOwnerId(), event.getRenewedRank()));
             rankHistories.update(event.getOwnerId(), event.getRenewedRank());
             provokeService.reserveProvoking(event.getOwnerId(), event.getSessionId());
+
         }
     }
 

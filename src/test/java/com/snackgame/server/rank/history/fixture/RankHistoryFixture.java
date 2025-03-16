@@ -14,6 +14,7 @@ import com.snackgame.server.support.fixture.FixtureSaver;
 public class RankHistoryFixture {
 
     public static RankHistory 랭크_1등() {
+
         return new RankHistory(땡칠().getId(), 4L, 1L, 1L);
     }
 
@@ -31,6 +32,7 @@ public class RankHistoryFixture {
 
     public static RankHistory 랭크_5등() {
         return new RankHistory(정언().getId(), 6L, 5L, 5L);
+
     }
 
     public static void saveAll() {

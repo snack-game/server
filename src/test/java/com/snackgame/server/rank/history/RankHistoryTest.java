@@ -14,6 +14,7 @@ public class RankHistoryTest {
     void compareRank() {
         RankHistory rankHistory = new RankHistory(땡칠().getId(), 15L, 10L, 1L);
 
+
         assertThat(rankHistory.canRenewBy(5L)).isTrue();
     }
 
