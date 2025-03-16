@@ -12,7 +12,8 @@ public class RankHistoryTest {
     @DisplayName("순위가 높으면 전적을 갱신할 수 있다")
     @Test
     void compareRank() {
-        RankHistory rankHistory = new RankHistory(땡칠().getId(), 10L, 1L);
+        RankHistory rankHistory = new RankHistory(땡칠().getId(), 15L, 10L, 1L);
+
 
         assertThat(rankHistory.canRenewBy(5L)).isTrue();
     }
