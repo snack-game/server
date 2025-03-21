@@ -29,7 +29,7 @@ class ProvokeService(
 
     fun checkStatus(ownerId: Long, sessionId: Long): Boolean {
         val found = provokeRepository.findProvokeByOwnerIdAndSessionId(ownerId, sessionId)
-        return found.isUpdated()
+        return found.map { it.isUpdated() }.orElse(false)
     }
 
     companion object {
