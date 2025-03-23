@@ -9,7 +9,6 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import com.snackgame.server.rank.event.BestScoreRenewalEvent;
 import com.snackgame.server.rank.provoke.ProvokeService;
 
-
 @Service
 public class RankHistoryRenewal {
 
@@ -26,14 +25,25 @@ public class RankHistoryRenewal {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void renewHistoryWith(BestScoreRenewalEvent event) {
 
-        RankHistory rankHistory = rankHistories.findByOwnerId(event.getOwnerId());
+        RankHistory rankHistory = getOrCreateRankHistoryBy(event);
         if (rankHistory.canRenewBy(event.getRenewedRank())) {
             /// TODO: 1/16/25 save와 update가 필요한게 같은데 어떻게 잘 합쳐볼수없을까
             rankHistories.save(rankHistory.renewWith(event.getOwnerId(), event.getRenewedRank()));
-            rankHistories.update(event.getOwnerId(), event.getRenewedRank());
-            provokeService.reserveProvoking(event.getOwnerId(), event.getSessionId());
-
         }
+        updateAndReserve(event);
+    }
+
+    private void updateAndReserve(BestScoreRenewalEvent event) {
+        rankHistories.update(event.getOwnerId(), event.getRenewedRank());
+        provokeService.reserveProvoking(event.getOwnerId(), event.getSessionId());
+    }
+
+    private RankHistory getOrCreateRankHistoryBy(BestScoreRenewalEvent event) {
+        RankHistory rankHistory = rankHistories.findByOwnerId(event.getOwnerId());
+        if (rankHistory != null) {
+            return rankHistory;
+        }
+        return rankHistories.save(new RankHistory(event.getOwnerId()));
     }
 
 }
