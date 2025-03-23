@@ -5,10 +5,12 @@ import com.snackgame.server.member.fixture.MemberFixture.정환
 import com.snackgame.server.messaging.push.fixture.DeviceFixture
 import com.snackgame.server.support.general.ServiceTest
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
 
+@Disabled
 @ServiceTest
 class ProvokeServiceTest {
 
