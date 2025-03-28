@@ -24,13 +24,12 @@ public class RankHistoryRenewal {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void renewHistoryWith(BestScoreRenewalEvent event) {
-
         RankHistory rankHistory = getOrCreateRankHistoryBy(event);
         if (rankHistory.canRenewBy(event.getRenewedRank())) {
-            /// TODO: 1/16/25 save와 update가 필요한게 같은데 어떻게 잘 합쳐볼수없을까
             rankHistories.save(rankHistory.renewWith(event.getOwnerId(), event.getRenewedRank()));
+            updateAndReserve(event);
         }
-        updateAndReserve(event);
+
     }
 
     private void updateAndReserve(BestScoreRenewalEvent event) {
@@ -43,7 +42,7 @@ public class RankHistoryRenewal {
         if (rankHistory != null) {
             return rankHistory;
         }
-        return rankHistories.save(new RankHistory(event.getOwnerId()));
+        return rankHistories.save(new RankHistory(event.getOwnerId(), event.getRenewedRank()));
     }
 
 }
