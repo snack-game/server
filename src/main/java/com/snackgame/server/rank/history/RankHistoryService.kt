@@ -10,8 +10,9 @@ class RankHistoryService(
 
     @Transactional(readOnly = true)
     fun findMemberBelow(ownerId: Long): List<RankHistoryWithName> {
-        return rankHistories.findBelowWithName(ownerId, MEMBER_SIZE)
-
+        val rankDifference = rankHistories.findRankDifference(ownerId) ?: 0
+        val limitSize = minOf(MEMBER_SIZE, rankDifference)
+        return rankHistories.findBelowWithName(ownerId, limitSize)
     }
 
     companion object {
