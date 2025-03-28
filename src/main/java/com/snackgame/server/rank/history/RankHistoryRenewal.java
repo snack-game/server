@@ -42,7 +42,7 @@ public class RankHistoryRenewal {
         if (rankHistory != null) {
             return rankHistory;
         }
-        return rankHistories.save(new RankHistory(event.getOwnerId()));
+        return rankHistories.save(new RankHistory(event.getOwnerId(), event.getRenewedRank()));
     }
 
 }

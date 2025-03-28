@@ -31,8 +31,9 @@ public class RankHistory {
         this.id = id;
     }
 
-    public RankHistory(Long ownerId) {
+    public RankHistory(Long ownerId, Long currentRank) {
         this.ownerId = ownerId;
+        this.currentRank = currentRank;
     }
 
     public RankHistory renewWith(Long ownerId, Long newRank) {
