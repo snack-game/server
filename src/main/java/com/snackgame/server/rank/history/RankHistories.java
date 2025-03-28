@@ -13,7 +13,8 @@ public interface RankHistories extends JpaRepository<RankHistory, Long> {
 
     @Modifying
     @Query(value = "update rank_history "
-                   + "set current_rank = current_rank + 1 "
+                   + "set before_rank = current_rank, "
+                   + "current_rank = current_rank + 1 "
                    + "where current_rank >= :newRank and owner_id != :ownerId"
             , nativeQuery = true)
     void update(Long ownerId, Long newRank);
