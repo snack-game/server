@@ -7,7 +7,6 @@ import com.snackgame.server.auth.token.support.TokensFromCookie
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
-import io.swagger.v3.oas.models.PathItem
 import io.swagger.v3.oas.models.Paths
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.security.SecurityRequirement
@@ -15,12 +14,14 @@ import io.swagger.v3.oas.models.security.SecurityScheme
 import io.swagger.v3.oas.models.servers.Server
 import org.springdoc.core.GroupedOpenApi
 import org.springdoc.core.SpringDocUtils
-import org.springdoc.core.customizers.OpenApiCustomiser
 import org.springdoc.core.customizers.OperationCustomizer
+import org.springdoc.core.providers.JavadocProvider
+import org.springdoc.openapi.javadoc.SpringDocJavadocProvider
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import org.springframework.web.method.HandlerMethod
-import kotlin.collections.set
+import javax.annotation.PostConstruct
 
 @Configuration
 class OpenApiConfig {
@@ -35,8 +36,8 @@ class OpenApiConfig {
             )
             .components(
                 Components()
-                    .addSecuritySchemes(ACCESS_TOKEN_SECURITY_KEY, accessTokenSecurityScheme())
-                    .addSecuritySchemes(REFRESH_TOKEN_SECURITY_KEY, refreshTokenSecurityScheme())
+                    .addSecuritySchemes(ACCESS_TOKEN_SECURITY_SCHEME.name, ACCESS_TOKEN_SECURITY_SCHEME)
+                    .addSecuritySchemes(REFRESH_TOKEN_SECURITY_SCHEME.name, REFRESH_TOKEN_SECURITY_SCHEME)
             )
             .addServersItem(Server().url("/"))
     }
@@ -47,9 +48,7 @@ class OpenApiConfig {
             .group("1-general")
             .displayName("일반")
             .pathsToExclude("/tokens/**", "/games/**")
-            .addOpenApiCustomiser(filterDeprecated(false))
             .build()
-            .addAllOperationCustomizer(listOf(accessTokenOperationMarker(), refreshTokenOperationMarker()))
     }
 
     @Bean
@@ -58,9 +57,7 @@ class OpenApiConfig {
             .group("2-game")
             .displayName("게임")
             .pathsToMatch("/games/**")
-            .addOpenApiCustomiser(filterDeprecated(false))
             .build()
-            .addAllOperationCustomizer(listOf(accessTokenOperationMarker(), refreshTokenOperationMarker()))
     }
 
     @Bean
@@ -73,9 +70,12 @@ class OpenApiConfig {
                 authCustomPaths().putAll(openApi.paths)
                 openApi.paths(authCustomPaths())
             }
-            .addOpenApiCustomiser(filterDeprecated(false))
             .build()
-            .addAllOperationCustomizer(listOf(accessTokenOperationMarker(), refreshTokenOperationMarker()))
+    }
+
+    @Bean
+    fun authCustomPaths(): Paths {
+        return Paths()
     }
 
     @Bean
@@ -83,70 +83,22 @@ class OpenApiConfig {
         return GroupedOpenApi.builder()
             .group("98-deprecated")
             .displayName("Deprecated")
-            .addOpenApiCustomiser(filterDeprecated(true))
+            .addOpenApiMethodFilter { method ->
+                method.declaringClass.annotations.any { it is Deprecated || it is java.lang.Deprecated }
+                        || method.annotations.any { it is Deprecated || it is java.lang.Deprecated }
+            }
             .build()
-            .addAllOperationCustomizer(listOf(accessTokenOperationMarker(), refreshTokenOperationMarker()))
-    }
-
-    @Bean
-    fun authCustomPaths(): Paths = Paths()
-
-    private fun accessTokenSecurityScheme(): SecurityScheme {
-        return SecurityScheme()
-            .type(SecurityScheme.Type.APIKEY)
-            .`in`(SecurityScheme.In.COOKIE)
-            .name("accessToken")
-    }
-
-    private fun refreshTokenSecurityScheme(): SecurityScheme {
-        return SecurityScheme()
-            .type(SecurityScheme.Type.APIKEY)
-            .`in`(SecurityScheme.In.COOKIE)
-            .name("refreshToken")
-    }
-
-    fun accessTokenOperationMarker(): OperationCustomizer =
-        OperationCustomizer { operation: Operation, handlerMethod: HandlerMethod ->
-            val hasAnnotation = handlerMethod.methodParameters
-                .any { it.hasParameterAnnotation(Authenticated::class.java) }
-            if (hasAnnotation) {
-                operation.addSecurityItem(
-                    SecurityRequirement()
-                        .addList(ACCESS_TOKEN_SECURITY_KEY)
-                )
-            }
-            operation
-        }
-
-    fun refreshTokenOperationMarker(): OperationCustomizer =
-        OperationCustomizer { operation: Operation, handlerMethod: HandlerMethod ->
-            val hasAnnotation = handlerMethod.methodParameters
-                .any { it.hasParameterAnnotation(TokensFromCookie::class.java) }
-            if (hasAnnotation) {
-                operation.addSecurityItem(
-                    SecurityRequirement()
-                        .addList(ACCESS_TOKEN_SECURITY_KEY)
-                        .addList(REFRESH_TOKEN_SECURITY_KEY)
-                )
-            }
-            operation
-        }
-
-    private fun filterDeprecated(isDeprecated: Boolean): OpenApiCustomiser = OpenApiCustomiser { openApi: OpenAPI ->
-        val paths = openApi.paths
-        paths.forEach { s: String, pathItem: PathItem ->
-            val filteredOperations = pathItem.readOperationsMap().entries
-                .filter { (it.value.deprecated ?: false) == isDeprecated }
-
-            val filteredPathItem = PathItem()
-            filteredOperations.forEach { filteredPathItem.operation(it.key, it.value) }
-            paths[s] = filteredPathItem
-        }
     }
 
     companion object {
-        private const val ACCESS_TOKEN_SECURITY_KEY = "accessToken"
-        private const val REFRESH_TOKEN_SECURITY_KEY = "refreshToken"
+        val ACCESS_TOKEN_SECURITY_SCHEME: SecurityScheme = SecurityScheme()
+            .type(SecurityScheme.Type.APIKEY)
+            .`in`(SecurityScheme.In.COOKIE)
+            .name("accessToken")
+        val REFRESH_TOKEN_SECURITY_SCHEME: SecurityScheme = SecurityScheme()
+            .type(SecurityScheme.Type.APIKEY)
+            .`in`(SecurityScheme.In.COOKIE)
+            .name("refreshToken")
 
         init {
             SpringDocUtils.getConfig()
@@ -158,4 +110,61 @@ class OpenApiConfig {
                 )
         }
     }
+}
+
+@Configuration
+class OpenApiCustomizationConfig(
+    private val apiGroups: List<GroupedOpenApi>
+) {
+
+    @PostConstruct
+    fun allScopeCustomizer() {
+        apiGroups.forEach { apiGroup ->
+            apiGroup.operationCustomizers += arrayOf(accessTokenOperationMarker, refreshTokenOperationMarker)
+        }
+        apiGroups.filterNot { it.displayName == "Deprecated" }
+            .forEach { apiGroup ->
+                apiGroup.openApiMethodFilters.add { method ->
+                    method.declaringClass.annotations.none { it is Deprecated || it is java.lang.Deprecated }
+                            && method.annotations.none { it is Deprecated || it is java.lang.Deprecated }
+                }
+            }
+    }
+
+    @Primary
+    @Bean
+    fun customizedJavadocProvider(): JavadocProvider {
+        return object : SpringDocJavadocProvider() {
+            override fun getFirstSentence(text: String?): String? {
+                return text?.lines()?.firstOrNull()
+            }
+        }
+    }
+
+    private val accessTokenOperationMarker =
+        OperationCustomizer { operation: Operation, handlerMethod: HandlerMethod ->
+            val hasAnnotation = handlerMethod.methodParameters
+                .any { it.hasParameterAnnotation(Authenticated::class.java) }
+            if (hasAnnotation) {
+                operation.addSecurityItem(
+                    SecurityRequirement()
+                        .addList(OpenApiConfig.ACCESS_TOKEN_SECURITY_SCHEME.name)
+                )
+            }
+            operation
+        }
+
+    private val refreshTokenOperationMarker =
+        OperationCustomizer { operation: Operation, handlerMethod: HandlerMethod ->
+            val hasAnnotation = handlerMethod.methodParameters
+                .any { it.hasParameterAnnotation(TokensFromCookie::class.java) }
+            if (hasAnnotation) {
+                operation.addSecurityItem(
+                    SecurityRequirement()
+                        .addList(OpenApiConfig.ACCESS_TOKEN_SECURITY_SCHEME.name)
+                        .addList(OpenApiConfig.REFRESH_TOKEN_SECURITY_SCHEME.name)
+                )
+            }
+            operation
+        }
 }
