@@ -9,7 +9,7 @@ plugins {
     id("io.freefair.lombok") version "8.10"
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
