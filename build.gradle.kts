@@ -5,7 +5,7 @@ plugins {
     kotlin("plugin.jpa") version "1.9.24"
     id("org.springframework.boot") version "2.7.12"
     id("io.spring.dependency-management") version "1.1.0"
-    id("org.jetbrains.kotlin.kapt") version "2.0.21"
+    id("org.jetbrains.kotlin.kapt") version "1.9.24"
     id("io.freefair.lombok") version "8.10"
 }
 
