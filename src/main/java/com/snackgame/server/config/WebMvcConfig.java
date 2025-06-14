@@ -3,11 +3,14 @@ package com.snackgame.server.config;
 import java.util.List;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import com.snackgame.server.game.snackgame.core.domain.item.StringToItemTypeConverter;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -43,5 +46,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 )
                 .allowedMethods("GET", "POST", "DELETE", "PUT", "PATCH")
                 .allowCredentials(true);
+    }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new StringToItemTypeConverter());
     }
 }

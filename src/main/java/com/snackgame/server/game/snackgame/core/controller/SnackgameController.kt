@@ -1,7 +1,9 @@
 package com.snackgame.server.game.snackgame.core.controller
 
 import com.snackgame.server.auth.token.support.Authenticated
+import com.snackgame.server.game.snackgame.core.domain.item.ItemService
 import com.snackgame.server.game.snackgame.core.service.SnackgameService
+import com.snackgame.server.game.snackgame.core.service.dto.ItemTypeRequest
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameEndResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameUpdateRequest
@@ -11,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -22,8 +25,11 @@ import javax.validation.Valid
 @Tag(name = "🍿 스낵게임")
 @RequestMapping("/games/2")
 @RestController
-class SnackgameController(
-    private val snackgameService: SnackgameService
+class
+
+SnackgameController(
+    private val snackgameService: SnackgameService,
+    private val itemService: ItemService
 ) {
 
     @Operation(
@@ -90,4 +96,13 @@ class SnackgameController(
     @PostMapping("/{sessionId}/end")
     fun end(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameEndResponse =
         snackgameService.end(member.id, sessionId)
+
+    @Operation(summary = "사용자가 가진 아이템 조회")
+    @GetMapping("/items")
+    fun checkItemPresence(
+        @Authenticated member: Member,
+        request: ItemTypeRequest,
+    ): Boolean {
+       return itemService.checkItemPresence(member.id, request)
+    }
 }
