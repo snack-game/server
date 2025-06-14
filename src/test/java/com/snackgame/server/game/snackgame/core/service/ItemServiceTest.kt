@@ -23,7 +23,7 @@ class ItemServiceTest {
     private lateinit var itemRepository: ItemRepository
 
     @Test
-    fun `아이템을 조회할 수 있다`(){
+    fun `아이템의 보유 여부를 알 수 있다`(){
 
         val bomb: Item = Item(땡칠().id, ItemType.BOMB,1, LocalDateTime.now(), 1)
         itemRepository.save(bomb)
