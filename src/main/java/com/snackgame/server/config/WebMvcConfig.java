@@ -10,7 +10,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.snackgame.server.game.snackgame.core.domain.item.StringToItemTypeConverter;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -48,8 +47,4 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .allowCredentials(true);
     }
 
-    @Override
-    public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new StringToItemTypeConverter());
-    }
 }
