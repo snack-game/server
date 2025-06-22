@@ -4,8 +4,8 @@ package com.snackgame.server.game.snackgame.biz.domain
 
 import com.snackgame.server.game.snackgame.core.domain.Coordinate
 import com.snackgame.server.game.snackgame.core.domain.Streak
-import com.snackgame.server.game.snackgame.fixture.TestFixture.THREE_BY_FOUR
-import com.snackgame.server.game.snackgame.fixture.TestFixture.TWO_BY_TWO_WITH_GOLDEN_SNACK
+import com.snackgame.server.game.snackgame.fixture.BoardFixture.THREE_BY_FOUR
+import com.snackgame.server.game.snackgame.fixture.BoardFixture.TWO_BY_TWO_WITH_GOLDEN_SNACK
 import com.snackgame.server.member.fixture.MemberFixture.땡칠
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

@@ -7,7 +7,7 @@ import com.snackgame.server.game.snackgame.core.domain.Snackgame
 import com.snackgame.server.game.snackgame.core.domain.SnackgameRepository
 import com.snackgame.server.game.snackgame.core.service.dto.CoordinateRequest
 import com.snackgame.server.game.snackgame.core.service.dto.StreaksRequest
-import com.snackgame.server.game.snackgame.fixture.TestFixture
+import com.snackgame.server.game.snackgame.fixture.BoardFixture
 import com.snackgame.server.member.fixture.MemberFixture
 import com.snackgame.server.member.fixture.MemberFixture.땡칠
 import com.snackgame.server.support.general.ServiceTest
@@ -33,7 +33,7 @@ class SnackgameServiceTest {
 
     @Test
     fun `게임을 조작한다`() {
-        val game = snackgameRepository.save(Snackgame(땡칠().id, TestFixture.TWO_BY_FOUR()))
+        val game = snackgameRepository.save(Snackgame(땡칠().id, BoardFixture.TWO_BY_FOUR()))
 
         val coordinates = listOf(
             CoordinateRequest(1, 0),
