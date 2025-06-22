@@ -4,7 +4,6 @@ import com.snackgame.server.auth.token.support.Authenticated
 import com.snackgame.server.game.snackgame.core.domain.item.ItemService
 import com.snackgame.server.game.snackgame.core.service.SnackgameService
 import com.snackgame.server.game.snackgame.core.service.dto.ItemCountResponse
-import com.snackgame.server.game.snackgame.core.service.dto.ItemTypeRequest
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameEndResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameUpdateRequest
