@@ -20,7 +20,7 @@ class SnackgameTest {
     @Test
     fun 스낵을_제거하면_점수를_얻을_수_있을() {
         val game = Snackgame(땡칠().id, BoardFixture.TWO_BY_FOUR())
-        val streak = Streak(
+        val streak = Streak.of(
             arrayListOf(
                 Coordinate(0, 0),
                 Coordinate(1, 0)
@@ -33,7 +33,7 @@ class SnackgameTest {
     @Test
     fun 황금스낵를_제거해도_점수는_초기화되지_않는다() {
         val game = Snackgame(땡칠().id, BoardFixture.TWO_BY_TWO_WITH_GOLDEN_SNACK())
-        val streak = Streak(
+        val streak = Streak.of(
             arrayListOf(
                 Coordinate(0, 0),
                 Coordinate(1, 0)

@@ -21,7 +21,7 @@ class SnackgameBizV2Test {
     fun `제거한 스트릭 길이만큼 점수를 얻는다`(coordinates: List<Coordinate>) {
         val game = SnackgameBizV2(땡칠().id, THREE_BY_FOUR())
 
-        val streak = Streak(coordinates)
+        val streak = Streak.of(coordinates)
         game.remove(streak)
 
         assertThat(game.score).isEqualTo(streak.length)
@@ -31,7 +31,7 @@ class SnackgameBizV2Test {
     fun `황금 스낵을 제거하면 보드가 초기화된다`() {
         val game = SnackgameBizV2(땡칠().id, TWO_BY_TWO_WITH_GOLDEN_SNACK())
 
-        Streak(
+        Streak.of(
             listOf(
                 Coordinate(0, 0),
                 Coordinate(1, 0)
