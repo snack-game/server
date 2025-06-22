@@ -17,6 +17,10 @@ class Coordinate(val y: Int, val x: Int) {
         }
     }
 
+    fun toBombCoordinate(): List<Coordinate> {
+        return AROUND_OFFSETS.map { (dy, dx) -> Coordinate(y + dy, x + dx) }
+    }
+
     override fun equals(o: Any?): Boolean {
 
         if (this === o) return true
@@ -38,5 +42,12 @@ class Coordinate(val y: Int, val x: Int) {
                 "y=" + y +
                 ", x=" + x +
                 '}'
+    }
+    companion object {
+        val AROUND_OFFSETS = listOf(
+            -1 to -1, -1 to 0, -1 to 1,
+            0 to -1,  0 to 0,  0 to 1,
+            1 to -1,  1 to 0,  1 to 1
+        )
     }
 }
