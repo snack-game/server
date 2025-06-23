@@ -43,7 +43,7 @@ open class Snackgame(
 
     fun removeBomb(streak: Streak) {
         val removedSnacks = board.bombSnacksIn(streak)
-        increaseScore(streak.length)
+        increaseScore(removedSnacks.size)
 
         if (removedSnacks.any(Snack::isGolden)) {
             this.board = board.reset()

@@ -50,11 +50,10 @@ class SnackgameServiceTest {
     fun `폭탄을 사용한다`() {
         val game = snackgameRepository.save(Snackgame(땡칠().id, BoardFixture.THREE_BY_FOUR()))
 
-
-        snackgameService.useBomb(땡칠().id, game.sessionId, CoordinateRequest(0, 1))
+        snackgameService.useBomb(땡칠().id, game.sessionId, CoordinateRequest(1, 1))
 
         val found = snackgameRepository.findByOwnerIdAndSessionId(땡칠().id, game.sessionId)!!
-        assertThat(found.score).isEqualTo(6)
+        assertThat(found.score).isEqualTo(7)
     }
 
     @Test

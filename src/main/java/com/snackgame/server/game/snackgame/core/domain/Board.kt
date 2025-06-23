@@ -42,6 +42,7 @@ class Board() {
         val filteredStreak = filterValidCoordinates(streak.coordinates)
 
         val snacksToRemove = filteredStreak.map { snacks[it.y][it.x] }
+            .filter { it !is EmptySnack }
         filteredStreak.forEach { removeSnacksAt(it) } // TODO: 제거한 스낵과 제거할 스낵 사이에 스낵이 없음을 검증해야 한다
         return snacksToRemove
     }
