@@ -116,4 +116,13 @@ SnackgameController(
         return ResponseEntity.ok(game)
     }
 
+    @PostMapping("/{sessionId}/fever-time")
+    fun useFeverTime(
+        @Authenticated member: Member,
+        @PathVariable sessionId: Long
+    ): ResponseEntity<SnackgameResponse> {
+        val game = snackgameService.useFeverTime(member.id, sessionId)
+        return ResponseEntity.ok(game)
+    }
+
 }

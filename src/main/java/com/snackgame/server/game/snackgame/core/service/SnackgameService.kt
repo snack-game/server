@@ -64,6 +64,16 @@ class SnackgameService(
     }
 
     @Transactional
+    fun useFeverTime(ownerId: Long, sessionId: Long): SnackgameResponse {
+        itemService.useItem(ownerId, ItemType.FEVER_TIME)
+
+        val game = snackGameRepository.getBy(ownerId, sessionId)
+        game.startFeverTime()
+
+        return SnackgameResponse.of(game)
+    }
+
+    @Transactional
     fun pause(memberId: Long, sessionId: Long): SnackgameResponse {
         val game = snackGameRepository.getBy(memberId, sessionId)
 

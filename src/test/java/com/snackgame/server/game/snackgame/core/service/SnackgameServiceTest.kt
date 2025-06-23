@@ -57,4 +57,18 @@ class SnackgameServiceTest {
         assertThat(found.score).isEqualTo(6)
     }
 
+    @Test
+    fun `피버타임을 사용한다`() {
+        val game = snackgameRepository.save(Snackgame(땡칠().id, BoardFixture.TWO_BY_FOUR()))
+        val coordinates = listOf(
+            CoordinateRequest(1, 0),
+            CoordinateRequest(0, 0)
+        )
+
+        snackgameService.useFeverTime(땡칠().id, game.sessionId)
+        snackgameService.removeStreaks(땡칠().id, game.sessionId, StreaksRequest(listOf(coordinates)))
+
+        val found = snackgameRepository.findByOwnerIdAndSessionId(땡칠().id, game.sessionId)!!
+        assertThat(found.score).isEqualTo(4)
+    }
 }
