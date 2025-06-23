@@ -98,7 +98,7 @@ SnackgameController(
     fun end(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameEndResponse =
         snackgameService.end(member.id, sessionId)
 
-    @Operation(summary = "사용자가 가진 아이템 조회")
+    @Operation(summary = "사용자가 가진 아이템 조회", description = "사용자가 아이템을 각각 몇 개 소유하고 있는지 조회한다")
     @GetMapping("/items")
     fun checkItemPresence(
         @Authenticated member: Member,
@@ -106,6 +106,7 @@ SnackgameController(
         return itemService.checkItemPresence(member.id)
     }
 
+    @Operation(summary = "폭탄 아이템 사용", description = "폭탄 아이템으로 선택한 좌표를 입력하면 사용할 수 있다")
     @PostMapping("/{sessionId}/bomb")
     fun useBomb(
         @Authenticated member: Member,
@@ -116,6 +117,7 @@ SnackgameController(
         return ResponseEntity.ok(game)
     }
 
+    @Operation(summary = "피버타임 아이템 사용", description = "30초 동안 점수를 두배 증가시킨다")
     @PostMapping("/{sessionId}/fever-time")
     fun useFeverTime(
         @Authenticated member: Member,
