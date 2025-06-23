@@ -15,7 +15,7 @@ class Streak private constructor(val coordinates: List<Coordinate>) {
             return Streak(coordinates)
         }
 
-        fun bomb(coordinates: List<Coordinate>): Streak {
+        fun ofBomb(coordinates: List<Coordinate>): Streak {
             validateLengthOf(coordinates)
             validateNoDuplicateIn(coordinates)
             return Streak(coordinates)

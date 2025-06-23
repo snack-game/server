@@ -58,7 +58,7 @@ class SnackgameService(
 
         val game = snackGameRepository.getBy(ownerId, sessionId)
         val bombCoordinate = coordinateRequest.toCoordinate().toBombCoordinate()
-        game.bomb(Streak.bomb(bombCoordinate))
+        game.removeBomb(Streak.ofBomb(bombCoordinate))
 
         return SnackgameResponse.of(game)
     }

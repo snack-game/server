@@ -41,7 +41,7 @@ open class Snackgame(
         }
     }
 
-    fun bomb(streak: Streak) {
+    fun removeBomb(streak: Streak) {
         val removedSnacks = board.bombSnacksIn(streak)
         increaseScore(streak.length)
 

@@ -56,7 +56,7 @@ class SnackgameTest {
                 Coordinate(1, 1),
                 Coordinate(1, 0)
             )
-        ).let { game.bomb(it) }
+        ).let { game.removeBomb(it) }
 
         assertThat(game.board).isNotEqualTo(TWO_BY_TWO_WITH_GOLDEN_SNACK())
     }

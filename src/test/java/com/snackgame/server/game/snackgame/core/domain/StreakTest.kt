@@ -22,7 +22,7 @@ class StreakTest {
 
     @Test
     fun `폭탄 스트릭의 길이는 2 이상이어야 한다`() {
-        assertThatThrownBy { Streak.bomb(listOf(CENTER)) }
+        assertThatThrownBy { Streak.ofBomb(listOf(CENTER)) }
             .isInstanceOf(InvalidStreakException::class.java)
     }
 
@@ -49,7 +49,7 @@ class StreakTest {
     @Test
     fun `폭탄 스트릭에 동일한 좌표가 여러번 포함될 수 없다`() {
         assertThatThrownBy {
-            Streak.bomb(
+            Streak.ofBomb(
                 listOf(
                     Coordinate(1, 1),
                     Coordinate(1, 2),

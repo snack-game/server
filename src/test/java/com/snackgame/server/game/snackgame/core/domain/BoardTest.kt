@@ -45,7 +45,7 @@ class BoardTest {
     @Test
     fun `폭탄은 유효한 좌표의 스낵만 제거한다`() {
         val board = BoardFixture.THREE_BY_FOUR()
-        val streak = Streak.bomb(
+        val streak = Streak.ofBomb(
             listOf(
                 Coordinate(0, 0),
                 Coordinate(1, 0),
@@ -63,7 +63,7 @@ class BoardTest {
     @Test
     fun `모든 좌표가 게임판 밖이면 아무것도 제거되지 않는다`() {
         val board = BoardFixture.TWO_BY_FOUR()
-        val streak = Streak.bomb(
+        val streak = Streak.ofBomb(
             listOf(
                 Coordinate(8, 8),
                 Coordinate(9, 9)
@@ -81,7 +81,7 @@ class BoardTest {
     @Test
     fun `폭탄으로 제거된 스낵은 빈 스낵으로 바뀐다`() {
         val board = BoardFixture.TWO_BY_FOUR()
-        val streak = Streak.bomb(
+        val streak = Streak.ofBomb(
             listOf(
                 Coordinate(0, 1),
                 Coordinate(1, 1)
