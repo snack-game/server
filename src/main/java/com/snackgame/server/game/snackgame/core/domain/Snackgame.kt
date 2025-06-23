@@ -34,6 +34,14 @@ open class Snackgame(
         }
     }
 
+    fun bomb(streak: Streak) {
+        val removedSnacks = board.bombSnacksIn(streak)
+        this.score += streak.length
+        if (removedSnacks.any(Snack::isGolden)) {
+            this.board = board.reset()
+        }
+    }
+
     override val metadata = SNACK_GAME
 
     companion object {

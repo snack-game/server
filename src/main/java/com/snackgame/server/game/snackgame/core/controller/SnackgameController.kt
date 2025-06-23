@@ -3,6 +3,7 @@ package com.snackgame.server.game.snackgame.core.controller
 import com.snackgame.server.auth.token.support.Authenticated
 import com.snackgame.server.game.snackgame.core.domain.item.ItemService
 import com.snackgame.server.game.snackgame.core.service.SnackgameService
+import com.snackgame.server.game.snackgame.core.service.dto.CoordinateRequest
 import com.snackgame.server.game.snackgame.core.service.dto.ItemCountResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameEndResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameResponse
@@ -104,4 +105,15 @@ SnackgameController(
     ): ItemCountResponse {
         return itemService.checkItemPresence(member.id)
     }
+
+    @PostMapping("/{sessionId}/bomb")
+    fun useBomb(
+        @Authenticated member: Member,
+        @PathVariable sessionId: Long,
+        @RequestBody coordinateRequest: CoordinateRequest
+    ): ResponseEntity<SnackgameResponse> {
+        val game = snackgameService.useBomb(member.id, sessionId, coordinateRequest)
+        return ResponseEntity.ok(game)
+    }
+
 }

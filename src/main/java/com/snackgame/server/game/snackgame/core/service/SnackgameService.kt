@@ -4,8 +4,12 @@ package com.snackgame.server.game.snackgame.core.service
 import com.snackgame.server.game.session.event.SessionEndEvent
 import com.snackgame.server.game.snackgame.core.domain.Snackgame
 import com.snackgame.server.game.snackgame.core.domain.SnackgameRepository
+import com.snackgame.server.game.snackgame.core.domain.Streak
 import com.snackgame.server.game.snackgame.core.domain.getBy
+import com.snackgame.server.game.snackgame.core.domain.item.ItemService
+import com.snackgame.server.game.snackgame.core.domain.item.ItemType
 import com.snackgame.server.game.snackgame.core.domain.ratePercentileOf
+import com.snackgame.server.game.snackgame.core.service.dto.CoordinateRequest
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameEndResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameUpdateRequest
@@ -17,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class SnackgameService(
     private val snackGameRepository: SnackgameRepository,
+    private val itemService: ItemService,
     private val eventPublisher: ApplicationEventPublisher
 ) {
 
@@ -43,6 +48,17 @@ class SnackgameService(
 
         streaksRequest.toStreaks()
             .forEach { game.remove(it) }
+
+        return SnackgameResponse.of(game)
+    }
+
+    @Transactional
+    fun useBomb(ownerId: Long, sessionId: Long, coordinateRequest: CoordinateRequest): SnackgameResponse {
+        itemService.useItem(ownerId, ItemType.BOMB)
+
+        val game = snackGameRepository.getBy(ownerId, sessionId)
+        val bombCoordinate = coordinateRequest.toCoordinate().toBombCoordinate()
+        game.bomb(Streak.bomb(bombCoordinate))
 
         return SnackgameResponse.of(game)
     }

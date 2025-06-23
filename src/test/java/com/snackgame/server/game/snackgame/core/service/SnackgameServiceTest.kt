@@ -8,7 +8,7 @@ import com.snackgame.server.game.snackgame.core.domain.SnackgameRepository
 import com.snackgame.server.game.snackgame.core.service.dto.CoordinateRequest
 import com.snackgame.server.game.snackgame.core.service.dto.StreaksRequest
 import com.snackgame.server.game.snackgame.fixture.BoardFixture
-import com.snackgame.server.member.fixture.MemberFixture
+import com.snackgame.server.game.snackgame.fixture.ItemFixture
 import com.snackgame.server.member.fixture.MemberFixture.땡칠
 import com.snackgame.server.support.general.ServiceTest
 import org.assertj.core.api.Assertions.assertThat
@@ -27,8 +27,8 @@ class SnackgameServiceTest {
 
     @BeforeEach
     fun setUp() {
-        MemberFixture.saveAll()
         SeasonFixture.saveAll()
+        ItemFixture.saveAll()
     }
 
     @Test
@@ -45,4 +45,16 @@ class SnackgameServiceTest {
         val found = snackgameRepository.findByOwnerIdAndSessionId(땡칠().id, game.sessionId)!!
         assertThat(found.score).isEqualTo(2)
     }
+
+    @Test
+    fun `폭탄을 사용한다`() {
+        val game = snackgameRepository.save(Snackgame(땡칠().id, BoardFixture.THREE_BY_FOUR()))
+
+
+        snackgameService.useBomb(땡칠().id, game.sessionId, CoordinateRequest(0, 1))
+
+        val found = snackgameRepository.findByOwnerIdAndSessionId(땡칠().id, game.sessionId)!!
+        assertThat(found.score).isEqualTo(6)
+    }
+
 }
