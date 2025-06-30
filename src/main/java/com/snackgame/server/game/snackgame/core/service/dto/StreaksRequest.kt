@@ -9,6 +9,6 @@ data class StreaksRequest @JsonCreator constructor(
 ) {
 
     fun toStreaks(): List<Streak> = streaks.map { streak ->
-        Streak(streak.map { Coordinate(it.y, it.x) })
+        Streak.of(streak.map { Coordinate(it.y, it.x) })
     }
 }

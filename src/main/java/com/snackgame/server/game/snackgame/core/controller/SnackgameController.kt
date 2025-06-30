@@ -1,7 +1,10 @@
 package com.snackgame.server.game.snackgame.core.controller
 
 import com.snackgame.server.auth.token.support.Authenticated
+import com.snackgame.server.game.snackgame.core.domain.item.ItemService
 import com.snackgame.server.game.snackgame.core.service.SnackgameService
+import com.snackgame.server.game.snackgame.core.service.dto.CoordinateRequest
+import com.snackgame.server.game.snackgame.core.service.dto.ItemCountResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameEndResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameUpdateRequest
@@ -11,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -22,8 +26,11 @@ import javax.validation.Valid
 @Tag(name = "🍿 스낵게임")
 @RequestMapping("/games/2")
 @RestController
-class SnackgameController(
-    private val snackgameService: SnackgameService
+class
+
+SnackgameController(
+    private val snackgameService: SnackgameService,
+    private val itemService: ItemService
 ) {
 
     @Operation(
@@ -90,4 +97,34 @@ class SnackgameController(
     @PostMapping("/{sessionId}/end")
     fun end(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameEndResponse =
         snackgameService.end(member.id, sessionId)
+
+    @Operation(summary = "사용자가 가진 아이템 조회", description = "사용자가 아이템을 각각 몇 개 소유하고 있는지 조회한다")
+    @GetMapping("/items")
+    fun checkItemPresence(
+        @Authenticated member: Member,
+    ): ItemCountResponse {
+        return itemService.checkItemPresence(member.id)
+    }
+
+    @Operation(summary = "폭탄 아이템 사용", description = "폭탄 아이템으로 선택한 좌표를 입력하면 사용할 수 있다")
+    @PostMapping("/{sessionId}/bomb")
+    fun useBomb(
+        @Authenticated member: Member,
+        @PathVariable sessionId: Long,
+        @RequestBody coordinateRequest: CoordinateRequest
+    ): ResponseEntity<SnackgameResponse> {
+        val game = snackgameService.useBomb(member.id, sessionId, coordinateRequest)
+        return ResponseEntity.ok(game)
+    }
+
+    @Operation(summary = "피버타임 아이템 사용", description = "30초 동안 점수를 두배 증가시킨다")
+    @PostMapping("/{sessionId}/fever-time")
+    fun useFeverTime(
+        @Authenticated member: Member,
+        @PathVariable sessionId: Long
+    ): ResponseEntity<SnackgameResponse> {
+        val game = snackgameService.useFeverTime(member.id, sessionId)
+        return ResponseEntity.ok(game)
+    }
+
 }

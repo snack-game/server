@@ -2,9 +2,11 @@ package com.snackgame.server.game.snackgame.core.domain
 
 import com.snackgame.server.game.metadata.Metadata.SNACK_GAME
 import com.snackgame.server.game.session.domain.Session
+import com.snackgame.server.game.snackgame.core.domain.item.FeverTime
 import com.snackgame.server.game.snackgame.core.domain.snack.Snack
 import java.time.Duration
 import javax.persistence.Convert
+import javax.persistence.Embedded
 import javax.persistence.Entity
 import javax.persistence.Lob
 
@@ -21,6 +23,10 @@ open class Snackgame(
     var board = board
         private set
 
+    @Embedded
+    var feverTime: FeverTime? = null
+        private set
+
     @Deprecated("스트릭 구현 완료 시 제거")
     fun setScoreUnsafely(score: Int) {
         this.score = score
@@ -28,10 +34,29 @@ open class Snackgame(
 
     fun remove(streak: Streak) {
         val removedSnacks = board.removeSnacksIn(streak)
-        this.score += streak.length
+        increaseScore(streak.length)
+
         if (removedSnacks.any(Snack::isGolden)) {
             this.board = board.reset()
         }
+    }
+
+    fun removeBomb(streak: Streak) {
+        val removedSnacks = board.bombSnacksIn(streak)
+        increaseScore(removedSnacks.size)
+
+        if (removedSnacks.any(Snack::isGolden)) {
+            this.board = board.reset()
+        }
+    }
+
+    fun startFeverTime() {
+        this.feverTime = FeverTime.start()
+    }
+
+    private fun increaseScore(earn: Int) {
+        val multiplier = if (feverTime?.isActive() == true) FEVER_MULTIPLIER else NORMAL_MULTIPLIER
+        this.score += earn * multiplier
     }
 
     override val metadata = SNACK_GAME
@@ -39,6 +64,8 @@ open class Snackgame(
     companion object {
         const val DEFAULT_HEIGHT = 8
         const val DEFAULT_WIDTH = 6
+        const val FEVER_MULTIPLIER = 2
+        const val NORMAL_MULTIPLIER = 1
         val SESSION_TIME: Duration = Duration.ofMinutes(2)
         val SPARE_TIME: Duration = Duration.ofSeconds(2)
     }

@@ -38,6 +38,15 @@ class Board() {
         return snacksToRemove
     }
 
+    fun bombSnacksIn(streak: Streak): List<Snack> {
+        val filteredStreak = filterValidCoordinates(streak.coordinates)
+
+        val snacksToRemove = filteredStreak.map { snacks[it.y][it.x] }
+            .filter { it !is EmptySnack }
+        filteredStreak.forEach { removeSnacksAt(it) } // TODO: 제거한 스낵과 제거할 스낵 사이에 스낵이 없음을 검증해야 한다
+        return snacksToRemove
+    }
+
     private fun validateIsIncluded(coordinates: List<Coordinate>) {
         coordinates.forEach { coordinate ->
             if (coordinate.y >= snacks.size || coordinate.x >= snacks[0].size) {
@@ -66,6 +75,14 @@ class Board() {
         val removed = snacks[coordinate.y][coordinate.x]
         snacks[coordinate.y][coordinate.x] = EmptySnack.get()
         return removed
+    }
+
+    private fun filterValidCoordinates(coordinates: List<Coordinate>): List<Coordinate> {
+        return coordinates.filter { isInside(it) }
+    }
+
+    private fun isInside(coordinate: Coordinate): Boolean {
+        return coordinate.y in snacks.indices && coordinate.x in snacks[0].indices
     }
 
     fun getSnacks(): List<List<Snack>> {

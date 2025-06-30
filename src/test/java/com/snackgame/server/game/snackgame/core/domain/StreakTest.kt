@@ -16,20 +16,40 @@ class StreakTest {
 
     @Test
     fun `스트릭의 길이는 2 이상이어야 한다`() {
-        assertThatThrownBy { Streak(listOf(CENTER)) }
+        assertThatThrownBy { Streak.of(listOf(CENTER)) }
+            .isInstanceOf(InvalidStreakException::class.java)
+    }
+
+    @Test
+    fun `폭탄 스트릭의 길이는 2 이상이어야 한다`() {
+        assertThatThrownBy { Streak.ofBomb(listOf(CENTER)) }
             .isInstanceOf(InvalidStreakException::class.java)
     }
 
     @ParameterizedTest
     @MethodSource("거리가 길이가 다른 좌표들")
     fun `스트릭 길이를 알 수 있다`(coordinates: List<Coordinate>, length: Int) {
-        assertThat(Streak(coordinates).length).isEqualTo(length)
+        assertThat(Streak.of(coordinates).length).isEqualTo(length)
     }
 
     @Test
     fun `동일한 좌표가 여러번 포함될 수 없다`() {
         assertThatThrownBy {
-            Streak(
+            Streak.of(
+                listOf(
+                    Coordinate(1, 1),
+                    Coordinate(1, 2),
+                    Coordinate(1, 1)
+                )
+            )
+        }
+            .isInstanceOf(InvalidStreakException::class.java)
+    }
+
+    @Test
+    fun `폭탄 스트릭에 동일한 좌표가 여러번 포함될 수 없다`() {
+        assertThatThrownBy {
+            Streak.ofBomb(
                 listOf(
                     Coordinate(1, 1),
                     Coordinate(1, 2),
@@ -43,19 +63,19 @@ class StreakTest {
     @ParameterizedTest
     @MethodSource("상하좌우 방향 좌표")
     fun `스트릭은 상하좌우 방향의 좌표들로 이어져야 한다`(other: Coordinate) {
-        assertThatNoException().isThrownBy { Streak(listOf(CENTER, other)) }
+        assertThatNoException().isThrownBy { Streak.of(listOf(CENTER, other)) }
     }
 
     @ParameterizedTest
     @MethodSource("대각선 방향 좌표")
     fun `스트릭은 대각선 방향의 좌표들로 이어져야 한다`(other: Coordinate) {
-        assertThatNoException().isThrownBy { Streak(listOf(CENTER, other)) }
+        assertThatNoException().isThrownBy { Streak.of(listOf(CENTER, other)) }
     }
 
     @ParameterizedTest
     @MethodSource("상하좌우 및 대각선 외의 좌표")
     fun `상하좌우나 대각선 방향으로 이어지지 않는 좌표들로 스트릭을 만들 수 없다`(other: Coordinate) {
-        assertThatThrownBy { Streak(listOf(CENTER, other)) }
+        assertThatThrownBy { Streak.of(listOf(CENTER, other)) }
             .isInstanceOf(InvalidStreakException::class.java)
     }
 

@@ -5,7 +5,7 @@ import com.snackgame.server.game.snackgame.core.domain.snack.EmptySnack
 import com.snackgame.server.game.snackgame.core.domain.snack.GoldenSnack
 import com.snackgame.server.game.snackgame.core.domain.snack.PlainSnack
 
-object TestFixture {
+object BoardFixture {
 
     const val TWO_BY_FOUR_AS_JSON =
         "{\"snacks\":[[{\"number\":1,\"isGolden\":false},{\"number\":1,\"isGolden\":false},{\"number\":0,\"isGolden\":false},{\"number\":5,\"isGolden\":false}],[{\"number\":9,\"isGolden\":false},{\"number\":2,\"isGolden\":false},{\"number\":0,\"isGolden\":false},{\"number\":2,\"isGolden\":false}]]}"
