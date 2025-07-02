@@ -3,6 +3,7 @@
 package com.snackgame.server.game.snackgame.core.service
 
 
+
 import com.snackgame.server.fixture.SeasonFixture
 import com.snackgame.server.game.snackgame.core.domain.item.Item
 import com.snackgame.server.game.snackgame.core.domain.item.ItemRepository
@@ -16,6 +17,7 @@ import com.snackgame.server.support.general.ServiceTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+
 import org.springframework.beans.factory.annotation.Autowired
 
 @ServiceTest
@@ -51,5 +53,6 @@ class ItemServiceTest {
         val issued = itemRepository.findItemByOwnerIdAndItemType(정환().id, ItemType.BOMB)
         assertThat(issued.get().count).isEqualTo(1)
     }
+
 
 }

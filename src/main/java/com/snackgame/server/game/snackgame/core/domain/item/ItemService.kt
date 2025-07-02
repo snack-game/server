@@ -4,15 +4,18 @@ import com.snackgame.server.game.snackgame.core.service.dto.ItemsResponse
 import com.snackgame.server.game.snackgame.core.service.dto.ItemResponse
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+
 import javax.transaction.Transactional
 
 @Service
 class ItemService(private val itemRepository: ItemRepository) {
 
+
     fun checkItemPresence(ownerId: Long): ItemsResponse {
         val items = itemRepository.findAllByOwnerId(ownerId)
         return ItemsResponse.from(items)
     }
+
 
 
     @Transactional
@@ -26,7 +29,7 @@ class ItemService(private val itemRepository: ItemRepository) {
         found.count -= 1
         itemRepository.save(found)
     }
-
+    
     @Transactional
     fun issueItem(ownerId: Long, itemType: ItemType) : ItemResponse {
         val found = itemRepository.findItemByOwnerIdAndItemType(ownerId, itemType)
@@ -36,5 +39,6 @@ class ItemService(private val itemRepository: ItemRepository) {
         itemRepository.save(found)
         return ItemResponse.of(found)
     }
+
 
 }
