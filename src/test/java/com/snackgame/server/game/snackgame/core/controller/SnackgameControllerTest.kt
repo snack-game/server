@@ -2,7 +2,7 @@ package com.snackgame.server.game.snackgame.core.controller
 
 import com.snackgame.server.game.snackgame.core.domain.item.ItemService
 import com.snackgame.server.game.snackgame.core.domain.item.ItemType
-import com.snackgame.server.game.snackgame.core.service.dto.ItemCountResponse
+import com.snackgame.server.game.snackgame.core.service.dto.ItemsResponse
 import com.snackgame.server.game.snackgame.fixture.ItemFixture
 import com.snackgame.server.member.fixture.MemberFixture.땡칠_인증정보
 import com.snackgame.server.support.restassured.RestAssuredTest
@@ -31,10 +31,18 @@ class SnackgameControllerTest {
             .get("/games/2/items")
             .then()
             .statusCode(HttpStatus.OK.value())
-            .extract().`as`(ItemCountResponse::class.java)
+            .extract().`as`(ItemsResponse::class.java)
 
-        assertThat(response.items[ItemType.BOMB]).isEqualTo(1)
-        assertThat(response.items[ItemType.FEVER_TIME]).isEqualTo(1)
+        val expectedCounts = mapOf(
+            ItemType.BOMB to 1,
+            ItemType.FEVER_TIME to 1
+        )
+
+        expectedCounts.forEach { (itemType, expectedCount) ->
+            val itemResponse = response.items.find { it.type == itemType }
+            assertThat(itemResponse?.count).isEqualTo(expectedCount)
+        }
+
     }
 
 }

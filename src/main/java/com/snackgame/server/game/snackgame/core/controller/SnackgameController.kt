@@ -4,7 +4,9 @@ import com.snackgame.server.auth.token.support.Authenticated
 import com.snackgame.server.game.snackgame.core.domain.item.ItemService
 import com.snackgame.server.game.snackgame.core.service.SnackgameService
 import com.snackgame.server.game.snackgame.core.service.dto.CoordinateRequest
-import com.snackgame.server.game.snackgame.core.service.dto.ItemCountResponse
+import com.snackgame.server.game.snackgame.core.service.dto.ItemsResponse
+import com.snackgame.server.game.snackgame.core.service.dto.ItemResponse
+import com.snackgame.server.game.snackgame.core.service.dto.ItemTypeRequest
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameEndResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameUpdateRequest
@@ -102,7 +104,7 @@ SnackgameController(
     @GetMapping("/items")
     fun checkItemPresence(
         @Authenticated member: Member,
-    ): ItemCountResponse {
+    ): ItemsResponse {
         return itemService.checkItemPresence(member.id)
     }
 
@@ -125,6 +127,15 @@ SnackgameController(
     ): ResponseEntity<SnackgameResponse> {
         val game = snackgameService.useFeverTime(member.id, sessionId)
         return ResponseEntity.ok(game)
+    }
+
+    @Operation(summary = "아이템 획득", description = "사용자가 특정 아이템을 얻을 수 있다")
+    @PostMapping("/item")
+    fun provideItem(
+        @Authenticated member: Member,
+        @RequestBody itemTypeRequest: ItemTypeRequest
+    ) : ItemResponse {
+        return itemService.issueItem(member.id, itemTypeRequest.itemType)
     }
 
 }

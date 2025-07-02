@@ -27,7 +27,6 @@ class SnackgameServiceTest {
 
     @BeforeEach
     fun setUp() {
-        SeasonFixture.saveAll()
         ItemFixture.saveAll()
     }
 

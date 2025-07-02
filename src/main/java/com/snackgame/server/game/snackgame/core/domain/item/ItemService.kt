@@ -1,23 +1,19 @@
 package com.snackgame.server.game.snackgame.core.domain.item
 
-import com.snackgame.server.game.snackgame.core.service.dto.ItemCountResponse
+import com.snackgame.server.game.snackgame.core.service.dto.ItemsResponse
+import com.snackgame.server.game.snackgame.core.service.dto.ItemResponse
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import javax.transaction.Transactional
 
 @Service
 class ItemService(private val itemRepository: ItemRepository) {
 
-    fun checkItemPresence(ownerId: Long): ItemCountResponse {
+    fun checkItemPresence(ownerId: Long): ItemsResponse {
         val items = itemRepository.findAllByOwnerId(ownerId)
-        val counts = mutableMapOf<ItemType, Int>()
-
-        ItemType.values().forEach { itemType ->
-            val count = items.find { it.itemType == itemType }?.count ?: 0
-            counts[itemType] = count
-        }
-
-        return ItemCountResponse.from(counts)
+        return ItemsResponse.from(items)
     }
+
 
     @Transactional
     fun useItem(ownerId: Long, itemType: ItemType) {
@@ -29,6 +25,16 @@ class ItemService(private val itemRepository: ItemRepository) {
 
         found.count -= 1
         itemRepository.save(found)
+    }
+
+    @Transactional
+    fun issueItem(ownerId: Long, itemType: ItemType) : ItemResponse {
+        val found = itemRepository.findItemByOwnerIdAndItemType(ownerId, itemType)
+            .orElse(Item(ownerId = ownerId, itemType = itemType, count = 0, LocalDateTime.now()))
+
+        found.count += 1
+        itemRepository.save(found)
+        return ItemResponse.of(found)
     }
 
 }
