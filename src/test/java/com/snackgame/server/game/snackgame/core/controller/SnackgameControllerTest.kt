@@ -1,3 +1,4 @@
+@file:Suppress("NonAsciiCharacters")
 package com.snackgame.server.game.snackgame.core.controller
 
 import com.snackgame.server.game.snackgame.core.domain.item.ItemService

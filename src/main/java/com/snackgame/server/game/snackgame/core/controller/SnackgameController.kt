@@ -4,9 +4,11 @@ import com.snackgame.server.auth.token.support.Authenticated
 import com.snackgame.server.game.snackgame.core.domain.item.ItemService
 import com.snackgame.server.game.snackgame.core.service.SnackgameService
 import com.snackgame.server.game.snackgame.core.service.dto.CoordinateRequest
-import com.snackgame.server.game.snackgame.core.service.dto.ItemsResponse
+
+import com.snackgame.server.game.snackgame.core.service.dto.GrantTypeRequest
 import com.snackgame.server.game.snackgame.core.service.dto.ItemResponse
 import com.snackgame.server.game.snackgame.core.service.dto.ItemTypeRequest
+import com.snackgame.server.game.snackgame.core.service.dto.ItemsResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameEndResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameUpdateRequest
@@ -133,9 +135,10 @@ SnackgameController(
     @PostMapping("/item")
     fun provideItem(
         @Authenticated member: Member,
-        @RequestBody itemTypeRequest: ItemTypeRequest
-    ) : ItemResponse {
-        return itemService.issueItem(member.id, itemTypeRequest.itemType)
+        @RequestBody itemTypeRequest: ItemTypeRequest,
+        @RequestBody grantTypeRequest: GrantTypeRequest
+    ): ItemResponse {
+        return itemService.issueItem(member.id, itemTypeRequest.itemType, grantTypeRequest.grantType)
     }
 
 }

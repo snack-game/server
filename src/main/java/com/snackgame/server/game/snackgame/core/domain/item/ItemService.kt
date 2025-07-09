@@ -1,18 +1,35 @@
 package com.snackgame.server.game.snackgame.core.domain.item
 
-import com.snackgame.server.game.snackgame.core.service.dto.ItemsResponse
+
+import com.snackgame.server.game.snackgame.core.domain.item.policy.GrantPolicySelector
+import com.snackgame.server.game.snackgame.core.domain.item.policy.GrantType
 import com.snackgame.server.game.snackgame.core.service.dto.ItemResponse
+import com.snackgame.server.game.snackgame.core.service.dto.ItemsResponse
+import com.snackgame.server.game.snackgame.exception.ItemNotReadyException
+import com.snackgame.server.game.snackgame.exception.NoItemException
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 import javax.transaction.Transactional
 
 @Service
-class ItemService(private val itemRepository: ItemRepository) {
+class ItemService(
+    private val itemRepository: ItemRepository,
+    private val grantPolicySelector: GrantPolicySelector,
+    private val itemGrantHistories: ItemGrantHistories
+) {
 
 
+    @Transactional
     fun checkItemPresence(ownerId: Long): ItemsResponse {
         val items = itemRepository.findAllByOwnerId(ownerId)
+
+        if (items.isEmpty()) {
+            val newItems = ItemType.values().map { type ->
+                Item(ownerId = ownerId, itemType = type)
+            }
+            return ItemsResponse.from(itemRepository.saveAll(newItems))
+        }
         return ItemsResponse.from(items)
     }
 
@@ -21,12 +38,9 @@ class ItemService(private val itemRepository: ItemRepository) {
     @Transactional
     fun useItem(ownerId: Long, itemType: ItemType) {
         val found = itemRepository.findItemByOwnerIdAndItemType(ownerId, itemType)
-            .orElseThrow { IllegalStateException("사용자가 보유한 아이템이 없습니다") }
-        if (found.count <= 0) {
-            throw IllegalStateException("아이템이 부족합니다")
-        }
+            .orElseThrow { NoItemException() }
 
-        found.count -= 1
+        found.useOne()
         itemRepository.save(found)
     }
     
@@ -40,5 +54,21 @@ class ItemService(private val itemRepository: ItemRepository) {
         return ItemResponse.of(found)
     }
 
+
+    @Transactional
+    fun issueItem(ownerId: Long, itemType: ItemType, grantType: GrantType): ItemResponse {
+        val histories = itemGrantHistories.findAllByOwnerIdAndItemType(ownerId, itemType)
+        val policy = grantPolicySelector.get(grantType)
+        if (!policy.canGrant(ownerId, itemType, histories)) {
+            throw ItemNotReadyException()
+        }
+
+        val found = itemRepository.findItemByOwnerIdAndItemType(ownerId, itemType)
+            .orElse(Item(ownerId = ownerId, itemType = itemType, count = 0, LocalDateTime.now()))
+
+        itemGrantHistories.save(ItemGrantHistory(ownerId, itemType, grantType))
+        found.addOne()
+        return ItemResponse.of(itemRepository.save(found))
+    }
 
 }
