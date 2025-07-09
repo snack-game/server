@@ -6,6 +6,7 @@ import com.snackgame.server.game.snackgame.core.service.SnackgameService
 import com.snackgame.server.game.snackgame.core.service.dto.CoordinateRequest
 import com.snackgame.server.game.snackgame.core.service.dto.ItemGrantRequest
 import com.snackgame.server.game.snackgame.core.service.dto.ItemResponse
+
 import com.snackgame.server.game.snackgame.core.service.dto.ItemsResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameEndResponse
 import com.snackgame.server.game.snackgame.core.service.dto.SnackgameResponse
@@ -136,6 +137,7 @@ SnackgameController(
         @RequestBody itemGrantRequest: ItemGrantRequest,
     ): ItemResponse {
         return itemService.issueItem(member.id, itemGrantRequest.itemType, itemGrantRequest.grantType)
+
     }
 
 }
