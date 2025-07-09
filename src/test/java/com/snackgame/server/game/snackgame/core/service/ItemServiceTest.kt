@@ -3,10 +3,14 @@
 package com.snackgame.server.game.snackgame.core.service
 
 
+
+import com.snackgame.server.fixture.SeasonFixture
+import com.snackgame.server.game.snackgame.core.domain.item.Item
 import com.snackgame.server.game.snackgame.core.domain.item.ItemRepository
 import com.snackgame.server.game.snackgame.core.domain.item.ItemService
 import com.snackgame.server.game.snackgame.core.domain.item.ItemType
 import com.snackgame.server.game.snackgame.core.domain.item.policy.GrantType
+
 import com.snackgame.server.game.snackgame.fixture.ItemFixture
 import com.snackgame.server.member.fixture.MemberFixture.땡칠
 import com.snackgame.server.member.fixture.MemberFixture.정환
@@ -31,6 +35,7 @@ class ItemServiceTest {
     }
 
     @Test
+
     fun `특정 아이템을 하나 획득할 수 있다`() {
         itemService.issueItem(땡칠().id, ItemType.BOMB, GrantType.DAILY)
 
