@@ -1,7 +1,7 @@
 package com.snackgame.server.game.snackgame.core.domain.item
 
-import com.snackgame.server.game.snackgame.core.service.dto.ItemsResponse
 import com.snackgame.server.game.snackgame.core.service.dto.ItemResponse
+import com.snackgame.server.game.snackgame.core.service.dto.ItemsResponse
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import javax.transaction.Transactional
@@ -9,8 +9,16 @@ import javax.transaction.Transactional
 @Service
 class ItemService(private val itemRepository: ItemRepository) {
 
+    @Transactional
     fun checkItemPresence(ownerId: Long): ItemsResponse {
         val items = itemRepository.findAllByOwnerId(ownerId)
+
+        if (items.isEmpty()) {
+            val newItems = ItemType.values().map { type ->
+                Item(ownerId = ownerId, itemType = type)
+            }
+            return ItemsResponse.from(itemRepository.saveAll(newItems))
+        }
         return ItemsResponse.from(items)
     }
 
@@ -28,7 +36,7 @@ class ItemService(private val itemRepository: ItemRepository) {
     }
 
     @Transactional
-    fun issueItem(ownerId: Long, itemType: ItemType) : ItemResponse {
+    fun issueItem(ownerId: Long, itemType: ItemType): ItemResponse {
         val found = itemRepository.findItemByOwnerIdAndItemType(ownerId, itemType)
             .orElse(Item(ownerId = ownerId, itemType = itemType, count = 0, LocalDateTime.now()))
 

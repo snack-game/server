@@ -17,7 +17,7 @@ class Item(
     @Enumerated(EnumType.STRING)
     val itemType: ItemType,
     var count: Int = 0,
-    val lastGrantedAt: LocalDateTime = LocalDateTime.now(),
+    var lastGrantedAt: LocalDateTime = LocalDateTime.now(),
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
