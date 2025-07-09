@@ -42,7 +42,6 @@ class SnackgameControllerTest {
             val itemResponse = response.items.find { it.type == itemType }
             assertThat(itemResponse?.count).isEqualTo(expectedCount)
         }
-
     }
 
 }

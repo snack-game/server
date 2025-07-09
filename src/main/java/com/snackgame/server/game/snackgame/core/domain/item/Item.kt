@@ -1,5 +1,6 @@
 package com.snackgame.server.game.snackgame.core.domain.item
 
+import com.snackgame.server.game.snackgame.exception.NegativeItemCountException
 import java.time.LocalDateTime
 import javax.persistence.Entity
 import javax.persistence.EnumType
@@ -22,11 +23,19 @@ class Item(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 ) {
-    fun addCount() {
+    fun addOne() {
         this.count += 1
+        lastGrantedAt = LocalDateTime.now()
     }
 
-    fun removeCount() {
+    fun useOne() {
+        if (!validatePositive()) {
+            throw NegativeItemCountException()
+        }
         this.count -= 1
+    }
+
+    private fun validatePositive(): Boolean {
+        return this.count > 0
     }
 }
