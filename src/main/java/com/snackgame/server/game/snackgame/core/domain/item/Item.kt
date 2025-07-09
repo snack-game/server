@@ -21,4 +21,12 @@ class Item(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-)
+) {
+    fun addCount() {
+        this.count += 1
+    }
+
+    fun removeCount() {
+        this.count -= 1
+    }
+}

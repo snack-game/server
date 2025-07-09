@@ -31,7 +31,7 @@ class ItemService(private val itemRepository: ItemRepository) {
             throw IllegalStateException("아이템이 부족합니다")
         }
 
-        found.count -= 1
+        found.removeCount()
         itemRepository.save(found)
     }
 
@@ -40,9 +40,8 @@ class ItemService(private val itemRepository: ItemRepository) {
         val found = itemRepository.findItemByOwnerIdAndItemType(ownerId, itemType)
             .orElse(Item(ownerId = ownerId, itemType = itemType, count = 0, LocalDateTime.now()))
 
-        found.count += 1
-        itemRepository.save(found)
-        return ItemResponse.of(found)
+        found.addCount()
+        return ItemResponse.of(itemRepository.save(found))
     }
 
 }
