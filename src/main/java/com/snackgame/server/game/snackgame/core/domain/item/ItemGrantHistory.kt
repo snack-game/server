@@ -11,7 +11,7 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(name = "item_provide_history")
+@Table(name = "item_grant_history")
 class ItemGrantHistory(
     val ownerId: Long,
     @Enumerated(EnumType.STRING)
