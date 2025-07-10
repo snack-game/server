@@ -8,7 +8,7 @@ data class ItemResponse(
     val ownerId: Long,
     val type: ItemType,
     val count: Int,
-    val lastGrantedAt: LocalDateTime,
+    val lastGrantedAt: LocalDateTime? = null,
 ) {
     companion object {
         fun of(item: Item): ItemResponse {
