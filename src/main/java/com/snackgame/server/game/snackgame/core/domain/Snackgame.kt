@@ -4,6 +4,7 @@ import com.snackgame.server.game.metadata.Metadata.SNACK_GAME
 import com.snackgame.server.game.session.domain.Session
 import com.snackgame.server.game.snackgame.core.domain.item.FeverTime
 import com.snackgame.server.game.snackgame.core.domain.snack.Snack
+import com.snackgame.server.game.snackgame.core.service.dto.StreakWithFever
 import java.time.Duration
 import javax.persistence.Convert
 import javax.persistence.Embedded
@@ -32,9 +33,25 @@ open class Snackgame(
         this.score = score
     }
 
+    //todo : 제거 예정
     fun remove(streak: Streak) {
         val removedSnacks = board.removeSnacksIn(streak)
         increaseScore(streak.length)
+
+        if (removedSnacks.any(Snack::isGolden)) {
+            this.board = board.reset()
+        }
+    }
+
+    fun remove(streakWithFever: StreakWithFever) {
+        val streak = streakWithFever.streak
+        val removedSnacks = board.removeSnacksIn(streak)
+
+        val serverIsFever = feverTime?.isActive(streakWithFever.occurredAt) == true
+        val isValid = streakWithFever.clientIsFever && serverIsFever
+
+        val multiplier = if (isValid) FEVER_MULTIPLIER else NORMAL_MULTIPLIER
+        increaseScore(streak.length * multiplier)
 
         if (removedSnacks.any(Snack::isGolden)) {
             this.board = board.reset()
