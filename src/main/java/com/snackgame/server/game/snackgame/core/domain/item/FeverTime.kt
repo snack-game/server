@@ -6,10 +6,28 @@ import javax.persistence.Embeddable
 
 @Embeddable
 class FeverTime(
-    private val feverStartedAt: LocalDateTime? = null
+    private var feverStartedAt: LocalDateTime? = null,
+    private var feverPausedAt: LocalDateTime? = null
 ) {
     fun isActive(now: LocalDateTime = LocalDateTime.now()): Boolean {
-        return feverStartedAt != null && Duration.between(feverStartedAt, now) < DURATION
+        if (feverStartedAt == null) return false
+        val effectiveStart = feverPausedAt?.let { feverStartedAt!!.plus(Duration.between(it, now)) } ?: feverStartedAt
+        return Duration.between(effectiveStart, now) < DURATION
+    }
+
+    fun pause() {
+        if (feverStartedAt != null && feverPausedAt == null) {
+            feverPausedAt = LocalDateTime.now()
+        }
+    }
+
+    fun resume() {
+        if (feverStartedAt != null && feverPausedAt != null) {
+            val now = LocalDateTime.now()
+            val pausedDuration = Duration.between(feverPausedAt, now)
+            feverStartedAt = feverStartedAt!!.plus(pausedDuration)
+            feverPausedAt = null
+        }
     }
 
     companion object {

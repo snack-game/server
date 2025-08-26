@@ -2,6 +2,8 @@ package com.snackgame.server.game.snackgame.core.service
 
 
 import com.snackgame.server.game.session.event.SessionEndEvent
+import com.snackgame.server.game.session.event.SessionPauseEvent
+import com.snackgame.server.game.session.event.SessionResumeEvent
 import com.snackgame.server.game.snackgame.core.domain.Snackgame
 import com.snackgame.server.game.snackgame.core.domain.SnackgameRepository
 import com.snackgame.server.game.snackgame.core.domain.Streak
@@ -78,6 +80,7 @@ class SnackgameService(
         val game = snackGameRepository.getBy(memberId, sessionId)
 
         game.pause()
+        eventPublisher.publishEvent(SessionPauseEvent.of(game))
 
         return SnackgameResponse.of(game)
     }
@@ -87,6 +90,7 @@ class SnackgameService(
         val game = snackGameRepository.getBy(memberId, sessionId)
 
         game.resume()
+        eventPublisher.publishEvent(SessionResumeEvent.of(game))
 
         return SnackgameResponse.of(game)
     }
