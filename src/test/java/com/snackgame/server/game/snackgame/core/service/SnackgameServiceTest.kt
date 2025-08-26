@@ -2,10 +2,10 @@
 
 package com.snackgame.server.game.snackgame.core.service
 
-import com.snackgame.server.fixture.SeasonFixture
 import com.snackgame.server.game.snackgame.core.domain.Snackgame
 import com.snackgame.server.game.snackgame.core.domain.SnackgameRepository
 import com.snackgame.server.game.snackgame.core.service.dto.CoordinateRequest
+import com.snackgame.server.game.snackgame.core.service.dto.StreakWithMeta
 import com.snackgame.server.game.snackgame.core.service.dto.StreaksRequest
 import com.snackgame.server.game.snackgame.fixture.BoardFixture
 import com.snackgame.server.game.snackgame.fixture.ItemFixture
@@ -39,7 +39,19 @@ class SnackgameServiceTest {
             CoordinateRequest(0, 0)
         )
 
-        snackgameService.removeStreaks(땡칠().id, game.sessionId, StreaksRequest(listOf(coordinates)))
+
+        snackgameService.removeStreaks(
+            땡칠().id,
+            game.sessionId,
+            StreaksRequest(
+                listOf(
+                    StreakWithMeta(
+                        coordinates = coordinates,
+                        isFever = false
+                    )
+                )
+            )
+        )
 
         val found = snackgameRepository.findByOwnerIdAndSessionId(땡칠().id, game.sessionId)!!
         assertThat(found.score).isEqualTo(2)
@@ -64,7 +76,19 @@ class SnackgameServiceTest {
         )
 
         snackgameService.useFeverTime(땡칠().id, game.sessionId)
-        snackgameService.removeStreaks(땡칠().id, game.sessionId, StreaksRequest(listOf(coordinates)))
+
+        snackgameService.removeStreaks(
+            땡칠().id,
+            game.sessionId,
+            StreaksRequest(
+                listOf(
+                    StreakWithMeta(
+                        coordinates = coordinates,
+                        isFever = false
+                    )
+                )
+            )
+        )
 
         val found = snackgameRepository.findByOwnerIdAndSessionId(땡칠().id, game.sessionId)!!
         assertThat(found.score).isEqualTo(4)
