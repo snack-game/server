@@ -15,6 +15,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import java.time.LocalDateTime
 
 @ServiceTest
 class SnackgameServiceTest {
@@ -92,5 +93,21 @@ class SnackgameServiceTest {
 
         val found = snackgameRepository.findByOwnerIdAndSessionId(땡칠().id, game.sessionId)!!
         assertThat(found.score).isEqualTo(4)
+    }
+
+    @Test
+    fun `피버타임 pause 후 resume 시 남은 시간이 유지된다`() {
+        val game = snackgameRepository.save(Snackgame(1L, BoardFixture.TWO_BY_FOUR()))
+
+        game.startFeverTime()
+        val feverTime = game.feverTime!!
+
+        Thread.sleep(1000)
+        snackgameService.pause(game.ownerId, game.sessionId)
+
+        snackgameService.resume(game.ownerId, game.sessionId)
+
+        val activeAfterResume = feverTime.isActive(LocalDateTime.now().plusSeconds(28))
+        assertThat(activeAfterResume).isTrue()
     }
 }

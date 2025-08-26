@@ -5,10 +5,10 @@ import com.snackgame.server.game.session.domain.Session
 
 data class SessionEndEvent(
     val metadata: Metadata,
-    val ownerId: Long,
-    val sessionId: Long,
+    override val ownerId: Long,
+    override val sessionId: Long,
     val score: Int
-) {
+) : SessionStateEvent {
 
     companion object {
         fun of(session: Session): SessionEndEvent {
