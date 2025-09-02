@@ -12,7 +12,7 @@ class FeverTime(
     fun isActive(now: LocalDateTime = LocalDateTime.now()): Boolean {
         if (feverStartedAt == null) return false
         val effectiveStart = feverPausedAt?.let { feverStartedAt!!.plus(Duration.between(it, now)) } ?: feverStartedAt
-        return Duration.between(effectiveStart, now) < DURATION
+        return Duration.between(effectiveStart, now) < FEVER_TIME_PERIOD
     }
 
     fun pause() {
@@ -31,7 +31,7 @@ class FeverTime(
     }
 
     companion object {
-        private val DURATION: Duration = Duration.ofSeconds(30)
+        private val FEVER_TIME_PERIOD: Duration = Duration.ofSeconds(30)
 
         fun start(now: LocalDateTime = LocalDateTime.now()): FeverTime {
             return FeverTime(now)
