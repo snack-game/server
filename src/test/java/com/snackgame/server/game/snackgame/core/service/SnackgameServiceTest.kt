@@ -48,7 +48,8 @@ class SnackgameServiceTest {
                 listOf(
                     StreakWithMeta(
                         coordinates = coordinates,
-                        isFever = false
+                        isFever = false,
+                        LocalDateTime.now()
                     )
                 )
             )
@@ -85,7 +86,8 @@ class SnackgameServiceTest {
                 listOf(
                     StreakWithMeta(
                         coordinates = coordinates,
-                        isFever = false
+                        isFever = true,
+                        LocalDateTime.now()
                     )
                 )
             )
