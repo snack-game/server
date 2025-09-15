@@ -64,11 +64,15 @@ open class Snackgame(
     }
 
     private fun isFever(streakWithFever: StreakWithFever): Int {
-        val serverIsFever = feverTime?.isActive(streakWithFever.occurredAt) == true
-        val isValid = streakWithFever.clientIsFever && serverIsFever
-        val multiplier = if (isValid) FEVER_MULTIPLIER else NORMAL_MULTIPLIER
-        return multiplier
+        val serverFever = feverTime
+        if (serverFever == null) return NORMAL_MULTIPLIER
+        val serverIsActive = serverFever.isActive(streakWithFever.occurredAt)
+        val feverStreakValidate = serverFever.validateFeverStreakOccurredAt(streakWithFever.occurredAt)
+        val isValid = streakWithFever.clientIsFever && serverIsActive && feverStreakValidate
+
+        return if (isValid) FEVER_MULTIPLIER else NORMAL_MULTIPLIER
     }
+
 
     private fun increaseScore(earn: Int) {
         this.score += earn

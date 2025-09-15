@@ -61,8 +61,7 @@ open class SnackgameBizV2(
     }
 
     private fun increaseScore(earn: Int) {
-        val multiplier = if (feverTime?.isActive() == true) FEVER_MULTIPLIER else NORMAL_MULTIPLIER
-        this.score += earn * multiplier
+        this.score += earn
     }
 
     override val metadata = SNACK_GAME_BIZ_V2
