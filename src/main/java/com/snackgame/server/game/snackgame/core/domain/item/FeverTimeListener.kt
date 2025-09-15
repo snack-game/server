@@ -15,12 +15,12 @@ class FeverTimeListener(
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     fun onSessionPaused(event: SessionPauseEvent) {
         val game = snackgameRepository.getBy(event.ownerId, event.sessionId)
-        game.feverTime?.pause()
+        game.feverTime?.pause(event.occurredAt)
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     fun onSessionResumed(event: SessionResumeEvent) {
         val game = snackgameRepository.getBy(event.ownerId, event.sessionId)
-        game.feverTime?.resume()
+        game.feverTime?.resume(event.occurredAt)
     }
 }
