@@ -15,6 +15,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import java.time.Duration
 import java.time.LocalDateTime
 
 @ServiceTest
@@ -39,7 +40,6 @@ class SnackgameServiceTest {
             CoordinateRequest(1, 0),
             CoordinateRequest(0, 0)
         )
-
 
         snackgameService.removeStreaks(
             땡칠().id,
@@ -98,18 +98,22 @@ class SnackgameServiceTest {
     }
 
     @Test
-    fun `피버타임 pause 후 resume 시 남은 시간이 유지된다`() {
-        val game = snackgameRepository.save(Snackgame(1L, BoardFixture.TWO_BY_FOUR()))
+    fun `피버타임 pause 후 resume 시 종료 시간이 연장된다`() {
+        val game = snackgameRepository.save(Snackgame(땡칠().id, BoardFixture.TWO_BY_FOUR()))
+        snackgameService.useFeverTime(땡칠().id, game.sessionId)
 
-        game.startFeverTime()
-        val feverTime = game.feverTime!!
-
-        Thread.sleep(1000)
         snackgameService.pause(game.ownerId, game.sessionId)
-
+        Thread.sleep(1000)
         snackgameService.resume(game.ownerId, game.sessionId)
 
-        val activeAfterResume = feverTime.isActive(LocalDateTime.now().plusSeconds(28))
-        assertThat(activeAfterResume).isTrue()
+        val resumedGame = snackgameRepository.findByOwnerIdAndSessionId(땡칠().id, game.sessionId)!!
+        val feverTime = resumedGame.feverTime!!
+
+        val totalDuration = Duration.between(feverTime.feverStartedAt, feverTime.feverEndAt)
+
+        assertThat(totalDuration).isGreaterThan(Duration.ofSeconds(30))
+
+        val slightlyLateTime = feverTime.feverStartedAt.plusSeconds(30).plusNanos(500)
+        assertThat(feverTime.isFeverTime(slightlyLateTime)).isTrue()
     }
 }

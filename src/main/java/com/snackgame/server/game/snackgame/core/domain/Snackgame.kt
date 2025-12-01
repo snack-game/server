@@ -45,9 +45,10 @@ open class Snackgame(
 
     fun remove(streakWithFever: StreakWithFever) {
         val streak = streakWithFever.streak
-        val removedSnacks = board.removeSnacksIn(streakWithFever.streak)
+        val removedSnacks = board.removeSnacksIn(streak)
 
-        increaseScore(streak.length * isFever(streakWithFever))
+        val multiplier = calculateMultiplier(streakWithFever)
+        increaseScore(streak.length * multiplier)
 
         if (removedSnacks.any(Snack::isGolden)) {
             this.board = board.reset()
@@ -63,14 +64,13 @@ open class Snackgame(
         }
     }
 
-    private fun isFever(streakWithFever: StreakWithFever): Int {
-        val serverFever = feverTime
-        if (serverFever == null) return NORMAL_MULTIPLIER
-        val serverIsActive = serverFever.isActive(streakWithFever.occurredAt)
-        val feverStreakValidate = serverFever.validateFeverStreakOccurredAt(streakWithFever.occurredAt)
-        val isValid = streakWithFever.clientIsFever && serverIsActive && feverStreakValidate
+    private fun calculateMultiplier(streakWithFever: StreakWithFever): Int {
+        val serverFever = feverTime ?: return NORMAL_MULTIPLIER
 
-        return if (isValid) FEVER_MULTIPLIER else NORMAL_MULTIPLIER
+        if (streakWithFever.clientIsFever && serverFever.isFeverTime(streakWithFever.occurredAt)) {
+            return FEVER_MULTIPLIER
+        }
+        return NORMAL_MULTIPLIER
     }
 
 
