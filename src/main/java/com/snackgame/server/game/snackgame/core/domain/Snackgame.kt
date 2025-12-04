@@ -6,6 +6,7 @@ import com.snackgame.server.game.snackgame.core.domain.item.FeverTime
 import com.snackgame.server.game.snackgame.core.domain.snack.Snack
 import com.snackgame.server.game.snackgame.core.service.dto.StreakWithFever
 import java.time.Duration
+import java.time.LocalDateTime
 import javax.persistence.Convert
 import javax.persistence.Embedded
 import javax.persistence.Entity
@@ -67,12 +68,32 @@ open class Snackgame(
     private fun calculateMultiplier(streakWithFever: StreakWithFever): Int {
         val serverFever = feverTime ?: return NORMAL_MULTIPLIER
 
+
+        if (!isValidTimeGap(streakWithFever.occurredAt)) {
+
+            return NORMAL_MULTIPLIER
+        }
+
         if (streakWithFever.clientIsFever && serverFever.isFeverTime(streakWithFever.occurredAt)) {
             return FEVER_MULTIPLIER
         }
         return NORMAL_MULTIPLIER
     }
 
+
+    private fun isValidTimeGap(clientTime: LocalDateTime): Boolean {
+        val serverNow = LocalDateTime.now()
+
+        if (clientTime.isAfter(serverNow.plusSeconds(1))) {
+            return false
+        }
+
+        if (clientTime.isBefore(serverNow.minus(SPARE_TIME))) {
+            return false
+        }
+
+        return true
+    }
 
     private fun increaseScore(earn: Int) {
         this.score += earn
