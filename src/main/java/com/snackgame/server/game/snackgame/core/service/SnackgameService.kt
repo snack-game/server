@@ -81,8 +81,8 @@ class SnackgameService(
     fun pause(memberId: Long, sessionId: Long): SnackgameResponse {
         val game = snackGameRepository.getBy(memberId, sessionId)
 
-        game.pause()
-        eventPublisher.publishEvent(SessionPauseEvent.of(game))
+        val pausedAt = game.pause()
+        eventPublisher.publishEvent(SessionPauseEvent.of(game, pausedAt))
 
         return SnackgameResponse.of(game)
     }
@@ -91,8 +91,8 @@ class SnackgameService(
     fun resume(memberId: Long, sessionId: Long): SnackgameResponse {
         val game = snackGameRepository.getBy(memberId, sessionId)
 
-        game.resume()
-        eventPublisher.publishEvent(SessionResumeEvent.of(game))
+        val resumedAt = game.resume()
+        eventPublisher.publishEvent(SessionResumeEvent.of(game, resumedAt))
 
         return SnackgameResponse.of(game)
     }

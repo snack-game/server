@@ -10,11 +10,11 @@ data class SessionResumeEvent(
 ) : SessionStateEvent {
 
     companion object {
-        fun of(session: Session): SessionResumeEvent {
+        fun of(session: Session, occurredAt: LocalDateTime): SessionResumeEvent {
             return SessionResumeEvent(
                 session.sessionId,
                 session.ownerId,
-                LocalDateTime.now()
+                occurredAt
             )
         }
     }
