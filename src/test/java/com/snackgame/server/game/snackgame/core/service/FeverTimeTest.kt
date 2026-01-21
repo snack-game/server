@@ -17,14 +17,14 @@ class FeverTimeTest {
         val end = start.plusSeconds(30)
         val feverTime = FeverTime(start, end)
 
+        // 서버 시간 검증은 ±3분/5초 허용하므로, 각 occurredAt 근처로 serverNow 설정
+        assertThat(feverTime.isFeverTime(start, start)).isTrue
+        assertThat(feverTime.isFeverTime(end, end)).isTrue
+        assertThat(feverTime.isFeverTime(start.plusSeconds(15), start.plusSeconds(15))).isTrue
 
-        assertThat(feverTime.isFeverTime(start)).isTrue
-        assertThat(feverTime.isFeverTime(end)).isTrue
-        assertThat(feverTime.isFeverTime(start.plusSeconds(15))).isTrue
-
-
-        assertThat(feverTime.isFeverTime(start.minusSeconds(2))).isFalse
-        assertThat(feverTime.isFeverTime(end.plusSeconds(2))).isFalse
+        // 피버타임 범위 밖이면서, 서버 시간은 실제 요청 시점으로 설정
+        assertThat(feverTime.isFeverTime(start.minusSeconds(2), start.minusSeconds(2))).isFalse
+        assertThat(feverTime.isFeverTime(end.plusSeconds(2), end.plusSeconds(2))).isFalse
     }
 
     @Test

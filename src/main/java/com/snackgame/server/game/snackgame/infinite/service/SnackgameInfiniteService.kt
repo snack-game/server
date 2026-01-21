@@ -39,7 +39,7 @@ class SnackgameInfiniteService(
     fun pause(memberId: Long, sessionId: Long): SnackgameResponse {
         val game = snackGameRepository.getBy(memberId, sessionId)
 
-        game.pause()
+        game.pause()  // pause 시간 반환하지만 이 Service는 Event 발행 안함
 
         return SnackgameResponse.of(game)
     }
@@ -48,7 +48,7 @@ class SnackgameInfiniteService(
     fun resume(memberId: Long, sessionId: Long): SnackgameResponse {
         val game = snackGameRepository.getBy(memberId, sessionId)
 
-        game.resume()
+        game.resume()  // resume 시간 반환하지만 이 Service는 Event 발행 안함
 
         return SnackgameResponse.of(game)
     }

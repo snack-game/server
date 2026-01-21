@@ -10,11 +10,11 @@ data class SessionPauseEvent(
 ) : SessionStateEvent {
 
     companion object {
-        fun of(session: Session): SessionPauseEvent {
+        fun of(session: Session, occurredAt: LocalDateTime): SessionPauseEvent {
             return SessionPauseEvent(
                 session.sessionId,
                 session.ownerId,
-                LocalDateTime.now()
+                occurredAt
             )
         }
     }

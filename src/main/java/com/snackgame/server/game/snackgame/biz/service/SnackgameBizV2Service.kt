@@ -1,7 +1,6 @@
 package com.snackgame.server.game.snackgame.biz.service
 
 
-import com.snackgame.server.game.session.event.SessionEndEvent
 import com.snackgame.server.game.snackgame.biz.domain.SnackgameBizV2
 import com.snackgame.server.game.snackgame.biz.domain.SnackgameBizV2Repository
 import com.snackgame.server.game.snackgame.biz.domain.getBy
@@ -40,7 +39,7 @@ class SnackgameBizV2Service(
     fun pause(memberId: Long, sessionId: Long): SnackgameResponse {
         val game = snackgameBizRepository.getBy(memberId, sessionId)
 
-        game.pause()
+        game.pause()  // pause 시간 반환하지만 이 Service는 Event 발행 안함
 
         return SnackgameResponse.of(game)
     }
@@ -49,7 +48,7 @@ class SnackgameBizV2Service(
     fun resume(memberId: Long, sessionId: Long): SnackgameResponse {
         val game = snackgameBizRepository.getBy(memberId, sessionId)
 
-        game.resume()
+        game.resume()  // resume 시간 반환하지만 이 Service는 Event 발행 안함
 
         return SnackgameResponse.of(game)
     }

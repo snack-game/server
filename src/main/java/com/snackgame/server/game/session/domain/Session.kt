@@ -4,6 +4,7 @@ import com.snackgame.server.common.domain.BaseEntity
 import com.snackgame.server.game.metadata.Metadata
 import com.snackgame.server.game.session.exception.ScoreCannotBeDecreased
 import java.time.Duration
+import java.time.LocalDateTime
 import javax.persistence.Embedded
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -35,8 +36,8 @@ abstract class Session(
 
     abstract val metadata: Metadata
 
-    fun pause() = sessionState.pause()
-    fun resume() = sessionState.resume()
+    fun pause(): LocalDateTime = sessionState.pause()
+    fun resume(): LocalDateTime = sessionState.resume()
     fun end() = sessionState.end()
 }
 

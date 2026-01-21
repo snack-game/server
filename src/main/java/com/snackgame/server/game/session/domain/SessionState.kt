@@ -3,9 +3,9 @@ package com.snackgame.server.game.session.domain
 import com.snackgame.server.game.session.domain.SessionStateType.EXPIRED
 import com.snackgame.server.game.session.domain.SessionStateType.IN_PROGRESS
 import com.snackgame.server.game.session.domain.SessionStateType.PAUSED
-import com.snackgame.server.game.session.exception.SessionNotPausedException
 import com.snackgame.server.game.session.exception.SessionExpiredException
 import com.snackgame.server.game.session.exception.SessionNotInProgressException
+import com.snackgame.server.game.session.exception.SessionNotPausedException
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
@@ -31,20 +31,22 @@ class SessionState(private val timeLimit: Duration) {
             return IN_PROGRESS
         }
 
-    fun pause() {
+    fun pause(): LocalDateTime {
         validateInProgress()
-        with(now()) {
-            pausedAt = this
-            expiresAt = this + TTL
+        return now().also {
+            pausedAt = it
+            expiresAt = it + TTL
         }
     }
 
-    fun resume() {
+    fun resume(): LocalDateTime {
         validatePaused()
-        val pausedDuration = Duration.between(pausedAt, now())
-        startedAt += pausedDuration
-        expiresAt = startedAt + timeLimit
-        pausedAt = null
+        return now().also { resumedAt ->
+            val pausedDuration = Duration.between(pausedAt, resumedAt)
+            startedAt += pausedDuration
+            expiresAt = startedAt + timeLimit
+            pausedAt = null
+        }
     }
 
     fun end() {

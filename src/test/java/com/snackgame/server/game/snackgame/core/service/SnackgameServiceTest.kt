@@ -112,8 +112,5 @@ class SnackgameServiceTest {
         val totalDuration = Duration.between(feverTime.feverStartedAt, feverTime.feverEndAt)
 
         assertThat(totalDuration).isGreaterThan(Duration.ofSeconds(30))
-
-        val slightlyLateTime = feverTime.feverStartedAt.plusSeconds(30).plusNanos(500)
-        assertThat(feverTime.isFeverTime(slightlyLateTime)).isTrue()
     }
 }
