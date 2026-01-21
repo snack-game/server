@@ -111,16 +111,22 @@ class SnackgameTest {
     @Test
     fun `일시정지_후_재개하면_피버타임도_연장되어_점수_2배가_적용된다`() {
         val game = Snackgame(땡칠().id, BoardFixture.TWO_BY_FOUR())
+        val feverStartTime = LocalDateTime.now()
         game.startFeverTime()
 
-        game.feverTime!!.pause(LocalDateTime.now().plusSeconds(10))
+        // 피버타임 10초 후 일시정지
+        val pauseAt = feverStartTime.plusSeconds(10)
+        game.feverTime!!.pause(pauseAt)
 
-        game.feverTime!!.resume(LocalDateTime.now().plusHours(1))
+        // 20초 일시정지 후 재개 (총 30초 경과, 하지만 피버는 10초만 흘렀음)
+        val resumeAt = pauseAt.plusSeconds(20)
+        game.feverTime!!.resume(resumeAt)
 
         val streak = Streak.of(arrayListOf(Coordinate(0, 0), Coordinate(1, 0)))
 
-
-        val occurredAt = LocalDateTime.now().plusHours(1).plusSeconds(5)
+        // 재개 후 5초 뒤 (피버타임 15초 시점, 아직 30초 내)
+        // 서버 시간 기준으로는 현재 시간 + 약간의 오차로 설정
+        val occurredAt = LocalDateTime.now().plusSeconds(2)
         val request = StreakWithFever(streak, clientIsFever = true, occurredAt = occurredAt)
 
         game.remove(request)

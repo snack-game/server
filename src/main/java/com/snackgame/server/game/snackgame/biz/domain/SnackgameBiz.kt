@@ -66,7 +66,11 @@ open class SnackgameBiz(
     private fun calculateMultiplier(streakWithFever: StreakWithFever): Int {
         val serverFever = feverTime ?: return NORMAL_MULTIPLIER
 
-        if (streakWithFever.clientIsFever && serverFever.isFeverTime(streakWithFever.occurredAt)) {
+        if (streakWithFever.clientIsFever &&
+            serverFever.isFeverTime(streakWithFever.occurredAt) &&
+            serverFever.canApplyFeverMultiplier()
+        ) {
+            serverFever.incrementFeverStreak()
             return FEVER_MULTIPLIER
         }
         return NORMAL_MULTIPLIER
