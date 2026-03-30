@@ -30,8 +30,8 @@ open class SnackgameBiz(
 
     @Lob
     @Convert(converter = BoardConverter::class)
-    var board = board
-        private set
+    open var board = board
+        protected set
 
     @Deprecated("스트릭 구현 시 제거 예정")
     fun setScoreUnsafely(score: Int) {
@@ -39,8 +39,8 @@ open class SnackgameBiz(
     }
 
     @Embedded
-    var feverTime: FeverTime? = null
-        private set
+    open var feverTime: FeverTime? = null
+        protected set
 
 
     fun remove(streak: Streak) {

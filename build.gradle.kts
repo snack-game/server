@@ -7,6 +7,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.0"
     id("org.jetbrains.kotlin.kapt") version "1.9.24"
     id("io.freefair.lombok") version "8.10"
+    id("com.google.cloud.tools.jib") version "3.4.5"
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_17
@@ -15,11 +16,6 @@ repositories {
     mavenCentral()
 }
 
-allOpen {
-    annotation("jakarta.persistence.Entity")
-    annotation("jakarta.persistence.Embeddable")
-    annotation("jakarta.persistence.MappedSuperclass")
-}
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
@@ -70,6 +66,33 @@ tasks.compileKotlin {
 tasks.compileTestKotlin {
     kotlinOptions {
         jvmTarget = "17"
+    }
+}
+
+jib {
+    from {
+        image = "amazoncorretto:21-alpine"
+        platforms {
+            platform {
+                os = "linux"
+                architecture = "arm64"
+            }
+            platform {
+                os = "linux"
+                architecture = "amd64"
+            }
+        }
+    }
+    to {
+        image = "ghcr.io/snack-game/server"
+        auth {
+            username = "snack-game"
+            password = System.getenv("GHCR_PASSWORD") ?: ""
+        }
+        tags = setOf("latest", "${project.version}")
+    }
+    container {
+        mainClass = "com.snackgame.server.ServerApplication"
     }
 }
 
