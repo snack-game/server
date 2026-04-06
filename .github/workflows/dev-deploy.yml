@@ -1,20 +1,17 @@
 name: 변경사항을 개발 서버에 배포한다
+
 on:
-  workflow_dispatch:
   push:
-    branches: [ "dev" ]
+    branches: [ dev ]
+  workflow_dispatch:
+
 permissions:
   contents: read
-
-env:
-  JAR_NAME: snackgame-server.jar
-  JAR_DIRECTORY: /home/ubuntu/snackgame
+  packages: write
 
 jobs:
-  deploy:
-    runs-on: dev
-    environment:
-      name: dev
+  build-and-push:
+    runs-on: ubuntu-latest
     steps:
       - name: Get token from Submodule Reader
         uses: actions/create-github-app-token@v1
@@ -30,102 +27,48 @@ jobs:
           submodules: true
           token: ${{ steps.app_token.outputs.token }}
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: corretto
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Create bootjar
-        uses: gradle/gradle-build-action@v3
-        with:
-          arguments: bootjar
+      - name: SHA 앞 7자리 추출
+        id: sha
+        run: echo "short-sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
-      - name: Copy jar
-        shell: bash {0}
-        run: |
-          mkdir $JAR_DIRECTORY
-          cp ./build/libs/$JAR_NAME $JAR_DIRECTORY/$JAR_NAME
-
-      - name: 현재 사용중인 어플리케이션 포트 확인
-        shell: bash {0}
-        run: |
-          PORT_A_PID=$(lsof -ti:${{ vars.APPLICATION_PORT_A }})
-          PORT_B_PID=$(lsof -ti:${{ vars.APPLICATION_PORT_B }})
-          if [ -n "$PORT_A_PID" ]  && [ -n "$PORT_B_PID" ]; then
-            echo "::error title=배포 실패::$PORT_A_PID, $PORT_B_PID 두 포트가 모두 사용중입니다";
-            exit 1;
-          elif [ -n "$PORT_A_PID" ]; then
-            echo "BLUE_PORT=${{ vars.APPLICATION_PORT_A }}" >> "$GITHUB_ENV"
-            echo "GREEN_PORT=${{ vars.APPLICATION_PORT_B }}" >> "$GITHUB_ENV"
-          elif [ -n "$PORT_B_PID" ]; then
-            echo "BLUE_PORT=${{ vars.APPLICATION_PORT_B }}" >> "$GITHUB_ENV"
-            echo "GREEN_PORT=${{ vars.APPLICATION_PORT_A }}" >> "$GITHUB_ENV"
-          else
-            echo "BLUE_PORT=${{ vars.APPLICATION_PORT_A }}" >> "$GITHUB_ENV"
-            echo "GREEN_PORT=${{ vars.APPLICATION_PORT_B }}" >> "$GITHUB_ENV"
-          fi
-
-      - name: Download Datadog Java Agent
-        working-directory: ${{ env.JAR_DIRECTORY }}
-        run: |
-          wget -O dd-java-agent.jar 'https://dtdg.co/latest-java-tracer'
-
-      - name: 그린 어플리케이션 실행
+      - name: Jib으로 이미지 빌드 및 GHCR Push
         env:
-          RUNNER_TRACKING_ID: ""
-        shell: bash
-        working-directory: ${{ env.JAR_DIRECTORY }}
-        run: |
-          nohup java \
-          -Dserver.port=$GREEN_PORT \
-          -Dspring.profiles.active=${{ vars.ENVIRONMENT_NAME }} \
-          -DACCESS_TOKEN_SECRET_KEY=${{ secrets.ACCESS_TOKEN_SECRET_KEY }} \
-          -DACCESS_TOKEN_EXPIRY_DAYS=${{ secrets.ACCESS_TOKEN_EXPIRY_DAYS }} \
-          -DREFRESH_TOKEN_SECRET_KEY=${{ secrets.REFRESH_TOKEN_SECRET_KEY }} \
-          -DREFRESH_TOKEN_EXPIRY_DAYS=${{ secrets.REFRESH_TOKEN_EXPIRY_DAYS }} \
-          -DDB_URL=${{ secrets.DB_URL }} \
-          -DDB_USERNAME=${{ secrets.DB_USERNAME }} \
-          -DDB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-          -javaagent:dd-java-agent.jar \
-          -Ddd.profiling.enabled=true \
-          -XX:FlightRecorderOptions=stackdepth=256 \
-          -Ddd.logs.injection=true \
-          -Ddd.appsec.enabled=true \
-          -Ddd.iast.enabled=true \
-          -Ddd.service=snackgame \
-          -Ddd.env=${{ vars.ENVIRONMENT_NAME }} \
-          -jar $JAR_NAME > ~/snackgame-server.log &
+          GHCR_USERNAME: ${{ github.actor }}
+          GHCR_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew jib -Djib.to.tags=dev,${{ steps.sha.outputs.short-sha }}
 
-      - name: 그린 어플리케이션이 접속 가능할 때까지 기다린다
-        shell: bash {0}
-        run: |
-          PROCESS_ID="$(lsof -i:$GREEN_PORT -t)"
-          while [ "$(curl -o /dev/null -s -w %{http_code} localhost:$GREEN_PORT/rankings/1?by=BEST_SCORE)" != 200 ]
-          do
-            if [ ! -e "/proc/$PROCESS_ID" ]; then
-              echo "::error title=배포 실패::블루 어플리케이션으로 롤백합니다.";
-              exit 1;
-            fi
-            echo "새로운 어플리케이션을 띄우는 중입니다.";
-            sleep 5;
-          done
-
-      - name: 리버스 프록시 설정 변경
-        working-directory: ${{ env.JAR_DIRECTORY }}
-        shell: bash {0}
-        run: |
-          echo "proxy_pass http://localhost:$GREEN_PORT;" > port.inc;
-          sudo nginx -s reload;
-
-      - name: 블루 어플리케이션 종료
-        shell: bash {0}
-        run: |
-          PROCESS_ID="$(lsof -i:$BLUE_PORT -t)"
-          if [ -n "$PROCESS_ID" ]; then
-            sudo kill -15 $PROCESS_ID
-            sleep 5
-            if ps -p $PROCESS_ID > /dev/null; then
-              echo "프로세스가 아직 살아있음. 강제 종료합니다."
-              sudo kill -9 $PROCESS_ID
-            else
-              echo "구동중인 애플리케이션을 종료했습니다. (pid : $PROCESS_ID)\n"
-            fi
-          fi
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: snackgame-02 dev 배포
+        uses: appleboy/ssh-action@v1
+        env:
+          ACCESS_TOKEN_SECRET_KEY: ${{ secrets.ACCESS_TOKEN_SECRET_KEY }}
+          REFRESH_TOKEN_SECRET_KEY: ${{ secrets.REFRESH_TOKEN_SECRET_KEY }}
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        with:
+          host: ${{ secrets.SSH_HOST_02 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script_stop: true
+          envs: ACCESS_TOKEN_SECRET_KEY,REFRESH_TOKEN_SECRET_KEY,DB_URL,DB_USERNAME,DB_PASSWORD
+          script: |
+            cd ~/snackgame-server/repo
+            git fetch origin dev
+            git checkout dev
+            git pull origin dev
+            chmod +x scripts/deploy-dev.sh
+            scripts/deploy-dev.sh

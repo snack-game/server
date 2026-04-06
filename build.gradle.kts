@@ -68,10 +68,9 @@ tasks.compileTestKotlin {
         jvmTarget = "17"
     }
 }
-
 jib {
     from {
-        image = "amazoncorretto:21-alpine"
+        image = "amazoncorretto:17-alpine"
         platforms {
             platform {
                 os = "linux"
@@ -89,7 +88,6 @@ jib {
             username = "snack-game"
             password = System.getenv("GHCR_PASSWORD") ?: ""
         }
-        tags = setOf("latest", "${project.version}")
     }
     container {
         mainClass = "com.snackgame.server.ServerApplication"
