@@ -68,9 +68,8 @@ jobs:
           envs: NLB_ID,ACCESS_TOKEN_SECRET_KEY,REFRESH_TOKEN_SECRET_KEY,DB_URL,DB_USERNAME,DB_PASSWORD
           script: |
             cd ~/snackgame-server/repo
-            git fetch origin main
-            git checkout -B main origin/main
-            git pull --ff-only origin main --no-recurse-submodules
+            git fetch origin main        
+            git reset --hard origin/main
             chmod +x scripts/deploy-rolling.sh
             scripts/deploy-rolling.sh \
               ${{ secrets.NLB_BACKEND_02_HTTP }} \
@@ -99,8 +98,7 @@ jobs:
           script: |
             cd ~/snackgame-server/repo
             git fetch origin main
-            git checkout -B main origin/main
-            git pull --ff-only origin main --no-recurse-submodules
+            git reset --hard origin/main
             chmod +x scripts/deploy-rolling.sh
             scripts/deploy-rolling.sh \
               ${{ secrets.NLB_BACKEND_01_HTTP }} \
