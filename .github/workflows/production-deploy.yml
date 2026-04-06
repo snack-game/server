@@ -69,9 +69,8 @@ jobs:
           script: |
             cd ~/snackgame-server/repo
             git fetch origin main
-            git checkout main
-            git pull origin main --no-recurse-submodules
-
+            git checkout -B main origin/main
+            git pull --ff-only origin main --no-recurse-submodules
             chmod +x scripts/deploy-rolling.sh
             scripts/deploy-rolling.sh \
               ${{ secrets.NLB_BACKEND_02_HTTP }} \
@@ -100,9 +99,8 @@ jobs:
           script: |
             cd ~/snackgame-server/repo
             git fetch origin main
-            git checkout main
-            git pull origin main --no-recurse-submodules
-
+            git checkout -B main origin/main
+            git pull --ff-only origin main --no-recurse-submodules
             chmod +x scripts/deploy-rolling.sh
             scripts/deploy-rolling.sh \
               ${{ secrets.NLB_BACKEND_01_HTTP }} \

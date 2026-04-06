@@ -1,4 +1,4 @@
-
+#!/bin/bash
 set -euo pipefail
 
 
@@ -9,7 +9,6 @@ fi
 
 HTTP_BACKEND="$1"
 HTTPS_BACKEND="$2"
-
 
 
 export PATH="$HOME/bin:$PATH"
@@ -38,10 +37,7 @@ set_drain() {
     --backend-set-name snackgame-http \
     --backend-name "$HTTP_BACKEND" \
     --is-drain "$is_drain" \
-    --is-backup false \
-    --is-offline false \
-    --wait-for-state SUCCEEDED \
-    --force
+    --wait-for-state SUCCEEDED
 
   oci nlb backend update \
     --auth instance_principal \
@@ -49,10 +45,7 @@ set_drain() {
     --backend-set-name snackgame-https \
     --backend-name "$HTTPS_BACKEND" \
     --is-drain "$is_drain" \
-    --is-backup false \
-    --is-offline false \
-    --wait-for-state SUCCEEDED \
-    --force
+    --wait-for-state SUCCEEDED
 }
 
 
