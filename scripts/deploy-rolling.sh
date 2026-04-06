@@ -36,20 +36,18 @@ set_drain() {
     --network-load-balancer-id "$NLB_ID" \
     --backend-set-name snackgame-http \
     --backend-name "$HTTP_BACKEND" \
-    --is-drain "$is_drain"
+    --is-drain "$is_drain" \
+    --wait-for-state SUCCEEDED \
+    --max-wait-seconds 120
 
   oci nlb backend update \
     --auth instance_principal \
     --network-load-balancer-id "$NLB_ID" \
     --backend-set-name snackgame-https \
     --backend-name "$HTTPS_BACKEND" \
-    --is-drain "$is_drain"
-
-
-  if [ "$is_drain" = "true" ]; then
-    echo "[NLB] 드레인 적용 대기 중 (10초)..."
-    sleep 10
-  fi
+    --is-drain "$is_drain" \
+    --wait-for-state SUCCEEDED \
+    --max-wait-seconds 120
 }
 
 
