@@ -98,8 +98,10 @@ SnackgameController(
 
     @Operation(summary = "스낵게임 세션 종료", description = "세션을 종료한다")
     @PostMapping("/{sessionId}/end")
-    fun end(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameEndResponse =
+    fun end(@Authenticated member: Member, @PathVariable sessionId: Long): SnackgameEndResponse {
         snackgameService.end(member.id, sessionId)
+        return snackgameService.getEndResponse(sessionId)
+    }
 
     @Operation(summary = "사용자가 가진 아이템 조회", description = "사용자가 아이템을 각각 몇 개 소유하고 있는지 조회한다")
     @GetMapping("/items")

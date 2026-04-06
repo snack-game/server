@@ -30,12 +30,12 @@ open class SnackgameBizV2(
 
     @Lob
     @Convert(converter = BoardConverter::class)
-    var board = board
-        private set
+    open var board = board
+        protected set
 
     @Embedded
-    var feverTime: FeverTime? = null
-        private set
+    open var feverTime: FeverTime? = null
+        protected set
 
     fun remove(streak: Streak) {
         val removedSnacks = board.removeSnacksIn(streak)

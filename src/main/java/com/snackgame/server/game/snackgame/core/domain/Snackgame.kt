@@ -21,12 +21,12 @@ open class Snackgame(
 
     @Lob
     @Convert(converter = BoardConverter::class)
-    var board = board
-        private set
+    open var board = board
+        protected set
 
     @Embedded
-    var feverTime: FeverTime? = null
-        private set
+    open var feverTime: FeverTime? = null
+        protected set
 
     @Deprecated("스트릭 구현 완료 시 제거")
     fun setScoreUnsafely(score: Int) {

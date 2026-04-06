@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import org.springframework.web.multipart.MultipartException
 import org.springframework.web.servlet.NoHandlerFoundException
 import java.util.stream.Collectors
 
@@ -93,6 +94,14 @@ class GlobalExceptionHandler(
         log.debug(exception.message, exception)
 
         return ExceptionResponse("요청 인자가 잘못되었습니다", exception.javaClass)
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleMultipartException(exception: MultipartException): ExceptionResponse {
+        log.warn(exception.message)
+
+        return ExceptionResponse("잘못된 멀티파트 요청입니다", exception.javaClass)
     }
 
     @ExceptionHandler
