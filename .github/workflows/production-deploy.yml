@@ -70,7 +70,7 @@ jobs:
             cd ~/snackgame-server/repo
             git fetch origin main
             git checkout main
-            git pull origin main
+            git pull origin main --no-recurse-submodules
             chmod +x scripts/deploy-rolling.sh
             scripts/deploy-rolling.sh \
               ${{ secrets.NLB_BACKEND_02_HTTP }} \
@@ -100,7 +100,7 @@ jobs:
             cd ~/snackgame-server/repo
             git fetch origin main
             git checkout main
-            git pull origin main
+            git pull origin main --no-recurse-submodules
             chmod +x scripts/deploy-rolling.sh
             scripts/deploy-rolling.sh \
               ${{ secrets.NLB_BACKEND_01_HTTP }} \

@@ -1,7 +1,6 @@
 
 set -euo pipefail
 
-
 if [ $# -ne 2 ]; then
   echo "Usage: $0 <http-backend-name> <https-backend-name>"
   exit 1
@@ -10,6 +9,8 @@ fi
 HTTP_BACKEND="$1"
 HTTPS_BACKEND="$2"
 
+
+export PATH="$HOME/bin:$PATH"
 
 COMPOSE_DIR="$HOME/snackgame-server"
 HEALTH_CHECK_URL="http://localhost:8080/rankings/1?by=BEST_SCORE"
@@ -78,7 +79,6 @@ wait_healthy() {
   return 1
 }
 
-
 rollback() {
   echo "[롤백] 이전 컨테이너로 복구 중..."
   cd "$COMPOSE_DIR"
@@ -87,7 +87,6 @@ rollback() {
   echo "[롤백] 완료"
   exit 1
 }
-
 
 echo "======================================"
 echo "[배포 시작]"
