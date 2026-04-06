@@ -101,20 +101,10 @@ class SnackgameService(
 
 
     @Transactional
-    fun end(memberId: Long, sessionId: Long): SnackgameEndResponse {
+    fun end(memberId: Long, sessionId: Long) {
         log.info("[게임 종료 시도] memberId: $memberId, sessionId: $sessionId")
-
-        // DB에서 세션 ID로만 조회하여 실제 ownerId 확인
-        val sessionById = snackGameRepository.findById(sessionId)
-        if (sessionById.isPresent) {
-            val actualOwnerId = sessionById.get().ownerId
-            log.info("[세션 존재 확인] sessionId: $sessionId, actualOwnerId: $actualOwnerId, requestMemberId: $memberId, 일치여부: ${actualOwnerId == memberId}")
-        } else {
-            log.warn("[세션 없음] sessionId: $sessionId 가 DB에 존재하지 않음")
-        }
-
         val game = snackGameRepository.getBy(memberId, sessionId)
-        log.info("[세션 조회 성공] sessionId: $sessionId, ownerId: ${game.ownerId}, score: ${game.score}")
+        log.info("[세션 조회 성공] sessionId: $sessionId")
 
         game.end()
         eventPublisher.publishEvent(SessionEndEvent.of(game))
