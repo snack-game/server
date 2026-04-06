@@ -24,23 +24,23 @@ open class Member(
     group: Group? = null,
     profileImage: ProfileImage = ProfileImage.EMPTY,
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0
+    open var id: Long = 0
 ) : BaseEntity() {
 
     @Embedded
-    var name: Name = name
-        private set
+    open var name: Name = name
+        protected set
 
     @ManyToOne
-    var group: Group? = group
-        private set
+    open var group: Group? = group
+        protected set
 
     @Embedded
-    var profileImage: ProfileImage = profileImage
-        private set
+    open var profileImage: ProfileImage = profileImage
+        protected set
 
     @Embedded
-    val status: Status = Status()
+    open val status: Status = Status()
 
     private var isValid = true
 

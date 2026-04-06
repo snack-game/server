@@ -6,12 +6,17 @@ import com.snackgame.server.game.snackgame.core.domain.Board
 import com.snackgame.server.game.snackgame.core.domain.BoardConverter
 import com.snackgame.server.game.snackgame.core.domain.Snackgame.Companion.DEFAULT_HEIGHT
 import com.snackgame.server.game.snackgame.core.domain.Snackgame.Companion.DEFAULT_WIDTH
+import com.snackgame.server.game.snackgame.core.domain.Snackgame.Companion.FEVER_MULTIPLIER
+import com.snackgame.server.game.snackgame.core.domain.Snackgame.Companion.NORMAL_MULTIPLIER
 import com.snackgame.server.game.snackgame.core.domain.Snackgame.Companion.SESSION_TIME
 import com.snackgame.server.game.snackgame.core.domain.Snackgame.Companion.SPARE_TIME
 import com.snackgame.server.game.snackgame.core.domain.Streak
+import com.snackgame.server.game.snackgame.core.domain.item.FeverTime
 import com.snackgame.server.game.snackgame.core.domain.snack.Snack
+import com.snackgame.server.game.snackgame.core.service.dto.StreakWithFever
 import java.time.Duration
 import javax.persistence.Convert
+import javax.persistence.Embedded
 import javax.persistence.Entity
 import javax.persistence.Lob
 
@@ -25,8 +30,12 @@ open class SnackgameBizV2(
 
     @Lob
     @Convert(converter = BoardConverter::class)
-    var board = board
-        private set
+    open var board = board
+        protected set
+
+    @Embedded
+    open var feverTime: FeverTime? = null
+        protected set
 
     fun remove(streak: Streak) {
         val removedSnacks = board.removeSnacksIn(streak)
@@ -34,6 +43,35 @@ open class SnackgameBizV2(
         if (removedSnacks.any(Snack::isGolden)) {
             this.board = board.reset()
         }
+    }
+
+    fun remove(streakWithFever: StreakWithFever) {
+        val streak = streakWithFever.streak
+        val removedSnacks = board.removeSnacksIn(streak)
+
+        val multiplier = calculateMultiplier(streakWithFever)
+        increaseScore(streak.length * multiplier)
+
+        if (removedSnacks.any(Snack::isGolden)) {
+            this.board = board.reset()
+        }
+    }
+
+    private fun calculateMultiplier(streakWithFever: StreakWithFever): Int {
+        val serverFever = feverTime ?: return NORMAL_MULTIPLIER
+
+        if (streakWithFever.clientIsFever &&
+            serverFever.isFeverTime(streakWithFever.occurredAt) &&
+            serverFever.canApplyFeverMultiplier()
+        ) {
+            serverFever.incrementFeverStreak()
+            return FEVER_MULTIPLIER
+        }
+        return NORMAL_MULTIPLIER
+    }
+
+    private fun increaseScore(earn: Int) {
+        this.score += earn
     }
 
     override val metadata = SNACK_GAME_BIZ_V2

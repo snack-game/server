@@ -2,10 +2,10 @@
 
 package com.snackgame.server.game.snackgame.core.service
 
-import com.snackgame.server.fixture.SeasonFixture
 import com.snackgame.server.game.snackgame.core.domain.Snackgame
 import com.snackgame.server.game.snackgame.core.domain.SnackgameRepository
 import com.snackgame.server.game.snackgame.core.service.dto.CoordinateRequest
+import com.snackgame.server.game.snackgame.core.service.dto.StreakWithMeta
 import com.snackgame.server.game.snackgame.core.service.dto.StreaksRequest
 import com.snackgame.server.game.snackgame.fixture.BoardFixture
 import com.snackgame.server.game.snackgame.fixture.ItemFixture
@@ -15,6 +15,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import java.time.Duration
+import java.time.LocalDateTime
 
 @ServiceTest
 class SnackgameServiceTest {
@@ -39,7 +41,19 @@ class SnackgameServiceTest {
             CoordinateRequest(0, 0)
         )
 
-        snackgameService.removeStreaks(땡칠().id, game.sessionId, StreaksRequest(listOf(coordinates)))
+        snackgameService.removeStreaks(
+            땡칠().id,
+            game.sessionId,
+            StreaksRequest(
+                listOf(
+                    StreakWithMeta(
+                        coordinates = coordinates,
+                        isFever = false,
+                        LocalDateTime.now()
+                    )
+                )
+            )
+        )
 
         val found = snackgameRepository.findByOwnerIdAndSessionId(땡칠().id, game.sessionId)!!
         assertThat(found.score).isEqualTo(2)
@@ -64,9 +78,39 @@ class SnackgameServiceTest {
         )
 
         snackgameService.useFeverTime(땡칠().id, game.sessionId)
-        snackgameService.removeStreaks(땡칠().id, game.sessionId, StreaksRequest(listOf(coordinates)))
+
+        snackgameService.removeStreaks(
+            땡칠().id,
+            game.sessionId,
+            StreaksRequest(
+                listOf(
+                    StreakWithMeta(
+                        coordinates = coordinates,
+                        isFever = true,
+                        LocalDateTime.now()
+                    )
+                )
+            )
+        )
 
         val found = snackgameRepository.findByOwnerIdAndSessionId(땡칠().id, game.sessionId)!!
         assertThat(found.score).isEqualTo(4)
+    }
+
+    @Test
+    fun `피버타임 pause 후 resume 시 종료 시간이 연장된다`() {
+        val game = snackgameRepository.save(Snackgame(땡칠().id, BoardFixture.TWO_BY_FOUR()))
+        snackgameService.useFeverTime(땡칠().id, game.sessionId)
+
+        snackgameService.pause(game.ownerId, game.sessionId)
+        Thread.sleep(1000)
+        snackgameService.resume(game.ownerId, game.sessionId)
+
+        val resumedGame = snackgameRepository.findByOwnerIdAndSessionId(땡칠().id, game.sessionId)!!
+        val feverTime = resumedGame.feverTime!!
+
+        val totalDuration = Duration.between(feverTime.feverStartedAt, feverTime.feverEndAt)
+
+        assertThat(totalDuration).isGreaterThan(Duration.ofSeconds(30))
     }
 }

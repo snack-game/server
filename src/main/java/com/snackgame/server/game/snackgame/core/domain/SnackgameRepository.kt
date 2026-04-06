@@ -13,11 +13,19 @@ interface SnackgameRepository : JpaRepository<Snackgame, Long> {
 
     @Query(
         value = """
-            with scores as (
-                select percent_rank() over (order by score desc) as percentile, session_id, score 
-                from snackgame where TIMESTAMPDIFF(SECOND, now(), expires_at) <=0
-            )
-            select percentile from scores where session_id = :sessionId""",
+        SELECT percent_rank() over (order by score desc) as percentile
+        FROM snackgame 
+        WHERE expires_at <= now() + INTERVAL 1 SECOND
+          AND session_id = :sessionId
+        
+        UNION ALL
+        
+        SELECT 0.0 as percentile
+        FROM snackgame
+        WHERE session_id = :sessionId
+          AND expires_at > now() + INTERVAL 1 SECOND
+        LIMIT 1
+        """,
         nativeQuery = true
     )
     fun findPercentileOf(sessionId: Long): Double?
