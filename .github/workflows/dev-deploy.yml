@@ -69,6 +69,7 @@ jobs:
             cd ~/snackgame-server/repo
             git fetch origin dev
             git checkout dev
-            git pull origin dev
+            git pull origin dev --no-recurse-submodules
+
             chmod +x scripts/deploy-dev.sh
             scripts/deploy-dev.sh

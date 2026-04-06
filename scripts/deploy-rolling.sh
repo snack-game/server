@@ -11,6 +11,9 @@ HTTP_BACKEND="$1"
 HTTPS_BACKEND="$2"
 
 
+
+export PATH="$HOME/bin:$PATH"
+
 COMPOSE_DIR="$HOME/snackgame-server"
 HEALTH_CHECK_URL="http://localhost:8080/rankings/1?by=BEST_SCORE"
 HEALTH_CHECK_TIMEOUT=120
