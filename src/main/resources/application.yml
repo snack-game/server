@@ -26,5 +26,13 @@ springdoc:
     disabled: true
   override-with-generic-response: false
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ""
+  endpoint:
+    health:
+      show-details: never
 server:
   shutdown: graceful
