@@ -6,6 +6,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+  servlet:
+    session:
+      cookie:
+        same-site: none
+
 security:
   jwt:
     token:
@@ -13,14 +18,26 @@ security:
       access-expiry-days: ${ACCESS_TOKEN_EXPIRY_DAYS}
       refresh-secret-key: ${REFRESH_TOKEN_SECRET_KEY}
       refresh-expiry-days: ${REFRESH_TOKEN_EXPIRY_DAYS}
+
 server:
   port: ${APPLICATION_PORT}
   forward-headers-strategy: native
-  servlet:
-    session:
-      cookie:
-        same-site: none
 
 springdoc:
   api-docs:
     enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,prometheus"
+  endpoint:
+    health:
+      show-details: never
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: snackgame
+      environment: production

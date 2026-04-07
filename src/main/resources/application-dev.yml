@@ -20,3 +20,14 @@ server:
     session:
       cookie:
         same-site: none
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,prometheus,loggers"
+  endpoint:
+    health:
+      show-details: never
+    prometheus:
+      enabled: true
