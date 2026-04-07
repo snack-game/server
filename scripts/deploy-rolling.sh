@@ -97,6 +97,9 @@ cd "$COMPOSE_DIR"
 
 set_drain true
 
+echo "기존 연결 종료 대기..."
+sleep 15
+
 
 echo "[Pull] 새 이미지 받는 중..."
 docker compose pull
