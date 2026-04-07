@@ -60,12 +60,13 @@ jobs:
           DB_URL: ${{ secrets.DB_URL }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          GRAFANA_PASSWORD: ${{ secrets.GRAFANA_PASSWORD }}
         with:
           host: ${{ secrets.SSH_HOST_02 }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script_stop: true
-          envs: NLB_ID,ACCESS_TOKEN_SECRET_KEY,REFRESH_TOKEN_SECRET_KEY,DB_URL,DB_USERNAME,DB_PASSWORD
+          envs: NLB_ID,ACCESS_TOKEN_SECRET_KEY,REFRESH_TOKEN_SECRET_KEY,DB_URL,DB_USERNAME,DB_PASSWORD,GRAFANA_PASSWORD
           script: |
             cd ~/snackgame-server/repo
             git fetch origin main        
@@ -89,12 +90,13 @@ jobs:
           DB_URL: ${{ secrets.DB_URL }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          GRAFANA_PASSWORD: ${{ secrets.GRAFANA_PASSWORD }}
         with:
           host: ${{ secrets.SSH_HOST_01 }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script_stop: true
-          envs: NLB_ID,ACCESS_TOKEN_SECRET_KEY,REFRESH_TOKEN_SECRET_KEY,DB_URL,DB_USERNAME,DB_PASSWORD
+          envs: NLB_ID,ACCESS_TOKEN_SECRET_KEY,REFRESH_TOKEN_SECRET_KEY,DB_URL,DB_USERNAME,DB_PASSWORD,GRAFANA_PASSWORD
           script: |
             cd ~/snackgame-server/repo
             git fetch origin main
