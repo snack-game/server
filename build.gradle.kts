@@ -36,6 +36,9 @@ dependencies {
     implementation("com.google.firebase:firebase-admin:9.2.0")
     implementation("com.squareup.okhttp3:okhttp:4.2.2")
 
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("io.micrometer:micrometer-registry-prometheus")
+
     runtimeOnly("com.h2database:h2")
     runtimeOnly("com.mysql:mysql-connector-j")
 
