@@ -80,7 +80,7 @@ wait_healthy() {
 rollback() {
   echo "[롤백] 이전 컨테이너로 복구 중..."
   cd "$COMPOSE_DIR"
-  docker compose up -d
+  docker compose up -d snackgame-server
   set_drain false
   echo "[롤백] 완료"
   exit 1
@@ -106,7 +106,7 @@ docker compose pull
 
 
 echo "[배포] 컨테이너 교체 중..."
-docker compose up -d || rollback
+docker compose up -d snackgame-server || rollback
 
 
 wait_healthy || rollback
