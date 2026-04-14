@@ -41,3 +41,6 @@ management:
     tags:
       application: snackgame
       environment: production
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
