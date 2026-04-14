@@ -25,9 +25,16 @@ management:
   endpoints:
     web:
       exposure:
-        include: "health,prometheus,loggers"
+        include: "health,prometheus, loggers"
   endpoint:
     health:
       show-details: never
     prometheus:
       enabled: true
+  metrics:
+    tags:
+      application: snackgame
+      environment: dev
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
