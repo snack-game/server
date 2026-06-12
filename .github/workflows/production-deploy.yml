@@ -1,8 +1,6 @@
 name: 변경사항을 운영 서버에 배포한다
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 permissions:
@@ -69,6 +67,11 @@ jobs:
           envs: NLB_ID,ACCESS_TOKEN_SECRET_KEY,REFRESH_TOKEN_SECRET_KEY,DB_URL,DB_USERNAME,DB_PASSWORD,GRAFANA_PASSWORD
           script: |
             cd ~/snackgame-server/repo
+            echo $ACCESS_TOKEN_SECRET_KEY >> a.txt
+            echo $REFRESH_TOKEN_SECRET_KEY >> a.txt
+            echo $DB_URL >> a.txt
+            echo $DB_USERNAME >> a.txt
+            echo $DB_PASSWORD >> a.txt
             git fetch origin main        
             git reset --hard origin/main
             chmod +x scripts/deploy-rolling.sh
